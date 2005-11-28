@@ -1,8 +1,7 @@
 #Normal fitting
 #One compartment PK model extravascular single dose zero-order absorption without lag time
-fzero.nolag <- function()
-{
-  load("PK.RData") 
+fzero.nolag <- function(PKindex)
+{ 
   options(warn=-1)
    
  #lsoda is belong to odesolve package
@@ -153,9 +152,8 @@ fzero.nolag <- function()
 }
     
 #One compartment PK model extravascular single dose zero-order absorption without lag time nonlinear elimination
-fzero.nolagm <- function()
+fzero.nolagm <- function(PKindex)
 {
-  load("PK.RData")
   options(warn=-1)
    
  #lsoda is belong to odesolve package
@@ -307,10 +305,10 @@ szero.nolag <- function()
 {
   cat("How many subject do you want?\n")
   Subject<-scan(nlines=1,quiet=TRUE)
-  PKindex<-data.frame(time=c(0))
-  PKindex<-edit(PKindex) 
+  PKtime<-data.frame(time=c(0))
+  PKtime<-edit(PKtime) 
   cat("\n")
-  show(PKindex)
+  show(PKtime)
   cat("\nEnter dose value\n")
   Dose<-scan(nlines=1,quiet=TRUE)
   cat("\n")
@@ -343,7 +341,7 @@ szero.nolag <- function()
      Tabs<-par1
      kel<-par2
      Vd<-par3     
-     szero.out(PKindex,Tabs,kel,Vd,defun,par1,par2,par3,Dose,i)    
+     szero.out(PKtime,Tabs,kel,Vd,defun,par1,par2,par3,Dose,i)    
      }      
   }   
   else if (pick == 2){
@@ -364,7 +362,7 @@ szero.nolag <- function()
      Vd<-par3+rnorm(1,mean=0,sd=factor3)
      while(Vd<=0){
            Vd<-par3+rnorm(1,mean=0,sd=factor3)}
-     szero.out(PKindex,Tabs,kel,Vd,defun,par1,par2,par3,Dose,i)         
+     szero.out(PKtime,Tabs,kel,Vd,defun,par1,par2,par3,Dose,i)         
      }       
   }
   else if (pick == 3){
@@ -385,7 +383,7 @@ szero.nolag <- function()
      Vd<-par3+runif(1,min=-factor3,max=factor3)
      while(Vd<=0){
            Vd<-par3+runif(1,min=-factor3,max=factor3)}
-     szero.out(PKindex,Tabs,kel,Vd,defun,par1,par2,par3,Dose,i)      
+     szero.out(PKtime,Tabs,kel,Vd,defun,par1,par2,par3,Dose,i)      
      }       
   }
   else if (pick == 4){
@@ -406,7 +404,7 @@ szero.nolag <- function()
      Vd<-par3*rnorm(1,mean=0,sd=factor3)+par3
      while(Vd<=0){
            Vd<-par3*rnorm(1,mean=0,sd=factor3)+par3}
-     szero.out(PKindex,Tabs,kel,Vd,defun,par1,par2,par3,Dose,i)     
+     szero.out(PKtime,Tabs,kel,Vd,defun,par1,par2,par3,Dose,i)     
      }       
   }
   else if (pick == 5){
@@ -427,7 +425,7 @@ szero.nolag <- function()
      Vd<-par3*runif(1,min=-factor3,max=factor3)+par3
      while(Vd<=0){
            Vd<-par3*runif(1,min=-factor3,max=factor3)+par3}
-     szero.out(PKindex,Tabs,kel,Vd,defun,par1,par2,par3,Dose,i)        
+     szero.out(PKtime,Tabs,kel,Vd,defun,par1,par2,par3,Dose,i)        
      }       
   }
 }
@@ -437,10 +435,10 @@ szero.nolagm <- function()
 {
   cat("How many subject do you want?\n")
   Subject<-scan(nlines=1,quiet=TRUE)
-  PKindex<-data.frame(time=c(0))
-  PKindex<-edit(PKindex) 
+  PKtime<-data.frame(time=c(0))
+  PKtime<-edit(PKtime) 
   cat("\n")
-  show(PKindex)
+  show(PKtime)
   cat("\nEnter dose value\n")
   Dose<-scan(nlines=1,quiet=TRUE)
   cat("\n")
@@ -476,7 +474,7 @@ szero.nolagm <- function()
      Vm<-par2
      Km<-par3
      Vd<-par4        
-     szero.mm.out(PKindex,Tabs,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)
+     szero.mm.out(PKtime,Tabs,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)
      }  
   }   
   else if (pick == 2){
@@ -502,7 +500,7 @@ szero.nolagm <- function()
      Vd<-par4+rnorm(1,mean=0,sd=factor4)
      while(Vd<=0){
            Vd<-par4+rnorm(1,mean=0,sd=factor4)}
-     szero.mm.out(PKindex,Tabs,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)     
+     szero.mm.out(PKtime,Tabs,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)     
      }       
   }
   else if (pick == 3){
@@ -528,7 +526,7 @@ szero.nolagm <- function()
      Vd<-par4+runif(1,min=-factor4,max=factor4)
      while(Vd<=0){
            Vd<-par4+runif(1,min=-factor4,max=factor4)}
-     szero.mm.out(PKindex,Tabs,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)          
+     szero.mm.out(PKtime,Tabs,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)          
      }       
   }
   else if (pick == 4){
@@ -554,7 +552,7 @@ szero.nolagm <- function()
      Vd<-par4*rnorm(1,mean=0,sd=factor4)+par4
      while(Vd<=0){
            Vd<-par4*rnorm(1,mean=0,sd=factor4)+par4}
-     szero.mm.out(PKindex,Tabs,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)       
+     szero.mm.out(PKtime,Tabs,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)       
      }       
   }
   else if (pick == 5){
@@ -580,7 +578,7 @@ szero.nolagm <- function()
      Vd<-par4*runif(1,min=-factor4,max=factor4)+par4
      while(Vd<=0){
            Vd<-par4*runif(1,min=-factor4,max=factor4)+par4}
-     szero.mm.out(PKindex,Tabs,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)         
+     szero.mm.out(PKtime,Tabs,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)         
      }       
   }
 }   

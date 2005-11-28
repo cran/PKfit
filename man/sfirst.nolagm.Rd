@@ -2,7 +2,8 @@
 
 \alias{sfirst.nolagm}
 
-\title{Simulation Function for One Compartment Model Extravascular First Order Absorption without Lag Time Michaelis-Menten Elimination}
+\title{Simulation Functions for a One-Compartment, Extravascular, Single-Dose, First-Ordered Absorption,
+       and Michaelis-Menten Elimination without Lag Time Model}
 
 \description{
   Consisting of entering the parameter initial value and five error types for selection: no error,

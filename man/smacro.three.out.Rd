@@ -2,10 +2,10 @@
 
 \alias{smacro.three.out}
 
-\title{The Output of Simulation for Three Exponential Terms}
+\title{Simulation Output for a Three-Exponential Term Model}
 
 \description{
-  Display the output of simulation for three exponential terms.
+  Display simulation output for a three-exponential term model and plots.
 }
 
 \keyword{misc}

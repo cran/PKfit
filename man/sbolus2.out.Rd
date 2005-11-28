@@ -2,10 +2,10 @@
 
 \alias{sbolus2.out}
 
-\title{The Output of Simulation for Two Compartment Model IV Bolus Single Dose}
+\title{Simulation Output for a Two-Compartment, IV-Bolus, and Single-Dose Model}
 
 \description{
-  Display the output of simulation for two compartment model IV bolus single dose and plot.
+  Display simulation output for a two-compartment, IV-bolus, and single-dose model and plots.
 }
 
 \keyword{misc}

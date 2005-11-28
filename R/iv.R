@@ -1,8 +1,7 @@
 #Normal fitting
 #One compartment PK model iv bolus single dose
-fbolus1 <- function()
+fbolus1 <- function(PKindex)
 {
-  load("PK.RData")
   options(warn=-1)
    
  #lsoda is belong to odesolve package
@@ -147,9 +146,8 @@ fbolus1 <- function()
 }
     
 #One compartment PK model iv bolus single dose michaelis-menten elimination
-fbolus.mm <- function()
+fbolus.mm <- function(PKindex)
 {
-  load("PK.Rdata")
   options(warn=-1)
    
  #lsoda is belong to odesolve package
@@ -296,10 +294,10 @@ sbolus1 <- function()
 {
   cat("How many subject do you want?\n")
   Subject<-scan(nlines=1,quiet=TRUE)
-  PKindex<-data.frame(time=c(0))
-  PKindex<-edit(PKindex) 
+  PKtime<-data.frame(time=c(0))
+  PKtime<-edit(PKtime) 
   cat("\n")
-  show(PKindex)
+  show(PKtime)
   cat("\nEnter dose value\n")
   Dose<-scan(nlines=1,quiet=TRUE)
   cat("\n")
@@ -328,8 +326,8 @@ sbolus1 <- function()
      cat("\n\n             << Subject",i,">>\n\n" )   
      kel<-par1
      Vd<-par2     
-     sbolus1.out(PKindex,kel,Vd,defun,par1,par2,Dose,i) 
-     }  
+     sbolus1.out(PKtime,kel,Vd,defun,par1,par2,Dose,i)   
+     }
   }   
   else if (pick == 2){
      cat("\n\nEnter error factor for kel\n")
@@ -344,7 +342,7 @@ sbolus1 <- function()
      Vd<-par2+rnorm(1,mean=0,sd=factor2)
      while(Vd<=0){
            Vd<-par2+rnorm(1,mean=0,sd=factor2)}
-     sbolus1.out(PKindex,kel,Vd,defun,par1,par2,Dose,i)
+     sbolus1.out(PKtime,kel,Vd,defun,par1,par2,Dose,i)
      }   
   }
   else if (pick == 3){
@@ -360,7 +358,7 @@ sbolus1 <- function()
      Vd<-par2+runif(1,min=-factor2,max=factor2)
      while(Vd<=0){
            Vd<-par2+runif(1,min=-factor2,max=factor2)}
-     sbolus1.out(PKindex,kel,Vd,defun,par1,par2,Dose,i)     
+     sbolus1.out(PKtime,kel,Vd,defun,par1,par2,Dose,i)     
      }      
   }
   else if (pick == 4){
@@ -376,7 +374,7 @@ sbolus1 <- function()
      Vd<-par2*rnorm(1,mean=0,sd=factor2)+par2
      while(Vd<=0){
            Vd<-par2*rnorm(1,mean=0,sd=factor2)+par2}
-     sbolus1.out(PKindex,kel,Vd,defun,par1,par2,Dose,i)      
+     sbolus1.out(PKtime,kel,Vd,defun,par1,par2,Dose,i)      
      }      
   }
   else if (pick == 5){
@@ -392,7 +390,7 @@ sbolus1 <- function()
      Vd<-par2*runif(1,min=-factor2,max=factor2)+par2
      while(Vd<=0){
            Vd<-par2*runif(1,min=-factor2,max=factor2)+par2 }
-     sbolus1.out(PKindex,kel,Vd,defun,par1,par2,Dose,i)    
+     sbolus1.out(PKtime,kel,Vd,defun,par1,par2,Dose,i)    
      }      
   }
 }
@@ -402,10 +400,10 @@ sbolus.mm <- function()
 {
   cat("How many subject do you want?\n")
   Subject<-scan(nlines=1,quiet=TRUE)
-  PKindex<-data.frame(time=c(0))
-  PKindex<-edit(PKindex) 
+  PKtime<-data.frame(time=c(0))
+  PKtime<-edit(PKtime) 
   cat("\n")
-  show(PKindex)
+  show(PKtime)
   cat("\nEnter dose value\n")
   Dose<-scan(nlines=1,quiet=TRUE)
   cat("\n")
@@ -436,7 +434,7 @@ sbolus.mm <- function()
      Vm<-par1
      Km<-par2
      Vd<-par3 
-     sbolus.mm.out(PKindex,Vm,Km,Vd,defun,par1,par2,par3,Dose,i)
+     sbolus.mm.out(PKtime,Vm,Km,Vd,defun,par1,par2,par3,Dose,i)
      }         
   }   
   else if (pick == 2){
@@ -457,7 +455,7 @@ sbolus.mm <- function()
      Vd<-par3+rnorm(1,mean=0,sd=factor3)
      while(Vd<=0){
            Vd<-par3+rnorm(1,mean=0,sd=factor3)}
-     sbolus.mm.out(PKindex,Vm,Km,Vd,defun,par1,par2,par3,Dose,i)     
+     sbolus.mm.out(PKtime,Vm,Km,Vd,defun,par1,par2,par3,Dose,i)     
      }      
   }
   else if (pick == 3){
@@ -478,7 +476,7 @@ sbolus.mm <- function()
      Vd<-par3+runif(1,min=-factor3,max=factor3)
      while(Vd<=0){
            Vd<-par3+runif(1,min=-factor3,max=factor3)}
-     sbolus.mm.out(PKindex,Vm,Km,Vd,defun,par1,par2,par3,Dose,i)          
+     sbolus.mm.out(PKtime,Vm,Km,Vd,defun,par1,par2,par3,Dose,i)          
      }      
   }
   else if (pick == 4){
@@ -499,7 +497,7 @@ sbolus.mm <- function()
      Vd<-par3*rnorm(1,mean=0,sd=factor3)+par3
      while(Vd<=0){
            Vd<-par3*rnorm(1,mean=0,sd=factor3)+par3}
-     sbolus.mm.out(PKindex,Vm,Km,Vd,defun,par1,par2,par3,Dose,i)     
+     sbolus.mm.out(PKtime,Vm,Km,Vd,defun,par1,par2,par3,Dose,i)     
      }      
   }
   else if (pick == 5){
@@ -520,7 +518,7 @@ sbolus.mm <- function()
      Vd<-par3*runif(1,min=-factor3,max=factor3)+par3
      while(Vd<=0) {
            Vd<-par3*runif(1,min=-factor3,max=factor3)+par3}
-     sbolus.mm.out(PKindex,Vm,Km,Vd,defun,par1,par2,par3,Dose,i)     
+     sbolus.mm.out(PKtime,Vm,Km,Vd,defun,par1,par2,par3,Dose,i)     
      }      
   }
 }     

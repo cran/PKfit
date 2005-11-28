@@ -1,8 +1,7 @@
 #Normal fitting
 #Two compartment PK model iv bolus single dose
-fbolus2 <- function()
+fbolus2 <- function(PKindex)
 {
-  load("PK.RData")
   options(warn=-1)
    
  #lsoda is belong to odesolve package
@@ -148,9 +147,8 @@ fbolus2 <- function()
 }
     
 #Two compartment PK model iv infusion single dose    
-finfu2 <- function()
+finfu2 <- function(PKindex)
 {
-  load("PK.RData")
   options(warn=-1)
     
  #lsoda is belong to odesolve package
@@ -308,9 +306,8 @@ finfu2 <- function()
 }
 
 #Two compartment PK model extravascular single dose first order absorption 
-ffirst2 <- function()
+ffirst2 <- function(PKindex)
 {
-  load("PK.RData")
   options(warn=-1)
     
  #lsoda is belong to odesolve package-----
@@ -465,10 +462,10 @@ sbolus2 <- function()
 {
   cat("How many subject do you want?\n")
   Subject<-scan(nlines=1,quiet=TRUE)
-  PKindex<-data.frame(time=c(0))
-  PKindex<-edit(PKindex) 
+  PKtime<-data.frame(time=c(0))
+  PKtime<-edit(PKtime) 
   cat("\n")
-  show(PKindex)
+  show(PKtime)
   cat("\nEnter dose value\n")
   Dose<-scan(nlines=1,quiet=TRUE)
   cat("\n")
@@ -503,7 +500,7 @@ sbolus2 <- function()
      k12<-par2
      k21<-par3
      Vd<-par4   
-     sbolus2.out(PKindex,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i)
+     sbolus2.out(PKtime,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i)
      }   
   }   
   else if (pick == 2){
@@ -529,7 +526,7 @@ sbolus2 <- function()
      Vd<-par4+rnorm(1,mean=0,sd=factor4)
      while(Vd<=0){
            Vd<-par4+rnorm(1,mean=0,sd=factor4)}
-     sbolus2.out(PKindex,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i)
+     sbolus2.out(PKtime,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i)
      }       
   }
   else if (pick == 3){
@@ -555,7 +552,7 @@ sbolus2 <- function()
      Vd<-par4+runif(1,min=-factor4,max=factor4)
      while(Vd<=0){
            Vd<-par4+runif(1,min=-factor4,max=factor4)}
-     sbolus2.out(PKindex,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i)      
+     sbolus2.out(PKtime,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i)      
      }      
   }
   else if (pick == 4){
@@ -581,7 +578,7 @@ sbolus2 <- function()
      Vd<-par4*rnorm(1,mean=0,sd=factor4)+par4
      while(Vd<=0){
            Vd<-par4*rnorm(1,mean=0,sd=factor4)+par4}
-     sbolus2.out(PKindex,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i)      
+     sbolus2.out(PKtime,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i)      
      }       
   }
   else if (pick == 5){
@@ -607,7 +604,7 @@ sbolus2 <- function()
      Vd<-par4*runif(1,min=-factor4,max=factor4)+par4
      while(Vd<=0){
            Vd<-par4*runif(1,min=-factor4,max=factor4)+par4}
-     sbolus2.out(PKindex,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i)         
+     sbolus2.out(PKtime,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i)         
      }       
   }
 }      
@@ -617,10 +614,10 @@ sinfu2 <- function()
 {
   cat("How many subject do you want?\n")
   Subject<-scan(nlines=1,quiet=TRUE)
-  PKindex<-data.frame(time=c(0))
-  PKindex<-edit(PKindex) 
+  PKtime<-data.frame(time=c(0))
+  PKtime<-edit(PKtime) 
   cat("\n")
-  show(PKindex)  
+  show(PKtime)  
   cat("\nEnter dose value\n")
   Dose<-scan(nlines=1,quiet=TRUE)
   cat("\nEnter value for infusion time\n")
@@ -662,7 +659,7 @@ sinfu2 <- function()
      k12<-par2
      k21<-par3
      Vd<-par4   
-     sinfu2.out(PKindex,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i)  
+     sinfu2.out(PKtime,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i)  
      }   
   }   
   else if (pick == 2){
@@ -688,7 +685,7 @@ sinfu2 <- function()
      Vd<-par4+rnorm(1,mean=0,sd=factor4)
      while(Vd<=0){
            Vd<-par4+rnorm(1,mean=0,sd=factor4)}
-     sinfu2.out(PKindex,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i)      
+     sinfu2.out(PKtime,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i)      
      }       
   }
   else if (pick == 3){
@@ -714,7 +711,7 @@ sinfu2 <- function()
      Vd<-par4+runif(1,min=-factor4,max=factor4)
      while(Vd<=0){
            Vd<-par4+runif(1,min=-factor4,max=factor4)}
-     sinfu2.out(PKindex,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i)       
+     sinfu2.out(PKtime,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i)       
      }       
   }
   else if (pick == 4){
@@ -740,7 +737,7 @@ sinfu2 <- function()
      Vd<-par4*rnorm(1,mean=0,sd=factor4)+par4
      while(Vd<=0){
            Vd<-par4*rnorm(1,mean=0,sd=factor4)+par4}
-     sinfu2.out(PKindex,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i)        
+     sinfu2.out(PKtime,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i)        
      }       
   }
   else if (pick == 5){
@@ -766,7 +763,7 @@ sinfu2 <- function()
      Vd<-par4*runif(1,min=-factor4,max=factor4)+par4
      while(Vd<=0){
            Vd<-par4*runif(1,min=-factor4,max=factor4)+par4}
-     sinfu2.out(PKindex,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i)          
+     sinfu2.out(PKtime,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i)          
      }       
   }
 }
@@ -776,10 +773,10 @@ sfirst2 <- function()
 {
   cat("How many subject do you want?\n")
   Subject<-scan(nlines=1,quiet=TRUE)
-  PKindex<-data.frame(time=c(0))
-  PKindex<-edit(PKindex) 
+  PKtime<-data.frame(time=c(0))
+  PKtime<-edit(PKtime) 
   cat("\n")
-  show(PKindex)  
+  show(PKtime)  
   cat("\nEnter dose value\n")
   Dose<-scan(nlines=1,quiet=TRUE)
   cat("\n")
@@ -816,7 +813,7 @@ sfirst2 <- function()
      k12<-par3
      k21<-par4
      Vd<-par5   
-     sfirst2.out(PKindex,ka,kel,k12,k21,Vd,defun,par1,par2,par3,par4,par5,Dose,i)  
+     sfirst2.out(PKtime,ka,kel,k12,k21,Vd,defun,par1,par2,par3,par4,par5,Dose,i)  
      }   
   }   
   else if (pick == 2){
@@ -847,7 +844,7 @@ sfirst2 <- function()
      Vd<-par5+rnorm(1,mean=0,sd=factor5)
      while(Vd<=0){
            Vd<-par5+rnorm(1,mean=0,sd=factor5)}
-     sfirst2.out(PKindex,ka,kel,k12,k21,Vd,defun,par1,par2,par3,par4,par5,Dose,i)      
+     sfirst2.out(PKtime,ka,kel,k12,k21,Vd,defun,par1,par2,par3,par4,par5,Dose,i)      
      }       
   }
   else if (pick == 3){
@@ -878,7 +875,7 @@ sfirst2 <- function()
      Vd<-par5+runif(1,min=-factor5,max=factor5)
      while(Vd<=0){
            Vd<-par5+runif(1,min=-factor5,max=factor5)}
-     sfirst2.out(PKindex,ka,kel,k12,k21,Vd,defun,par1,par2,par3,par4,par5,Dose,i)       
+     sfirst2.out(PKtime,ka,kel,k12,k21,Vd,defun,par1,par2,par3,par4,par5,Dose,i)       
      }       
   }
   else if (pick == 4){
@@ -909,7 +906,7 @@ sfirst2 <- function()
      Vd<-par5*rnorm(1,mean=0,sd=factor5)+par5
      while(Vd<=0){
            Vd<-par5*rnorm(1,mean=0,sd=factor5)+par5}
-     sfirst2.out(PKindex,ka,kel,k12,k21,Vd,defun,par1,par2,par3,par4,par5,Dose,i)       
+     sfirst2.out(PKtime,ka,kel,k12,k21,Vd,defun,par1,par2,par3,par4,par5,Dose,i)       
      }       
   }
   else if (pick == 5){
@@ -940,7 +937,7 @@ sfirst2 <- function()
      Vd<-par5*runif(1,min=-factor5,max=factor5)+par5
      while(Vd<=0){
            Vd<-par5*runif(1,min=-factor5,max=factor5)+par5}
-     sfirst2.out(PKindex,ka,kel,k12,k21,Vd,defun,par1,par2,par3,par4,par5,Dose,i)       
+     sfirst2.out(PKtime,ka,kel,k12,k21,Vd,defun,par1,par2,par3,par4,par5,Dose,i)       
      }       
   }
 }

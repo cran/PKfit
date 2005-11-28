@@ -2,11 +2,11 @@
 
 \alias{smacro.one}
 
-\title{Simulation Function for One Exponential Term}
+\title{Simulation Functions for a One-Exponential Term Model}
 
 \description{
-  Consisting of entering the parameter initial value and five error types for selection: no error,
-  normal error, uniform error, normal error*true value, uniform error*true value.
+  Includes entering initial values of PK parameters and five error types for selection: no error,
+  normal error, uniform error, normal error*true value, and uniform error*true value.
 }
 
 \keyword{misc}

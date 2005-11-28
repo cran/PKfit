@@ -5,7 +5,7 @@
 \title{Plot for Nonlinear Model}
 
 \description{
-  Plot for nonlinear pharmacokinetic models.
+  Plot for nonlinear pharmacokinetic model.
 }
 
 \keyword{misc}

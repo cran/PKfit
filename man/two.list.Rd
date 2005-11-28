@@ -2,10 +2,13 @@
 
 \alias{two.list}
 
-\title{Options for Two Compartment Model}
+\title{Options for Two-Compartment Models}
 
 \description{
-  Divide into IV bolus single dose, IV infusion single dose, extravascular single dose first-order absorption without lag time.
+  Provide the following three PK models for selection:
+   1. two-compartment, IV-bolus, and single-dose model; 
+   2. two-compartment, IV-infusion, and single-dose model; and
+   3. two-compartment, extravascular, single-dose, and first-ordered absorption without lag time model.
 }
 
 \keyword{misc}

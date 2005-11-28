@@ -2,11 +2,14 @@
 
 \alias{PK.sim}
 
-\title{Options for Simulation Function}
+\title{Options for Simulation Functions}
 
 \description{
-  Divide into one compartment model IV (bolus, infusion, intermediate infusion),
-  one compartment model non IV route, two compartment model and macroconstant exponential functions.
+  Provide the following four PK models for selection:
+   1. one-compartment, and IV (bolus or infusion) model;
+   2. one-compartment, and non IV route model; 
+   3. two-compartment model; and 
+   4. macroconstant exponential functions.
 }
 
 \keyword{misc}

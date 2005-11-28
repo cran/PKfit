@@ -2,12 +2,13 @@
 
 \alias{ffirst.lagm}
 
-\title{One Compartment Model Extravascular First Order Absorption with Lag Time Michaelis-Menten Elimination }
+\title{Fitting Functions for a One-Compartment, Extravascular, Single-Dose, First-Ordered Absorption,
+       and Michaelis-Menten Elimination with Lag Time Model}
 
 \description{
-  Consisting of user-supplied function for model definition, integration method for solving the ordinary differential equations,
-  three kinds of weighting schemes for selection, and fitting algorithm for one compartment model extravascular first order 
-  absorption with lag time Michaelis-Menten elimination.
+  Includes user-supplied functions for model definition, integration method for solving ordinary differential equations,
+  three kinds of weighting schemes for selection, and fitting algorithms for a one-compartment, extravascular, single-dose,
+  first-ordered absorption, and Michaelis-Menten elimination with lag time model.
 }
 
 \keyword{misc}

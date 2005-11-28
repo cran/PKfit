@@ -1,8 +1,7 @@
 #Normal fitting
 #One exponential term
-fmacro.one <- function()
+fmacro.one <- function(PKindex)
 {
-  load("PK.RData")
   options(warn=-1)
     
  #lsoda is belong to odesolve package-----
@@ -63,7 +62,6 @@ fmacro.one <- function()
      }
   }   
   else if (pick==2){
-     #cat(" Not available !!\n")
      cat("\nEnter the title of x-axis(time)\n\n")
      xaxis<-readline()
      if (substr(xaxis, 1, 1) == "")  xaxis<-"Time"  else xaxis<-xaxis
@@ -99,7 +97,6 @@ fmacro.one <- function()
      }
   }        
   else if (pick==3){
-     #cat(" Not available !!\n")
      cat("\nEnter the title of x-axis(time)\n\n")
      xaxis<-readline()
      if (substr(xaxis, 1, 1) == "")  xaxis<-"Time"  else xaxis<-xaxis
@@ -138,9 +135,8 @@ fmacro.one <- function()
 }
 
 #Two exponential term
-fmacro.two <- function()
+fmacro.two <- function(PKindex)
 {
-  load("PK.RData")
   options(warn=-1)
     
  #lsoda is belong to odesolve package
@@ -194,7 +190,7 @@ fmacro.two <- function()
      cat("\n<< Residuals sum-of-squares and parameter values fitted by nls >>\n\n")
      fm<-nls(conc~defun(time,A,a,B,b),data=PKindex, algorithm="default",subset=Subject==i,
          start=list(A=opt$par[1], a=opt$par[2], B=opt$par[3], b=opt$par[4]),trace=TRUE,
-         nls.control(maxiter=50,tol=1e-2,minFactor=1/1024))
+         nls.control(maxiter=500,tol=1e-2,minFactor=1/1024))
      cat("\n")        
      coef<-data.frame(coef(fm)["b"])     
      plotting.lin(PKindex, fm, i, pick, coef, xaxis, yaxis)
@@ -229,7 +225,7 @@ fmacro.two <- function()
      cat("\n<< Residuals sum-of-squares and parameter values fitted by nls >>\n\n")
      fm<-nls(conc~defun(time,A,a,B,b),data=PKindex, algorithm="default",subset=Subject==i,
          start=list(A=opt$par[1], a=opt$par[2], B=opt$par[3], b=opt$par[4]),trace=TRUE,
-         nls.control(maxiter=50,tol=1e-2,minFactor=1/1024))
+         nls.control(maxiter=500,tol=1e-2,minFactor=1/1024))
      cat("\n")        
      coef<-data.frame(coef(fm)["b"])     
      plotting.lin(PKindex, fm, i, pick, coef, xaxis, yaxis)
@@ -264,7 +260,7 @@ fmacro.two <- function()
      cat("\n<< Residuals sum-of-squares and parameter values fitted by nls >>\n\n")
      fm<-nls(conc~defun(time,A,a,B,b),data=PKindex, algorithm="default",subset=Subject==i,
          start=list(A=opt$par[1], a=opt$par[2], B=opt$par[3], b=opt$par[4]),trace=TRUE,
-         nls.control(maxiter=50,tol=1e-2,minFactor=1/1024))
+         nls.control(maxiter=500,tol=1e-2,minFactor=1/1024))
      cat("\n")        
      coef<-data.frame(coef(fm)["b"])     
      plotting.lin(PKindex, fm, i, pick, coef, xaxis, yaxis)
@@ -274,9 +270,8 @@ fmacro.two <- function()
 }
 
 #Three exponential term
-fmacro.three <- function()
+fmacro.three <- function(PKindex)
 {
-  load("PK.RData")
   options(warn=-1)
     
  #lsoda is belong to odesolve package-----
@@ -416,10 +411,10 @@ smacro.one <-function()
 {
   cat("How many subject do you want?\n")
   Subject<-scan(nlines=1,quiet=TRUE)
-  PKindex<-data.frame(time=c(0))
-  PKindex<-edit(PKindex) 
+  PKtime<-data.frame(time=c(0))
+  PKtime<-edit(PKtime) 
   cat("\n")
-  show(PKindex)
+  show(PKtime)
 
   par<-data.frame(Parameter=c("A","a"),Initial=c(0))
   par<-edit(par)
@@ -439,7 +434,7 @@ smacro.one <-function()
      cat("\n\n             << Subject",i,">>\n\n" ) 
      A<-par1
      a<-par2     
-     smacro.one.out(PKindex,A,a,defun,par1,par2,Dose,i)
+     smacro.one.out(PKtime,A,a,defun,par1,par2,Dose,i)
      }  
   }   
   else if (pick == 2){
@@ -455,7 +450,7 @@ smacro.one <-function()
      a<-par2+rnorm(1,mean=0,sd=factor2)
      while(a<=0){
            a<-par2+rnorm(1,mean=0,sd=factor2)}
-     smacro.one.out(PKindex,A,a,defun,par1,par2,Dose,i)  
+     smacro.one.out(PKtime,A,a,defun,par1,par2,Dose,i)  
      }    
   }
   else if (pick == 3){
@@ -471,7 +466,7 @@ smacro.one <-function()
      a<-par2+runif(1,min=-factor2,max=factor2)
      while(a<=0){
            a<-par2+runif(1,min=-factor2,max=factor2)}
-     smacro.one.out(PKindex,A,a,defun,par1,par2,Dose,i)       
+     smacro.one.out(PKtime,A,a,defun,par1,par2,Dose,i)       
      }       
   }
   else if (pick == 4){
@@ -487,7 +482,7 @@ smacro.one <-function()
      a<-par2*rnorm(1,mean=0,sd=factor2)+par2
      while(a<=0){
            a<-par2*rnorm(1,mean=0,sd=factor2)+par2}
-     smacro.one.out(PKindex,A,a,defun,par1,par2,Dose,i)      
+     smacro.one.out(PKtime,A,a,defun,par1,par2,Dose,i)      
      }       
   }
   else if (pick == 5){
@@ -503,7 +498,7 @@ smacro.one <-function()
      a<-par2*runif(1,min=-factor2,max=factor2)+par2
      while(a<=0){
            a<-par2*runif(1,min=-factor2,max=factor2)+par2}
-     smacro.one.out(PKindex,A,a,defun,par1,par2,Dose,i)      
+     smacro.one.out(PKtime,A,a,defun,par1,par2,Dose,i)      
      }       
   }
 }      
@@ -513,10 +508,10 @@ smacro.two <-function()
 {
   cat("How many subject do you want?\n")
   Subject<-scan(nlines=1,quiet=TRUE)
-  PKindex<-data.frame(time=c(0))
-  PKindex<-edit(PKindex) 
+  PKtime<-data.frame(time=c(0))
+  PKtime<-edit(PKtime) 
   cat("\n")
-  show(PKindex)
+  show(PKtime)
 
   par<-data.frame(Parameter=c("A","a","B","b"),Initial=c(0))
   par<-edit(par)
@@ -540,7 +535,7 @@ smacro.two <-function()
      a<-par2   
      B<-par3
      b<-par4  
-     smacro.two.out(PKindex,A,a,B,b,defun,par1,par2,par3,par4,Dose,i)
+     smacro.two.out(PKtime,A,a,B,b,defun,par1,par2,par3,par4,Dose,i)
      }  
   }   
   else if (pick == 2){
@@ -566,7 +561,7 @@ smacro.two <-function()
      b<-par4+rnorm(1,mean=0,sd=factor4)
      while(b<=0){
            b<-par4+rnorm(1,mean=0,sd=factor4)}
-     smacro.two.out(PKindex,A,a,B,b,defun,par1,par2,par3,par4,Dose,i)     
+     smacro.two.out(PKtime,A,a,B,b,defun,par1,par2,par3,par4,Dose,i)     
      }       
   }
   else if (pick == 3){
@@ -592,7 +587,7 @@ smacro.two <-function()
      b<-par4+runif(1,min=-factor4,max=factor4)
      while(b<=0){
            b<-par4+runif(1,min=-factor4,max=factor4)}
-     smacro.two.out(PKindex,A,a,B,b,defun,par1,par2,par3,par4,Dose,i)      
+     smacro.two.out(PKtime,A,a,B,b,defun,par1,par2,par3,par4,Dose,i)      
      }       
   }
   else if (pick == 4){
@@ -618,7 +613,7 @@ smacro.two <-function()
      b<-par4*rnorm(1,mean=0,sd=factor4)+par4
      while(b<=0){
            b<-par4*rnorm(1,mean=0,sd=factor4)+par4}
-     smacro.two.out(PKindex,A,a,B,b,defun,par1,par2,par3,par4,Dose,i)        
+     smacro.two.out(PKtime,A,a,B,b,defun,par1,par2,par3,par4,Dose,i)        
      }       
   }
   else if (pick == 5){
@@ -644,7 +639,7 @@ smacro.two <-function()
      b<-par4*runif(1,min=-factor4,max=factor4)+par4
      while(b<=0){
            b<-par4*runif(1,min=-factor4,max=factor4)+par4}
-     smacro.two.out(PKindex,A,a,B,b,defun,par1,par2,par3,par4,Dose,i)          
+     smacro.two.out(PKtime,A,a,B,b,defun,par1,par2,par3,par4,Dose,i)          
      }       
   }
 }
@@ -654,10 +649,10 @@ smacro.three <- function()
 {
   cat("How many subject do you want?\n")
   Subject<-scan(nlines=1,quiet=TRUE)
-  PKindex<-data.frame(time=c(0))
-  PKindex<-edit(PKindex) 
+  PKtime<-data.frame(time=c(0))
+  PKtime<-edit(PKtime) 
   cat("\n")
-  show(PKindex)
+  show(PKtime)
 
   par<-data.frame(Parameter=c("A","a","B","b","C","c"),Initial=c(0))
   par<-edit(par)
@@ -685,7 +680,7 @@ smacro.three <- function()
      b<-par4 
      C<-par5
      c<-par6 
-     smacro.three.out(PKindex,A,a,B,b,C,c,defun,par1,par2,par3,par4,par5,par6,Dose,i)  
+     smacro.three.out(PKtime,A,a,B,b,C,c,defun,par1,par2,par3,par4,par5,par6,Dose,i)  
      }  
   }   
   else if (pick == 2){
@@ -721,7 +716,7 @@ smacro.three <- function()
      c<-par6+rnorm(1,mean=0,sd=factor6)
      while(c<=0){
            c<-par6+rnorm(1,mean=0,sd=factor6)}
-     smacro.three.out(PKindex,A,a,B,b,C,c,defun,par1,par2,par3,par4,par5,par6,Dose,i)      
+     smacro.three.out(PKtime,A,a,B,b,C,c,defun,par1,par2,par3,par4,par5,par6,Dose,i)      
      }       
   }
   else if (pick == 3){
@@ -757,7 +752,7 @@ smacro.three <- function()
      c<-par6+runif(1,min=-factor6,max=factor6)
      while(c<=0){
            c<-par6+runif(1,min=-factor6,max=factor6)}
-     smacro.three.out(PKindex,A,a,B,b,C,c,defun,par1,par2,par3,par4,par5,par6,Dose,i)      
+     smacro.three.out(PKtime,A,a,B,b,C,c,defun,par1,par2,par3,par4,par5,par6,Dose,i)      
      }       
   }
   else if (pick == 4){
@@ -793,7 +788,7 @@ smacro.three <- function()
      c<-par6*rnorm(1,mean=0,sd=factor6)+par6
      while(c<=0){
            c<-par6*rnorm(1,mean=0,sd=factor6)+par6}
-     smacro.three.out(PKindex,A,a,B,b,C,c,defun,par1,par2,par3,par4,par5,par6,Dose,i)      
+     smacro.three.out(PKtime,A,a,B,b,C,c,defun,par1,par2,par3,par4,par5,par6,Dose,i)      
      }       
   }
   else if (pick == 5){
@@ -829,7 +824,7 @@ smacro.three <- function()
      c<-par6*runif(1,min=-factor6,max=factor6)+par6
      while(c<=0){
            c<-par6*runif(1,min=-factor6,max=factor6)+par6}
-     smacro.three.out(PKindex,A,a,B,b,C,c,defun,par1,par2,par3,par4,par5,par6,Dose,i)      
+     smacro.three.out(PKtime,A,a,B,b,C,c,defun,par1,par2,par3,par4,par5,par6,Dose,i)      
      }       
   }
 }

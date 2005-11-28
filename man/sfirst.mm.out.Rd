@@ -2,11 +2,11 @@
 
 \alias{sfirst.mm.out}
 
-\title{The Output of Simulation Function for One Compartment Model Extravascular First Order Absorption Michaelis-Menten Elimination}
+\title{Simulation Output for a One-Compartment, Extravascular, First-Ordered Absorption, and Michaelis-Menten Elimination Model}
 
 \description{
-  Display the output of simulation for one compartment model extravascular first order absorption 
-  with or without lag time michaelis-menten elimination and plot.
+  Display simulation output for a one-compartment, extravascular, first-ordered absorption,
+  and Michaelis-Menten elimination model and plots.
 }
 
 \keyword{misc}

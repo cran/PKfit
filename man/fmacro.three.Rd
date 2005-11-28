@@ -2,11 +2,11 @@
 
 \alias{fmacro.three}
 
-\title{Three Exponential Terms}
+\title{Fitting Functions for a Three-Exponential Term Model}
 
 \description{
-  Consisting of user-supplied function for model definition, integration method for solving the ordinary differential equations,
-  three kinds of weighting schemes for selection, and fitting algorithm for macroconstant exponential function: three exponential 
+  Includes user-supplied functions for model definition, integration method for solving ordinary differential equations,
+  three kinds of weighting schemes for selection, and fitting algorithms for a three-exponential term model. 
   terms.
 }
 

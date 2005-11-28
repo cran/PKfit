@@ -2,10 +2,10 @@
 
 \alias{smacro.one.out}
 
-\title{The Output of Simulation for One Exponential Term}
+\title{Simulation Output for a One-Exponential Term Model}
 
 \description{
-  Display the output of simulation for one exponential term and plot.
+  Display simulation output for one-exponential term model and plots.
 }
 
 \keyword{misc}

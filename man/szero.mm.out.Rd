@@ -2,10 +2,12 @@
 
 \alias{szero.mm.out}
 
-\title{The Output of Simulation for Extravascular Single Dose Zero Order Absorption without Lag Time Michaelis-Menten Elimination}
+\title{Simulation Output for a One-Compartment, Extravascular, Single-Dose, Zero-Ordered Absorption, 
+       and Michaelis-Menten Elimination without Lag Time Model}
 
 \description{
-  Display the output of simulation for one compartment model extravascular zero order absorption without lag time Michaelis-Menten elimination
+  Display simulation output for a one-compartment, extravascular, single-dose, zero-ordered absorption, 
+  and Michaelis-Menten elimination without lag time model and plots.
 }
 
 \keyword{misc}

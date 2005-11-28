@@ -2,11 +2,11 @@
 
 \alias{sfirst2.out}
 
-\title{The Output of Simulation for Two Compartment Model Extravascular First Order Absorption without Lag Time}
+\title{Simulation Output for a Two-Compartment, Extravascular, Single-Dose, and First-Ordered Absorption without Lag Time Model}
 
 \description{
-  Display the output of simulation for two compartment model extravascular single dose first order absorption 
-  without lag time and plot.
+  Display simulation output for a two-compartment, extravascular, single-dose, and first-ordered absorption 
+  without lag time model and plots.
 }
 
 \keyword{misc}

@@ -2,10 +2,10 @@
 
 \alias{sfirst.nolag}
 
-\title{Simulation Function for One Compartment Model Extravascular First Order Absorption without Lag Time}
+\title{Simulation Functions for a One-Compartment, Extravascular, Single-Dose, and First-Ordered Absorption without Lag Time Model}
 
 \description{
-  Consisting of entering the parameter initial value and five error types for selection: no error,
+  Includes entering initial values of PK parameters and five error types for selection: no error,
   normal error, uniform error, normal error*true value, uniform error*true value.
 }
 

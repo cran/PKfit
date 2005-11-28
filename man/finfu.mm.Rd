@@ -2,12 +2,12 @@
 
 \alias{finfu.mm}
 
-\title{One Compartment Model IV Infusion with Michaelis-Menten Elimination}
+\title{Fitting Functions for a One-Compartment, IV-Infusion, Single-Dose, and Michaelis-Menten Elimination Model}
 
 \description{
-  Consisting of user-supplied function for model definition, integration method for solving the ordinary differential equations,
-  three kinds of weighting schemes for selection, and fitting algorithm for one compartment model IV infusion single dose 
-  with Michaelis-Menten elimination 
+  Includes user-supplied functions for model definition, integration method for solving ordinary differential equations,
+  three kinds of weighting schemes for selection, and fitting algorithms for a one-compartment, IV-infusion, single-dose, 
+  and Michaelis-Menten elimination model. 
 }
 
 \keyword{misc}

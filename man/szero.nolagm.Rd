@@ -2,11 +2,12 @@
 
 \alias{szero.nolagm}
 
-\title{Simulation Function for One Compartment Model Extravascular Zero Order Absorption without Lag Time Michaelis-Menten Elimination}
+\title{Simulation Functions for a One-Compartment, Extravascular, Single-Dose, Zero-Ordered Absorption, 
+       and Michaelis-Menten Elimination without Lag Time Model}
 
 \description{
-  Consisting of entering the parameter initial value and five error types for selection: no error,
-  normal error, uniform error, normal error*true value, uniform error*true value.
+  Includes entering initial values of PK parameters and five error types for selection: no error,
+  normal error, uniform error, normal error*true value, and uniform error*true value.
 }
 
 \keyword{misc}

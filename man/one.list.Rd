@@ -2,10 +2,12 @@
 
 \alias{one.list}
 
-\title{Options for One Compartment Model}
+\title{Options for One-Compartment Models}
 
 \description{
-  Divide into IV (bolus, infusion) and non IV route.
+  Provide the following two PK models for selection:
+   1. IV (bolus or infusion) model; and
+   2. non IV route model.
 }
 
 \keyword{misc}

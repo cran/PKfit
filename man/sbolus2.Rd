@@ -2,11 +2,11 @@
 
 \alias{sbolus2}
 
-\title{Simulation Function for Two Compartment Model IV Bolus Single Dose}
+\title{Simulation Functions for a Two-Compartment, IV-Bolus, and Single-Dose Model}
 
 \description{
-  Consisting of entering the parameter initial value and five error types for selection: no error,
-  normal error, uniform error, normal error*true value, uniform error*true value.
+  Includes entering initial values of PK parameters and five error types for selection: no error,
+  normal error, uniform error, normal error*true value, and uniform error*true value.
 }
 
 \keyword{misc}

@@ -2,10 +2,10 @@
 
 \alias{sinfu.mm.out}
 
-\title{The Output of Simulation for One Compartment Model IV Infusion Single Dose Michaelis-Menten Elimination}
+\title{Simulation Output for a One-Compartment, IV-Infusion, Single-Dose, and Michaelis-Menten Elimination Model}
 
 \description{
-  Display the output of simulation for one compartment model IV infusion single dose Michaelis-Menten elimination and plot.
+  Display simulation output for a one-compartment, IV-infusion, single-dose and Michaelis-Menten elimination model and plots.
 }
 
 \keyword{misc}

@@ -1,9 +1,7 @@
 #Normal fitting
 #One compartment PK model iv infusion single dose
-finfu1 <- function()
+finfu1 <- function(PKindex)
 {
-  load("PK.RData")
-  PKindex
   options(warn=-1)
     
  #lsoda is belong to odesolve package
@@ -157,9 +155,8 @@ finfu1 <- function()
 }
 
 #One compartment PK model iv infusion single dose michaelis-menten elimination
-finfu.mm <- function()
+finfu.mm <- function(PKindex)
 {
-  load("PK.Rdata")
   options(warn=-1)
    
  #lsoda is belong to odesolve package
@@ -314,10 +311,10 @@ sinfu1 <- function()
 {
   cat("How many subject do you want?\n")
   Subject<-scan(nlines=1,quiet=TRUE)
-  PKindex<-data.frame(time=c(0))
-  PKindex<-edit(PKindex) 
+  PKtime<-data.frame(time=c(0))
+  PKtime<-edit(PKtime) 
   cat("\n")
-  show(PKindex)
+  show(PKtime)
   cat("\nEnter dose value\n")
   Dose<-scan(nlines=1,quiet=TRUE)
   cat("\nEnter value for infusion time\n")
@@ -351,7 +348,7 @@ sinfu1 <- function()
      cat("\n\n             << Subject",i,">>\n\n" )   
      kel<-par1
      Vd<-par2   
-     sinfu1.out(PKindex,kel,Vd,defun,par1,par2,Dose,i) 
+     sinfu1.out(PKtime,kel,Vd,defun,par1,par2,Dose,i) 
      }       
   }   
   else if (pick == 2){
@@ -367,7 +364,7 @@ sinfu1 <- function()
      Vd<-par2+rnorm(1,mean=0,sd=factor2)
      while(Vd<=0){
            Vd<-par2+rnorm(1,mean=0,sd=factor2)}
-     sinfu1.out(PKindex,kel,Vd,defun,par1,par2,Dose,i)       
+     sinfu1.out(PKtime,kel,Vd,defun,par1,par2,Dose,i)       
      }      
   }
   else if (pick == 3){
@@ -383,7 +380,7 @@ sinfu1 <- function()
      Vd<-par2+runif(1,min=-factor2,max=factor2)
      while(Vd<=0){
            Vd<-par2+runif(1,min=-factor2,max=factor2)}
-     sinfu1.out(PKindex,kel,Vd,defun,par1,par2,Dose,i)     
+     sinfu1.out(PKtime,kel,Vd,defun,par1,par2,Dose,i)     
      }      
   }
   else if ( pick == 4 ){
@@ -399,7 +396,7 @@ sinfu1 <- function()
      Vd<-par2*rnorm(1,mean=0,sd=factor2)+par2
      while(Vd<=0){
            Vd<-par2*rnorm(1,mean=0,sd=factor2)+par2}
-     sinfu1.out(PKindex,kel,Vd,defun,par1,par2,Dose,i)        
+     sinfu1.out(PKtime,kel,Vd,defun,par1,par2,Dose,i)        
      }      
   }
   else if ( pick == 5 ){
@@ -415,7 +412,7 @@ sinfu1 <- function()
      Vd<-par2*runif(1,min=-factor2,max=factor2)+par2
      while(Vd<=0){
            Vd<-par2*runif(1,min=-factor2,max=factor2)+par2}
-     sinfu1.out(PKindex,kel,Vd,defun,par1,par2,Dose,i)      
+     sinfu1.out(PKtime,kel,Vd,defun,par1,par2,Dose,i)      
      }      
   }
 }
@@ -425,10 +422,10 @@ sinfu.mm <- function()
 {
   cat("How many subject do you want?\n")
   Subject<-scan(nlines=1,quiet=TRUE)
-  PKindex<-data.frame(time=c(0))
-  PKindex<-edit(PKindex) 
+  PKtime<-data.frame(time=c(0))
+  PKtime<-edit(PKtime) 
   cat("\n")
-  show(PKindex)
+  show(PKtime)
   cat("\nEnter dose value\n")
   Dose<-scan(nlines=1,quiet=TRUE)
   cat("\nEnter value for infusion time\n")
@@ -464,7 +461,7 @@ sinfu.mm <- function()
      Vm<-par1
      Km<-par2
      Vd<-par3       
-     sinfu.mm.out(PKindex,Vm,Km,Vd,defun,par1,par2,par3,Dose,i)
+     sinfu.mm.out(PKtime,Vm,Km,Vd,defun,par1,par2,par3,Dose,i)
      }   
   }   
   else if (pick == 2){
@@ -485,7 +482,7 @@ sinfu.mm <- function()
      Vd<-par3+rnorm(1,mean=0,sd=factor3)
      while(Vd<=0){
            Vd<-par3+rnorm(1,mean=0,sd=factor3)}
-     sinfu.mm.out(PKindex,Vm,Km,Vd,defun,par1,par2,par3,Dose,i)     
+     sinfu.mm.out(PKtime,Vm,Km,Vd,defun,par1,par2,par3,Dose,i)     
      }       
   }
   else if (pick == 3){
@@ -506,7 +503,7 @@ sinfu.mm <- function()
      Vd<-par3+runif(1,min=-factor3,max=factor3)
      while(Vd<=0){
            Vd<-par3+runif(1,min=-factor3,max=factor3)}
-     sinfu.mm.out(PKindex,Vm,Km,Vd,defun,par1,par2,par3,Dose,i)     
+     sinfu.mm.out(PKtime,Vm,Km,Vd,defun,par1,par2,par3,Dose,i)     
      }       
   }
   else if (pick == 4){
@@ -527,7 +524,7 @@ sinfu.mm <- function()
      Vd<-par3*rnorm(1,mean=0,sd=factor3)+par3
      while(Vd<=0){
            Vd<-par3*rnorm(1,mean=0,sd=factor3)+par3}
-     sinfu.mm.out(PKindex,Vm,Km,Vd,defun,par1,par2,par3,Dose,i)      
+     sinfu.mm.out(PKtime,Vm,Km,Vd,defun,par1,par2,par3,Dose,i)      
      }       
   }
   else if (pick == 5){
@@ -548,7 +545,7 @@ sinfu.mm <- function()
      Vd<-par3*runif(1,min=-factor3,max=factor3)+par3
      while(Vd<=0){
            Vd<-par3*runif(1,min=-factor3,max=factor3)+par3}
-     sinfu.mm.out(PKindex,Vm,Km,Vd,defun,par1,par2,par3,Dose,i)       
+     sinfu.mm.out(PKtime,Vm,Km,Vd,defun,par1,par2,par3,Dose,i)       
      }       
   }
 }      

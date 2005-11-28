@@ -5,8 +5,10 @@
 \title{Options for Macroconstant Exponential Models Simulation}
 
 \description{
-  Provide three macroconstant exponential models for selection:
-  one exponential term, two exponential terms and three exponential terms.
+  Provides the following three models for selection:
+    1. one-exponential term model;
+    2. two-exponential term model; and
+    3. three-exponential term model.
 }
 
 \keyword{misc}

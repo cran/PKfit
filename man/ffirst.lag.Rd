@@ -2,12 +2,12 @@
 
 \alias{ffirst.lag}
 
-\title{One Compartment Model Extravascular First Order Absoption with Lag Time}
+\title{Fitting Functions for a One-Compartment, Extravascular, Single-Dose, and First-Ordered Absorption with Lag Time Model}
 
 \description{
-  Consisting of user-supplied function for model definition, integration method for solving the ordinary differential equations,
-  three kinds of weighting schemes for selection, and fitting algorithm for one compartment model extravascular first order 
-  absorption with lag time.
+  Includes user-supplied functions for model definition, integration method for solving ordinary differential equations,
+  three kinds of weighting schemes for selection, and fitting algorithms for a one-compartment, extravascular, single-dose,
+  and first-ordered absorption with lag time model.
 }
 
 \keyword{misc}

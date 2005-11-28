@@ -2,10 +2,10 @@
 
 \alias{plotting.sim}
 
-\title{Plot for Simulation Models}
+\title{Plot for Simulation Model}
 
 \description{
-  Plot for simulation models
+  Plot for simulation model.
 }
 
 \keyword{misc}

@@ -2,14 +2,14 @@
 
 \alias{sone.iv.route}
 
-\title{Options for Parenteral Simulation}
+\title{Options for One-Compartment, and IV-Dosing PK Models Simulation}
 
 \description{
-  Provide four models for selection: 
-  IV bolus single dose, 
-  IV bolus single dose nonlinear elimination, 
-  IV infusion single dose,
-  IV infusion single dose nonlinear elimination.
+  Provide the following four PK models for selection: 
+    1. one-compartment, IV-bolus, and single-dose model;
+    2. one-compartment, IV-bolus, single-dose, and Michaelis-Menten elimination model;
+    3. one-compartment, IV-infusion, and single-dose model; and
+    4. one-compartment, IV-infusion, single-dose, and Michaelis-Menten elimination model.
 }
 
 \keyword{misc}

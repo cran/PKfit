@@ -2,12 +2,11 @@
 
 \alias{fmacro.one}
 
-\title{One Exponential Term}
+\title{Fitting Functions for a One-Exponential Term Model}
 
 \description{
-  Consisting of user-supplied function for model definition, integration method for solving the ordinary differential equations,
-  three kinds of weighting schemes for selection, and fitting algorithm for macroconstant exponential function: one exponential 
-  term.
+  Includes user-supplied functions for model definitions, integration method for solving ordinary differential equations,
+  three kinds of weighting schemes for selection, and fitting algorithms for a one-exponential term model.
 }
 
 \keyword{misc}

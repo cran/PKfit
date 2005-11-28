@@ -2,10 +2,13 @@
 
 \alias{PK.fit}
 
-\title{Options for PK Model}
+\title{Options for PK Models}
 
 \description{
-  Provide one compartment model, two compartment model and macroconstant exponential function for selection.
+  Provide the following four PK models for selection:
+   1. one-compartment model; 
+   2. two-compartment model; and 
+   3. macroconstant exponential functions.
 }
 
 \keyword{misc}

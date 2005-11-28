@@ -2,10 +2,10 @@
 
 \alias{szero.out}
 
-\title{The Output of Simulation for One Compartment Model Extravascular Single Dose Zero Order Absorption without Lag Time}
+\title{Simulation Output for a One-Compartment, Extravascular, Single-Dose, and Zero-Ordered Absorption without Lag Time Model}
 
 \description{
-  Display the output of simulation for one compartment model extravascular single dose zero order absorption without lag time
+  Display simulation output for a one-compartment, extravascular, single-dose, and zero-ordered absorption without lag time model and plots.
 }
 
 \keyword{misc}

@@ -15,25 +15,25 @@ PKmenu <- function()
      PK.sim()
   } 
   else if (pick == 3){
-     cat("\nQuitting menu !!\n\n")     
+     cat("\nQuit !!\n\n")     
      
   }  
 }
 
 #Normal fitting
-nor.fit <- function()
+nor.fit <- function(PKindex)
 {
   file.menu <- c("Data Manipulation",
                  "Selection of PK Model",
                  "Go Back One Upper Level")
-  pick <- menu(file.menu, title = "<< Normal fitting >>")
+  pick <- menu(file.menu, title = "<< Normal Fitting >>")
   if (pick == 1){
      cat("\n\n")      
      data.manipulate()
   } 
   else if (pick == 2){
      cat("\n\n") 
-     PK.fit()
+     PK.fit(PKindex)
   }      
   else if (pick == 3){
      cat("\n\n") 
@@ -44,58 +44,85 @@ nor.fit <- function()
 #Data manipulation
 data.manipulate <- function()
 {
-  file.menu <- c("Load Data Files", 
-                 "Key in Data", 
+  file.menu <- c("Load Data Files (.CSV)", 
+                 "Load Data Files (.RData)", 
+                 "Key In Data", 
                  "Go Back One Upper Level")  
   pick <- menu(file.menu, title = "<< Data edit >>")
   
   if (pick == 1){
      cat("\n\n<< Enter data file name(.csv) >>\n")
-     cat("<< The data should consist of subject number, time, concnetration >>\n")
+     cat("<< Data should be consist of subject number, time, and concnetration >>\n")
      cat("<< The file should be put in the working directory >>\n")
-     PK.file<-scan(what=character(),strip.white=TRUE,nlines=1,quiet=TRUE)
+     PK.file <-readline()
+     dataExt<- ".csv"
+     PK.file<-paste(PK.file,dataExt,sep="")
      cnames<-c("Subject", "time", "conc")
      PKindex<-read.csv(PK.file,header=TRUE,sep=",",row.names=NULL,col.names=cnames)
      PKindex<-edit(PKindex)
      show(PKindex)
      cat("\n\n")
-     save(PKindex,file="PK.RData")
-     return(nor.fit())   
+     return(nor.fit(PKindex))   
   } 
   else if (pick == 2){
+     cat("\nEnter data file name\n\n") 
+     PKname <-readline()
+     dataExt<- ".RData"
+     PKname<-paste(PKname,dataExt,sep="")
+     load(PKname)
+     PKindex<-edit(PKindex)
+     show(PKindex)
+     save(PKindex,file=PKname)
+     cat("\n")
+     nor.fit(PKindex)
+  }   
+  else if (pick == 3){
      cat("\n\n") 
      PKindex<-data.frame(Subject=c(1),time=c(0),conc=c(0))
      PKindex<-edit(PKindex)
      show(PKindex)     
      cat("\n\n")
-     save(PKindex,file="PK.RData")
-     return(nor.fit())
+     cat("\nSave data (y/n) ?\n\n")
+     ans<-readline()
+     cat("\n")
+     if (ans == "n"){
+        return(nor.fit(PKindex))
+        }
+     else {
+        cat("Enter name you want to call this data\n\n")
+        PKname <-readline() 
+        dataExt<- ".RData"
+        PKname<-paste(PKname,dataExt,sep="")
+        save(PKindex,file=PKname)
+        cat("\n")  
+        return(nor.fit(PKindex))
+       }
   } 
-  else if (pick == 3){
+  else if (pick == 4){
      cat("\n\n") 
-     nor.fit()
+     return(nor.fit())
   } 
 }
 
 #PK model option
-PK.fit <- function()
+PK.fit <- function(PKindex)
 {
-  file.menu <- c("One Compartment PK Model", 
-                 "Two Compartment PK Model",
+  file.menu <- c("One-Compartment PK Model", 
+                 "Two-Compartment PK Model",
                  "Macroconstant Exponential Functions",
                  "Go Back One Upper Level")
-  pick <- menu(file.menu, title = "<< List of PK models >>")
+  pick <- menu(file.menu, title = "<< Selection of PK Model >>")
   if (pick== 1){
      cat("\n\n")  
-     one.list()
+     one.list(PKindex)
   }     
   else if (pick == 2){
      cat("\n\n")
-     two.list()
+     two.list(PKindex)
   }
   else if (pick == 3){
      cat("\n\n")
-     macro()
+     macro(PKindex)
   }
   else if (pick == 4){
      cat("\n\n")
@@ -104,19 +131,19 @@ PK.fit <- function()
 }
 
 #------------Normal fitting menu----------------
-one.list <- function()
+one.list <- function(PKindex)
 {
-  file.menu <- c("IV (Bolus, Infusion)", 
-                 "Non IV route",
+  file.menu <- c("IV (Bolus or Infusion) Route", 
+                 "Non IV Route",
                  "Go Back One Upper Level")
-  pick <- menu(file.menu, title = "<< Administration >>")
+  pick <- menu(file.menu, title = "<< One-Compartment Model >>")
   if (pick == 1){
      cat("\n\n")  
-     iv.route()
+     iv.route(PKindex)
   }
   else if (pick == 2){
      cat("\n\n")
-     noniv.route()
+     noniv.route(PKindex)
   }
   else if (pick == 3){
      cat("\n\n")
@@ -124,24 +151,24 @@ one.list <- function()
   }              
 }
 
-two.list <- function()
+two.list <- function(PKindex)
 {
-  file.menu <- c("IV bolus single dose", 
-                 "IV infusion single dose",
-                 "Extravascular single dose first-order absorption without lag time",
+  file.menu <- c("IV-Bolus, and Single-Dose", 
+                 "IV-Infusion, and Single-Dose",
+                 "Extravascular, Single-Dose, and First-Ordered Absorption without Lag Time",
                  "Go Back One Upper Level")
-  pick <- menu(file.menu, title = "<< Administration >>")
+  pick <- menu(file.menu, title = "<< Two-Compartment Model >>")
   if (pick == 1){
      cat("\n\n")  
-     fbolus2()
+     fbolus2(PKindex)
   }
   else if (pick == 2){
      cat("\n\n")
-     finfu2()
+     finfu2(PKindex)
   }
   else if (pick == 3){
      cat("\n\n")
-     ffirst2()
+     ffirst2(PKindex)
   }
   else if (pick == 4){
      cat("\n\n")
@@ -151,10 +178,10 @@ two.list <- function()
 
 PK.sim <- function()
 {
-  file.menu <- c("One compartment model: IV (Bolus, Infusion, Intermediate infusion)", 
-                 "One compartment model: non IV route",
-                 "Two compartment model",
-                 "Macroconstant exponential functions",
+  file.menu <- c("One-Compartment Model: IV (Bolus or Infusion) Route", 
+                 "One-Compartment Model: Non IV Route",
+                 "Two-Compartment Model",
+                 "Macroconstant Exponential Functions",
                  "Go Back One Upper Level")
   pick <- menu(file.menu, title = "<< Selection of PK Model >>")
   if (pick == 1){
@@ -175,98 +202,98 @@ PK.sim <- function()
   }
   else if (pick == 5){
      cat("\n\n")
-     PK.sim()
+     PKmenu()
   }
 }
 
-iv.route <- function()
+iv.route <- function(PKindex)
 {
-  file.menu <- c("IV Bolus Single Dose", 
-                 "IV Bolus Single Dose Nonlinear Elimination", 
-                 "IV Infusion Single Dose",
-                 "IV Infusion Single Dose Nonlinear Elimination",
-                 "Go back one upper level")
-  pick <- menu(file.menu, title = "<< IV (Bolus, Infusion, Intermediate infusion) >>")
+  file.menu <- c("IV-Bolus, and Single-Dose", 
+                 "IV-Bolus, Single-Dose, and Nonlinear Elimination", 
+                 "IV-Infusion, and Single-Dose",
+                 "IV-Infusion, Single-Dose, and Nonlinear Elimination",
+                 "Go Back One Upper Level")
+  pick <- menu(file.menu, title = "<< IV (Bolus or Infusion) Route >>")
   if (pick ==1){
      cat("\n\n")
-     fbolus1()
+     fbolus1(PKindex)
   }
   else if (pick == 2){
      cat("\n\n") 
-     fbolus.mm()
+     fbolus.mm(PKindex)
   }
   else if (pick == 3){
      cat("\n\n") 
-     finfu1()
+     finfu1(PKindex)
   }
   else if (pick == 4){
      cat("\n\n") 
-     finfu.mm()
+     finfu.mm(PKindex)
   }
   else if (pick == 5){
      cat("\n\n") 
-     one.list()
+     one.list(PKindex)
   }
 }
 
-noniv.route <- function()
+noniv.route <- function(PKindex)
 {
-  file.menu <- c("Single Dose First-Order Absorption with Lag Time",
-                 "Single Dose First-Order Absorption without Lag Time",
-                 "Single Dose Zero-Order Absorption without Lag Time",
-                 "Single Dose First-Order Absorption with Lag Time Nonlinear Elimination",
-                 "Single Dose First-Order Absorption without Lag Time Nonlinear Elimination",
-                 "Single Dose Zero-Order Absorption without Lag Time Nonlinear Elimination",
-                 "Go back one upper level")
-  pick <- menu(file.menu, title = "<< Non IV route >>")
+  file.menu <- c("Single-Dose, and First-Ordered Absorption with Lag Time",
+                 "Single-Dose, and First-Ordered Absorption without Lag Time",
+                 "Single-Dose, and Zero-Ordered Absorption without Lag Time",
+                 "Single-Dose, First-Ordered Absorption, and Nonlinear Elimination with Lag Time ",
+                 "Single-Dose, First-Ordered Absorption, and Nonlinear Elimination without Lag Time",
+                 "Single-Dose, Zero-Ordered Absorption, and Nonlinear Elimination without Lag Time",
+                 "Go Back One Upper Level")
+  pick <- menu(file.menu, title = "<< Non IV Route >>")
   if (pick == 1){
      cat("\n\n") 
-     ffirst.lag()
+     ffirst.lag(PKindex)
   }
   else if (pick == 2){
      cat("\n\n") 
-     ffirst.nolag()
+     ffirst.nolag(PKindex)
   }
   else if (pick == 3){
      cat("\n\n") 
-     fzero.nolag()
+     fzero.nolag(PKindex)
   }
   else if (pick == 4){
      cat("\n\n") 
-     ffirst.lagm()
+     ffirst.lagm(PKindex)
   }
   else if (pick == 5){
      cat("\n\n") 
-     ffirst.nolagm()
+     ffirst.nolagm(PKindex)
   }
   else if (pick == 6){
      cat("\n\n") 
-     fzero.nolagm()
+     fzero.nolagm(PKindex)
   }
   else if (pick == 7){
      cat("\n\n") 
-     one.list()
+     one.list(PKindex)
   }
 }
 
-macro <- function()
+macro <- function(PKindex)
 {
-  file.menu <- c("One Exponential Term", 
-                 "Two Exponential Terms",
-                 "Three Exponential Terms",
+  file.menu <- c("One-Exponential Term", 
+                 "Two-Exponential Term",
+                 "Three-Exponential Term",
                  "Go Back One Upper Level")
-  pick <- menu(file.menu, title = "<< Administration >>")
+  pick <- menu(file.menu, title = "<< Macroconstant Exponential Functions >>")
   if (pick ==1){
      cat("\n\n")
-     fmacro.one()
+     fmacro.one(PKindex)
   }
   else if (pick == 2){
      cat("\n\n") 
-     fmacro.two()
+     fmacro.two(PKindex)
   }
   else if (pick == 3){
      cat("\n\n") 
-     fmacro.three()
+     fmacro.three(PKindex)
   }
   else if (pick == 4){
      cat("\n\n") 
@@ -277,12 +304,12 @@ macro <- function()
 #------------Simulation menu----------------
 sone.iv.route <- function()
 {
-  file.menu <- c("IV Bolus Single Dose", 
-                 "IV Bolus Single Dose Nonlinear Elimination", 
-                 "IV Infusion Single Dose",
-                 "IV Infusion Single Dose Nonlinear Elimination",
-                 "Go back one upper level")
-  pick <- menu(file.menu, title = "<< IV (Bolus, Infusion, Intermediate infusion) >>")
+  file.menu <- c("IV-Bolus, and Single-Dose", 
+                 "IV-Bolus, Single-Dose, and Nonlinear Elimination", 
+                 "IV-Infusion, and Single-Dose",
+                 "IV-Infusion, Single-Dose, and Nonlinear Elimination",
+                 "Go Back One Upper Level")
+  pick <- menu(file.menu, title = "<< IV (Bolus or Infusion) Route >>")
   if (pick ==1 ){
      cat("\n\n")
      sbolus1()
@@ -307,14 +334,14 @@ sone.iv.route <- function()
 
 sone.noniv.route <- function()
 {
-  file.menu <- c("Single Dose First-Order Absorption with Lag Time",
-                 "Single Dose First-Order Absorption without Lag Time",
-                 "Single Dose Zero-Order Absorption without Lag Time",
-                 "Single Dose First-Order Absorption with Lag Time Nonlinear Elimination",
-                 "Single Dose First-Order Absorption without Lag Time Nonlinear Elimination",
-                 "Single Dose Zero-Order Absorption without Lag Time Nonlinear Elimination",
-                 "Go back one upper level")
-  pick <- menu(file.menu, title = "<< Non IV route >>")
+  file.menu <- c("Single-Dose, and First-Ordered Absorption with Lag Time",
+                 "Single-Dose, and First-Ordered Absorption without Lag Time",
+                 "Single-Dose, and Zero-Ordered Absorption without Lag Time",
+                 "Single-Dose, First-Ordered Absorption, and Nonlinear Elimination with Lag Time ",
+                 "Single-Dose, First-Ordered Absorption, and Nonlinear Elimination without Lag Time",
+                 "Single-Dose, Zero-Ordered Absorption, and Nonlinear Elimination without Lag Time",
+                 "Go Back One Upper Level")
+  pick <- menu(file.menu, title = "<< Non IV Route >>")
   if (pick == 1){
      cat("\n\n") 
      sfirst.lag()
@@ -347,11 +374,11 @@ sone.noniv.route <- function()
 
 smacro <- function()
 {
-  file.menu <- c("One exponential term", 
-                 "Two exponential terms", 
-                 "Three exponential terms",
-                 "Go back one upper level")
-  pick <- menu(file.menu, title = "<< Macroconstant >>")
+  file.menu <- c("One-Exponential Term", 
+                 "Two-Exponential Term", 
+                 "Three-Exponential Term",
+                 "Go Back One Upper Level")
+  pick <- menu(file.menu, title = "<< Macroconstant Exponential Functions >>")
   if (pick ==1){
      cat("\n\n")
      smacro.one()
@@ -372,11 +399,11 @@ smacro <- function()
 
 stwo.all <- function()
 {
-  file.menu <- c("IV bolus single dose", 
-                 "IV infusion single dose",
-                 "Extravascular single dose first-order absorption without lag time",
+  file.menu <- c("IV-Bolus, and Single-Dose", 
+                 "IV-Infusion, and Single-Dose",
+                 "Extravascular, Single-Dose, and First-Ordered Absorption without Lag Time",
                  "Go Back One Upper Level")
-  pick <- menu(file.menu, title = "<< Two compartment >>")
+  pick <- menu(file.menu, title = "<< Two-Compartment Model >>")
   if (pick ==1){
      cat("\n\n")
      sbolus2()
@@ -610,10 +637,30 @@ aicllsbc <- function(fm)
   print(summary(fm))      
 }  
 
-#for iv bolus 
-sbolus1.out<-function(PKindex,kel,Vd,defun,par1,par2,Dose,i)
+
+savefile<-function(PKindex)  
 {
-  time<-PKindex$time
+  cat("\n\n")
+  cat("\nSave data as a .RData file (y/n) ?\n\n")
+  ans<-readline()
+  cat("\n")
+     if (ans == "n"){
+     }
+  else {
+     cat("Enter name you want to call this data\n\n")
+     PKname <-readline() 
+     dataExt<- ".RData"
+     PKname<-paste(PKname,dataExt,sep="")
+     save(PKindex,file=PKname)
+     cat("\n")  
+    }
+}
+
+
+#for iv bolus 
+sbolus1.out<-function(PKtime,kel,Vd,defun,par1,par2,Dose,i)
+{
+  time<-PKtime$time
   parms<-c(kel=kel,Vd=Vd) 
   C1.lsoda<-data.frame(lsoda(Dose/Vd,c(0,time),defun,parms)) 
   cat("\n")
@@ -624,18 +671,19 @@ sbolus1.out<-function(PKindex,kel,Vd,defun,par1,par2,Dose,i)
   show(sim)
   cat("\n\n<< Output >>\n\n")
   good<-ifelse(C1.lsoda[2:(length(time)+1),2]<=0,0,C1.lsoda[2:(length(time)+1),2])
-  PKdata<-data.frame(i,C1.lsoda[2:(length(time)+1),1],good)
-  colnames(PKdata)<-list("Subject","time","concentration")
-  show(PKdata)
+  PKindex<-data.frame(i,C1.lsoda[2:(length(time)+1),1],good)
+  colnames(PKindex)<-list("Subject","time","conc")
+  show(PKindex)
   x<-C1.lsoda[2:(length(time)+1),1]
   y<-good
   plotting.sim(i,x,y)
+  savefile(PKindex) 
 }
 
 #for iv bolus nonlinear elimination 
-sbolus.mm.out<-function(PKindex,Vm,Km,Vd,defun,par1,par2,par3,Dose,i)
+sbolus.mm.out<-function(PKtime,Vm,Km,Vd,defun,par1,par2,par3,Dose,i)
 { 
-  time<-PKindex$time
+  time<-PKtime$time
   parms<-c(Vm=Vm,Km=Km,Vd=Vd)  
   C1.lsoda<-data.frame(lsoda(Dose/Vd,c(0,time),defun,parms))     
   cat("\n")
@@ -645,20 +693,21 @@ sbolus.mm.out<-function(PKindex,Vm,Km,Vd,defun,par1,par2,par3,Dose,i)
   sim<-matrix(c(sim1,sim2,sim3,par1,par2,par3),3,2)
   dimnames(sim)<-list(c("Vm","Km","Vd"),c("Value","Original"))
   show(sim)
-  cat("\n\n<< Output >>\n\n")  
+  cat("\n\n<< Output >>\n\n")
   good<-ifelse(C1.lsoda[2:(length(time)+1),2]<=0,0,C1.lsoda[2:(length(time)+1),2])
-  PKdata<-data.frame(i,C1.lsoda[2:(length(time)+1),1],good)
-  colnames(PKdata)<-list("Subject","time","concentration")
-  show(PKdata)  
+  PKindex<-data.frame(i,C1.lsoda[2:(length(time)+1),1],good)
+  colnames(PKindex)<-list("Subject","time","conc")
+  show(PKindex)
   x<-C1.lsoda[2:(length(time)+1),1]
   y<-good
   plotting.sim(i,x,y)
+  savefile(PKindex) 
 }
 
 #for iv infusion 
-sinfu1.out<-function(PKindex,kel,Vd,defun,par1,par2,Dose,i)
+sinfu1.out<-function(PKtime,kel,Vd,defun,par1,par2,Dose,i)
 {
-  time<-PKindex$time
+  time<-PKtime$time
   parms<-c(kel=kel,Vd=Vd) 
   C1.lsoda<-data.frame(lsoda(0,c(0,time),defun,parms)) 
   cat("\n")
@@ -669,18 +718,19 @@ sinfu1.out<-function(PKindex,kel,Vd,defun,par1,par2,Dose,i)
   show(sim)
   cat("\n\n<< Output >>\n\n")
   good<-ifelse(C1.lsoda[2:(length(time)+1),2]<=0,0,C1.lsoda[2:(length(time)+1),2])
-  PKdata<-data.frame(i,C1.lsoda[2:(length(time)+1),1],good)
-  colnames(PKdata)<-list("Subject","time","concentration")
-  show(PKdata)
+  PKindex<-data.frame(i,C1.lsoda[2:(length(time)+1),1],good)
+  colnames(PKindex)<-list("Subject","time","conc")
+  show(PKindex)
   x<-C1.lsoda[2:(length(time)+1),1]
-  y<-good  
+  y<-good
   plotting.sim(i,x,y)
+  savefile(PKindex) 
 }
 
 #for iv infusion nonlinear elimination
-sinfu.mm.out<-function(PKindex,Vm,Km,Vd,defun,par1,par2,par3,Dose,i)
+sinfu.mm.out<-function(PKtime,Vm,Km,Vd,defun,par1,par2,par3,Dose,i)
 {
-  time<-PKindex$time
+  time<-PKtime$time
   parms<-c(Vm=Vm,Km=Km,Vd=Vd)  
   C1.lsoda<-data.frame(lsoda(0,c(0,time),defun,parms))    
   cat("\n")
@@ -690,20 +740,21 @@ sinfu.mm.out<-function(PKindex,Vm,Km,Vd,defun,par1,par2,par3,Dose,i)
   sim<-matrix(c(sim1,sim2,sim3,par1,par2,par3),3,2)
   dimnames(sim)<-list(c("Vm","Km","Vd"),c("Value","Original"))
   show(sim)    
-  cat("\n\n<< Output >>\n\n")   
-  good<-ifelse(C1.lsoda[2:(length(time)+1),2]<=0,0,C1.lsoda[2:(length(time)+1),2])   
-  PKdata<-data.frame(i,C1.lsoda[2:(length(time)+1),1],good)
-  colnames(PKdata)<-list("Subject","time","concentration")
-  show(PKdata) 
+  cat("\n\n<< Output >>\n\n")
+  good<-ifelse(C1.lsoda[2:(length(time)+1),2]<=0,0,C1.lsoda[2:(length(time)+1),2])
+  PKindex<-data.frame(i,C1.lsoda[2:(length(time)+1),1],good)
+  colnames(PKindex)<-list("Subject","time","conc")
+  show(PKindex)
   x<-C1.lsoda[2:(length(time)+1),1]
-  y<-good  
+  y<-good
   plotting.sim(i,x,y)
+  savefile(PKindex) 
 }
 
 #for extravascular first order absorption with/without lag time
-sfirst1.out<-function(PKindex,ka,kel,Vd,defun,par1,par2,par3,Dose,i)  
+sfirst1.out<-function(PKtime,ka,kel,Vd,defun,par1,par2,par3,Dose,i)  
 {   
-  time<-PKindex$time
+  time<-PKtime$time
   parms<-c(ka=ka,kel=kel,Vd=Vd)  
   C1.lsoda<-data.frame(lsoda(c(Dose,0),c(0,time), defun, parms))  
   cat("\n\n")
@@ -713,20 +764,21 @@ sfirst1.out<-function(PKindex,ka,kel,Vd,defun,par1,par2,par3,Dose,i)
   sim<-matrix(c(sim1,sim2,sim3,par1,par2,par3),3,2)
   dimnames(sim)<-list(c("ka","kel","Vd"),c("Value","Original"))
   show(sim)
-  cat("\n\n<< Output >>\n\n") 
-  good<-ifelse(C1.lsoda[2:(length(time)+1),3]<=1e-5, 0, C1.lsoda[2:(length(time)+1),3])   
-  PKdata<-data.frame(i,C1.lsoda[2:(length(time)+1),1],good)
-  colnames(PKdata)<-list("Subject","time","concentration")
-  show(PKdata)
+  cat("\n\n<< Output >>\n\n")
+  good<-ifelse(C1.lsoda[2:(length(time)+1),2]<=0,0,C1.lsoda[2:(length(time)+1),3])
+  PKindex<-data.frame(i,C1.lsoda[2:(length(time)+1),1],good)
+  colnames(PKindex)<-list("Subject","time","conc")
+  show(PKindex)
   x<-C1.lsoda[2:(length(time)+1),1]
-  y<-good 
+  y<-good
   plotting.sim(i,x,y)
+  savefile(PKindex) 
 }  
 
 #for extravascular first order absorption with/without lag time nonlinear elimination
-sfirst.mm.out<-function(PKindex,ka,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)  
+sfirst.mm.out<-function(PKtime,ka,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)  
 {       
-  time<-PKindex$time
+  time<-PKtime$time
   parms<-c(ka=ka,Vm=Vm,Km=Km,Vd=Vd) 
   C1.lsoda<-data.frame(lsoda(c(Dose,0),c(0,time), defun, parms)) 
   cat("\n\n")
@@ -737,20 +789,21 @@ sfirst.mm.out<-function(PKindex,ka,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)
   sim<-matrix(c(sim1,sim2,sim3,sim4,par1,par2,par3,par4),4,2)
   dimnames(sim)<-list(c("ka","Vm","Km","Vd"),c("Value","Original"))
   show(sim)
-  cat("\n\n<< Output >>\n\n") 
-  good<-ifelse(C1.lsoda[2:(length(time)+1),3]<=1e-5, 0, C1.lsoda[2:(length(time)+1),3])   
-  PKdata<-data.frame(i,C1.lsoda[2:(length(time)+1),1],good)
-  colnames(PKdata)<-list("Subject","time","concentration")
-  show(PKdata)
+  cat("\n\n<< Output >>\n\n")
+  good<-ifelse(C1.lsoda[2:(length(time)+1),2]<=0,0,C1.lsoda[2:(length(time)+1),3])
+  PKindex<-data.frame(i,C1.lsoda[2:(length(time)+1),1],good)
+  colnames(PKindex)<-list("Subject","time","conc")
+  show(PKindex)
   x<-C1.lsoda[2:(length(time)+1),1]
   y<-good
-  plotting.sim(i,x,y) 
+  plotting.sim(i,x,y)
+  savefile(PKindex) 
 }
 
 #for extravascular zero order absorption without lag time
-szero.out<-function(PKindex,Tabs,kel,Vd,defun,par1,par2,par3,Dose,i)    
+szero.out<-function(PKtime,Tabs,kel,Vd,defun,par1,par2,par3,Dose,i)    
 {
-  time<-PKindex$time
+  time<-PKtime$time
   parms<-c(Tabs=Tabs,kel=kel,Vd=Vd)  
   C1.lsoda<-data.frame(lsoda(0, c(0,time), defun, parms))   
   cat("\n")
@@ -760,20 +813,21 @@ szero.out<-function(PKindex,Tabs,kel,Vd,defun,par1,par2,par3,Dose,i)
   sim<-matrix(c(sim1,sim2,sim3,par1,par2,par3),3,2)
   dimnames(sim)<-list(c("Tabs","kel","Vd"),c("Value","Original"))
   show(sim)  
-  cat("\n\n<< Output >>\n\n")   
-  good<-ifelse(C1.lsoda[2:(length(time)+1),2]<=0,0,C1.lsoda[2:(length(time)+1),2])  
-  PKdata<-data.frame(i,C1.lsoda[2:(length(time)+1),1],good)
-  colnames(PKdata)<-list("Subject","time","concentration")
-  show(PKdata)
+  cat("\n\n<< Output >>\n\n")
+  good<-ifelse(C1.lsoda[2:(length(time)+1),2]<=0,0,C1.lsoda[2:(length(time)+1),2])
+  PKindex<-data.frame(i,C1.lsoda[2:(length(time)+1),1],good)
+  colnames(PKindex)<-list("Subject","time","conc")
+  show(PKindex)
   x<-C1.lsoda[2:(length(time)+1),1]
-  y<-C1.lsoda[2:(length(time)+1),2]
+  y<-good
   plotting.sim(i,x,y)
+  savefile(PKindex) 
 }
 
 #for extravascular zero order absorption without lag time nonlinear elimination
-szero.mm.out<-function(PKindex,Tabs,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)
+szero.mm.out<-function(PKtime,Tabs,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)
 {                      
-  time<-PKindex$time
+  time<-PKtime$time
   parms<-c(Tabs=Tabs,Vm=Vm,Km=Km,Vd=Vd) 
   C1.lsoda<-data.frame(lsoda(0,c(0,time), defun, parms))   
   cat("\n\n")
@@ -784,20 +838,21 @@ szero.mm.out<-function(PKindex,Tabs,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)
   sim<-matrix(c(sim1,sim2,sim3,sim4,par1,par2,par3,par4),4,2)
   dimnames(sim)<-list(c("Tabs","Vm","Km","Vd"),c("Value","Original"))
   show(sim)
-  cat("\n\n<< Output >>\n\n") 
-  good<-ifelse(C1.lsoda[2:(length(time)+1),2]<=0,0,C1.lsoda[2:(length(time)+1),2]) 
-  PKdata<-data.frame(i,C1.lsoda[2:(length(time)+1),1],good)
-  colnames(PKdata)<-list("Subject","time","concentration")
-  show(PKdata) 
+  cat("\n\n<< Output >>\n\n")
+  good<-ifelse(C1.lsoda[2:(length(time)+1),2]<=0,0,C1.lsoda[2:(length(time)+1),2])
+  PKindex<-data.frame(i,C1.lsoda[2:(length(time)+1),1],good)
+  colnames(PKindex)<-list("Subject","time","conc")
+  show(PKindex)
   x<-C1.lsoda[2:(length(time)+1),1]
-  y<-C1.lsoda[2:(length(time)+1),2]   
+  y<-good
   plotting.sim(i,x,y)
+  savefile(PKindex) 
 }
 
 #for one exponential term
-smacro.one.out<-function(PKindex,A,a,defun,par1,par2,Dose,i)
+smacro.one.out<-function(PKtime,A,a,defun,par1,par2,Dose,i)
 {         
-  time<-PKindex$time
+  time<-PKtime$time
   defun<- A*exp(-a*time)
   output<-data.frame(time,defun) 
   cat("\n")
@@ -807,18 +862,19 @@ smacro.one.out<-function(PKindex,A,a,defun,par1,par2,Dose,i)
   dimnames(sim)<-list(c("A","a"),c("Value","Original"))
   show(sim)
   cat("\n\n<< Output >>\n\n")
-  PKdata<-data.frame(i,output)
-  colnames(PKdata)<-list("Subject","time","concentration")
-  show(PKdata)
-  x<-PKdata[,2]
-  y<-PKdata[,3]
+  PKindex<-data.frame(i,output)
+  colnames(PKindex)<-list("Subject","time","conc")
+  show(PKindex)
+  x<-PKindex[,2]
+  y<-PKindex[,3]
   plotting.sim(i,x,y)
+  savefile(PKindex) 
 }
 
 #for two exponential term
-smacro.two.out<-function(PKindex,A,a,B,b,defun,par1,par2,par3,par4,Dose,i)      
+smacro.two.out<-function(PKtime,A,a,B,b,defun,par1,par2,par3,par4,Dose,i)      
 {   
-  time<-PKindex$time
+  time<-PKtime$time
   defun<- A*exp(-a*time)+B*exp(-b*time)
   output<-data.frame(time,defun) 
   cat("\n")
@@ -830,18 +886,19 @@ smacro.two.out<-function(PKindex,A,a,B,b,defun,par1,par2,par3,par4,Dose,i)
   dimnames(sim)<-list(c("A","a","B","b"),c("Value","Original"))
   show(sim)
   cat("\n\n<< Output >>\n\n")
-  PKdata<-data.frame(i,output)
-  colnames(PKdata)<-list("Subject","time","concentration")
-  show(PKdata)
-  x<-PKdata[,2]
-  y<-PKdata[,3]
+  PKindex<-data.frame(i,output)
+  colnames(PKindex)<-list("Subject","time","conc")
+  show(PKindex)
+  x<-PKindex[,2]
+  y<-PKindex[,3]
   plotting.sim(i,x,y)
+  savefile(PKindex) 
 }
 
 #for three exponential term
-smacro.three.out<-function(PKindex,A,a,B,b,C,c,defun,par1,par2,par3,par4,par5,par6,Dose,i)      
+smacro.three.out<-function(PKtime,A,a,B,b,C,c,defun,par1,par2,par3,par4,par5,par6,Dose,i)      
 {         
-  time<-PKindex$time
+  time<-PKtime$time
   defun<- A*exp(-a*time)+B*exp(-b*time)+C*exp(-c*time)
   output<-data.frame(time,defun) 
   cat("\n")
@@ -855,18 +912,19 @@ smacro.three.out<-function(PKindex,A,a,B,b,C,c,defun,par1,par2,par3,par4,par5,pa
   dimnames(sim)<-list(c("A","a","B","b","C","c"),c("Value","Original"))
   show(sim)
   cat("\n\n<< Output >>\n\n")
-  PKdata<-data.frame(i,output)
-  colnames(PKdata)<-list("Subject","time","concentration")
-  show(PKdata)
-  x<-PKdata[,2]
-  y<-PKdata[,3]
+  PKindex<-data.frame(i,output)
+  colnames(PKindex)<-list("Subject","time","conc")
+  show(PKindex)
+  x<-PKindex[,2]
+  y<-PKindex[,3]
   plotting.sim(i,x,y)
+  savefile(PKindex) 
 }
 
 #for two compartment iv bolus
-sbolus2.out<-function(PKindex,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i)
+sbolus2.out<-function(PKtime,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i)
 { 
-  time<-PKindex$time
+  time<-PKtime$time
   parms<-c(kel=kel,k12=k12,k21=k21,Vd=Vd) 
   C1.lsoda<-data.frame(lsoda(c(Dose/Vd,0),c(0,time),defun,parms)) 
   cat("\n")
@@ -877,20 +935,21 @@ sbolus2.out<-function(PKindex,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i)
   sim<-matrix(c(sim1,sim2,sim3,sim4,par1,par2,par3,par4),4,2)
   dimnames(sim)<-list(c("kel","k12","k21","Vd"),c("Value","Original"))
   show(sim)
-  cat("<<\n\nOutput\n\n>>")
+  cat("\n\n<< Output >>\n\n")
   good<-ifelse(C1.lsoda[2:(length(time)+1),2]<=0,0,C1.lsoda[2:(length(time)+1),2])
-  PKdata<-data.frame(i,C1.lsoda[2:(length(time)+1),1],good)
-  colnames(PKdata)<-list("Subject","time","concentration")
-  show(PKdata)
+  PKindex<-data.frame(i,C1.lsoda[2:(length(time)+1),1],good)
+  colnames(PKindex)<-list("Subject","time","conc")
+  show(PKindex)
   x<-C1.lsoda[2:(length(time)+1),1]
-  y<-C1.lsoda[2:(length(time)+1),2]
+  y<-good
   plotting.sim(i,x,y)
+  savefile(PKindex) 
 }
 
 #for two compartment iv infusion
-sinfu2.out<-function(PKindex,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i)
+sinfu2.out<-function(PKtime,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i)
 {       
-  time<-PKindex$time
+  time<-PKtime$time
   parms<-c(kel=kel,k12=k12,k21=k21,Vd=Vd) 
   C1.lsoda<-data.frame(lsoda(c(0,0),c(0,time),defun,parms)) 
   cat("\n")
@@ -902,19 +961,20 @@ sinfu2.out<-function(PKindex,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i)
   dimnames(sim)<-list(c("kel","k12","k21","Vd"),c("Value","Original"))
   show(sim)
   cat("\n\n<< Output >>\n\n")
-  good<-ifelse(C1.lsoda[2:(length(time)+1),2]<=0,0,C1.lsoda[2:(length(time)+1),2]) 
-  PKdata<-data.frame(i,C1.lsoda[2:(length(time)+1),1],good)
-  colnames(PKdata)<-list("Subject","time","concentration")
-  show(PKdata)
+  good<-ifelse(C1.lsoda[2:(length(time)+1),2]<=0,0,C1.lsoda[2:(length(time)+1),2])
+  PKindex<-data.frame(i,C1.lsoda[2:(length(time)+1),1],good)
+  colnames(PKindex)<-list("Subject","time","conc")
+  show(PKindex)
   x<-C1.lsoda[2:(length(time)+1),1]
-  y<-C1.lsoda[2:(length(time)+1),2]
+  y<-good
   plotting.sim(i,x,y)
+  savefile(PKindex) 
 }
 
 #for two compartment extravascular first order absorption
-sfirst2.out<-function(PKindex,ka,kel,k12,k21,Vd,defun,par1,par2,par3,par4,par5,Dose,i)
+sfirst2.out<-function(PKtime,ka,kel,k12,k21,Vd,defun,par1,par2,par3,par4,par5,Dose,i)
 {                   
-  time<-PKindex$time
+  time<-PKtime$time
   parms<-c(ka=ka,kel=kel,k12=k12,k21=k21,Vd=Vd) 
   C1.lsoda<-data.frame(lsoda(c(Dose,0,0),c(0,time),defun,parms)) 
   cat("\n")
@@ -928,10 +988,11 @@ sfirst2.out<-function(PKindex,ka,kel,k12,k21,Vd,defun,par1,par2,par3,par4,par5,D
   show(sim)
   cat("\n\n<< Output >>\n\n")
   good<-ifelse(C1.lsoda[2:(length(time)+1),2]<=0,0,C1.lsoda[2:(length(time)+1),3])
-  PKdata<-data.frame(i,C1.lsoda[2:(length(time)+1),1],good)
-  colnames(PKdata)<-list("Subject","time","concentration")
-  show(PKdata)
+  PKindex<-data.frame(i,C1.lsoda[2:(length(time)+1),1],good)
+  colnames(PKindex)<-list("Subject","time","conc")
+  show(PKindex)
   x<-C1.lsoda[2:(length(time)+1),1]
-  y<-C1.lsoda[2:(length(time)+1),3]
+  y<-good
   plotting.sim(i,x,y)
+  savefile(PKindex) 
 }

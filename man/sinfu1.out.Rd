@@ -2,10 +2,10 @@
 
 \alias{sinfu1.out}
 
-\title{The Output of simulation for One Compartment Model IV infusion Single Dose}
+\title{Simulation Output for a One-Compartment, IV-infusion, and Single-Dose Model}
 
 \description{
-  Display the output of simulation for one compartment model IV infusion single dose and plot.
+  Display simulation output for a one-compartment, IV-infusion, and single-dose model and plots.
 }
 
 \keyword{misc}

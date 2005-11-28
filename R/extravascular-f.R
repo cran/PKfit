@@ -1,8 +1,7 @@
 #Normal fitting
 #One compartment PK model extravascualr single dose first-order absorption with lag time
-ffirst.lag <- function()
+ffirst.lag <- function(PKindex)
 {
-  load("PK.RData")
   options(warn=-1)
     
  #lsoda is belong to odesolve package-----
@@ -160,9 +159,8 @@ ffirst.lag <- function()
 }
 
 #One compartment PK model extravascualr single dose first-order absorption without lag time
-ffirst.nolag <- function()
+ffirst.nolag <- function(PKindex)
 {
-  load("PK.RData")
   options(warn=-1)
     
  #lsoda is belong to odesolve package
@@ -311,9 +309,8 @@ ffirst.nolag <- function()
 }
 
 #One compartment PK model extravascualr single dose first-order absorption with lag time michaelis-menten elimination
-ffirst.lagm <- function()
+ffirst.lagm <- function(PKindex)
 {
-  load("PK.RData")
   options(warn=-1)
     
  #lsoda is belong to odesolve package
@@ -468,9 +465,8 @@ ffirst.lagm <- function()
 }
 
 #One compartment PK model extravascualr single dose first-order absorption without lag time michaelis-menten elimination
-ffirst.nolagm <- function()
+ffirst.nolagm <- function(PKindex)
 {
-  load("PK.RData")
   options(warn=-1)
     
  #lsoda is belong to odesolve package-----
@@ -621,10 +617,10 @@ sfirst.nolag <- function()
 {
   cat("How many subject do you want?\n")
   Subject<-scan(nlines=1,quiet=TRUE)
-  PKindex<-data.frame(time=c(0))
-  PKindex<-edit(PKindex) 
+  PKtime<-data.frame(time=c(0))
+  PKtime<-edit(PKtime) 
   cat("\n")
-  show(PKindex)
+  show(PKtime)
   cat("\nEnter dose value\n")
   Dose<-scan(nlines=1,quiet=TRUE)
   cat("\n")
@@ -656,7 +652,7 @@ sfirst.nolag <- function()
      ka<-par1
      kel<-par2
      Vd<-par3     
-     sfirst1.out(PKindex,ka,kel,Vd,defun,par1,par2,par3,Dose,i)  
+     sfirst1.out(PKtime,ka,kel,Vd,defun,par1,par2,par3,Dose,i)  
      }      
   }   
   else if (pick == 2){
@@ -677,7 +673,7 @@ sfirst.nolag <- function()
      Vd<-par3+rnorm(1,mean=0,sd=factor3)
      while(Vd<=0){
            Vd<-par3+rnorm(1,mean=0,sd=factor3)}
-     sfirst1.out(PKindex,ka,kel,Vd,defun,par1,par2,par3,Dose,i)    
+     sfirst1.out(PKtime,ka,kel,Vd,defun,par1,par2,par3,Dose,i)    
      }    
   }
   else if (pick == 3){
@@ -698,7 +694,7 @@ sfirst.nolag <- function()
      Vd<-par3+runif(1,min=-factor3,max=factor3)
      while(Vd<=0){
            Vd<-par3+runif(1,min=-factor3,max=factor3)}
-     sfirst1.out(PKindex,ka,kel,Vd,defun,par1,par2,par3,Dose,i)    
+     sfirst1.out(PKtime,ka,kel,Vd,defun,par1,par2,par3,Dose,i)    
      }    
   }
   else if (pick == 4){
@@ -719,7 +715,7 @@ sfirst.nolag <- function()
      Vd<-par3*rnorm(1,mean=0,sd=factor3)+par3
      while(Vd<=0){
            Vd<-par3*rnorm(1,mean=0,sd=factor3)+par3}
-     sfirst1.out(PKindex,ka,kel,Vd,defun,par1,par2,par3,Dose,i)    
+     sfirst1.out(PKtime,ka,kel,Vd,defun,par1,par2,par3,Dose,i)    
      }    
   }
   else if (pick == 5){
@@ -740,7 +736,7 @@ sfirst.nolag <- function()
      Vd<-par3*runif(1,min=-factor3,max=factor3)+par3
      while(Vd<=0){
            Vd<-par3*runif(1,min=-factor3,max=factor3)+par3}
-     sfirst1.out(PKindex,ka,kel,Vd,defun,par1,par2,par3,Dose,i)    
+     sfirst1.out(PKtime,ka,kel,Vd,defun,par1,par2,par3,Dose,i)    
      }    
   }
 }
@@ -750,10 +746,10 @@ sfirst.lag <-function()
 {
   cat("How many subject do you want?\n")
   Subject<-scan(nlines=1,quiet=TRUE)
-  PKindex<-data.frame(time=c(0))
-  PKindex<-edit(PKindex) 
+  PKtime<-data.frame(time=c(0))
+  PKtime<-edit(PKtime) 
   cat("\n")
-  show(PKindex)
+  show(PKtime)
   cat("\nEnter dose value\n")
   Dose<-scan(nlines=1,quiet=TRUE)
   cat("\nEnter Lag Time\n")
@@ -793,7 +789,7 @@ sfirst.lag <-function()
      ka<-par1
      kel<-par2
      Vd<-par3      
-     sfirst1.out(PKindex,ka,kel,Vd,defun,par1,par2,par3,Dose,i)  
+     sfirst1.out(PKtime,ka,kel,Vd,defun,par1,par2,par3,Dose,i)  
      }     
   }   
   else if (pick == 2){
@@ -814,7 +810,7 @@ sfirst.lag <-function()
      Vd<-par3+rnorm(1,mean=0,sd=factor3)
      while(Vd<=0){
            Vd<-par3+rnorm(1,mean=0,sd=factor3)}
-     sfirst1.out(PKindex,ka,kel,Vd,defun,par1,par2,par3,Dose,i)       
+     sfirst1.out(PKtime,ka,kel,Vd,defun,par1,par2,par3,Dose,i)       
      }       
   }
   else if (pick == 3){
@@ -835,7 +831,7 @@ sfirst.lag <-function()
      Vd<-par3+runif(1,min=-factor3,max=factor3)
      while(Vd<=0){
            Vd<-par3+runif(1,min=-factor3,max=factor3)}
-     sfirst1.out(PKindex,ka,kel,Vd,defun,par1,par2,par3,Dose,i)     
+     sfirst1.out(PKtime,ka,kel,Vd,defun,par1,par2,par3,Dose,i)     
      }    
   }
   else if (pick == 4){
@@ -856,7 +852,7 @@ sfirst.lag <-function()
      Vd<-par3*rnorm(1,mean=0,sd=factor3)+par3
      while(Vd<=0){
            Vd<-par3*rnorm(1,mean=0,sd=factor3)+par3}
-     sfirst1.out(PKindex,ka,kel,Vd,defun,par1,par2,par3,Dose,i)     
+     sfirst1.out(PKtime,ka,kel,Vd,defun,par1,par2,par3,Dose,i)     
      }    
   }
   else if (pick == 5){
@@ -877,7 +873,7 @@ sfirst.lag <-function()
      Vd<-par3*runif(1,min=-factor3,max=factor3)+par3
      while(Vd<=0){
            Vd<-par3*runif(1,min=-factor3,max=factor3)+par3}
-     sfirst1.out(PKindex,ka,kel,Vd,defun,par1,par2,par3,Dose,i)   
+     sfirst1.out(PKtime,ka,kel,Vd,defun,par1,par2,par3,Dose,i)   
      }    
   }
 }      
@@ -887,10 +883,10 @@ sfirst.lagm <-function()
 {
   cat("How many subject do you want?\n")
   Subject<-scan(nlines=1,quiet=TRUE)
-  PKindex<-data.frame(time=c(0))
-  PKindex<-edit(PKindex) 
+  PKtime<-data.frame(time=c(0))
+  PKtime<-edit(PKtime) 
   cat("\n")
-  show(PKindex)
+  show(PKtime)
   cat("\nEnter dose value\n")
   Dose<-scan(nlines=1,quiet=TRUE)
   cat("\nEnter Lag Time\n")
@@ -932,7 +928,7 @@ sfirst.lagm <-function()
      Vm<-par2
      Km<-par3
      Vd<-par4        
-     sfirst.mm.out(PKindex,ka,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i) 
+     sfirst.mm.out(PKtime,ka,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i) 
      }  
   }   
   else if (pick == 2){
@@ -958,7 +954,7 @@ sfirst.lagm <-function()
      Vd<-par4+rnorm(1,mean=0,sd=factor4)
      while(Vd<=0){
            Vd<-par4+rnorm(1,mean=0,sd=factor4)}
-     sfirst.mm.out(PKindex,ka,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)       
+     sfirst.mm.out(PKtime,ka,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)       
      }       
   }
   else if (pick == 3){
@@ -984,7 +980,7 @@ sfirst.lagm <-function()
      Vd<-par4+runif(1,min=-factor4,max=factor4)
      while(Vd<=0){
            Vd<-par4+runif(1,min=-factor4,max=factor4)}
-     sfirst.mm.out(PKindex,ka,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)          
+     sfirst.mm.out(PKtime,ka,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)          
      }       
   }
   else if (pick == 4){
@@ -1010,7 +1006,7 @@ sfirst.lagm <-function()
      Vd<-par4*rnorm(1,mean=0,sd=factor4)+par4
      while(Vd<=0){
            Vd<-par4*rnorm(1,mean=0,sd=factor4)+par4}
-     sfirst.mm.out(PKindex,ka,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)              
+     sfirst.mm.out(PKtime,ka,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)              
      }       
   }
   else if (pick == 5){
@@ -1036,7 +1032,7 @@ sfirst.lagm <-function()
      Vd<-par4*runif(1,min=-factor4,max=factor4)+par4
      while(Vd<=0){
            Vd<-par4*runif(1,min=-factor4,max=factor4)+par4}
-     sfirst.mm.out(PKindex,ka,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)               
+     sfirst.mm.out(PKtime,ka,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)               
      }       
   }
 }
@@ -1046,10 +1042,10 @@ sfirst.nolagm <-function()
 {
   cat("How many subject do you want?\n")
   Subject<-scan(nlines=1,quiet=TRUE)
-  PKindex<-data.frame(time=c(0))
-  PKindex<-edit(PKindex) 
+  PKtime<-data.frame(time=c(0))
+  PKtime<-edit(PKtime) 
   cat("\n")
-  show(PKindex)
+  show(PKtime)
   cat("\nEnter dose value\n")
   Dose<-scan(nlines=1,quiet=TRUE)
   cat("\n")
@@ -1083,7 +1079,7 @@ sfirst.nolagm <-function()
      Vm<-par2
      Km<-par3
      Vd<-par4        
-     sfirst.mm.out(PKindex,ka,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i) 
+     sfirst.mm.out(PKtime,ka,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i) 
      }  
   }   
   else if (pick == 2){
@@ -1109,7 +1105,7 @@ sfirst.nolagm <-function()
      Vd<-par4+rnorm(1,mean=0,sd=factor4)
      while(Vd<=0){
            Vd<-par4+rnorm(1,mean=0,sd=factor4)}
-     sfirst.mm.out(PKindex,ka,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)    
+     sfirst.mm.out(PKtime,ka,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)    
      }    
   }
   else if (pick == 3){
@@ -1135,7 +1131,7 @@ sfirst.nolagm <-function()
      Vd<-par4+runif(1,min=-factor4,max=factor4)
      while(Vd<=0){
            Vd<-par4+runif(1,min=-factor4,max=factor4)}
-     sfirst.mm.out(PKindex,ka,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)    
+     sfirst.mm.out(PKtime,ka,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)    
      }    
   }
   else if (pick == 4){
@@ -1161,7 +1157,7 @@ sfirst.nolagm <-function()
      Vd<-par4*rnorm(1,mean=0,sd=factor4)+par4
      while(Vd<=0){
            Vd<-par4*rnorm(1,mean=0,sd=factor4)+par4}
-     sfirst.mm.out(PKindex,ka,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)    
+     sfirst.mm.out(PKtime,ka,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)    
      }    
   }
   else if (pick == 5){
@@ -1187,7 +1183,7 @@ sfirst.nolagm <-function()
      Vd<-par4*runif(1,min=-factor4,max=factor4)+par4
      while(Vd<=0){
            Vd<-par4*runif(1,min=-factor4,max=factor4)+par4}
-     sfirst.mm.out(PKindex,ka,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)    
+     sfirst.mm.out(PKtime,ka,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i)    
      }    
   }
 }

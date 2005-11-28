@@ -2,13 +2,13 @@
 
 \alias{stwo.all}
 
-\title{Options for Two Compartment Model Simulation}
+\title{Options for Two-Compartment PK Models Simulation}
 
 \description{
-  Provide three models for selection:
-  two compartment model IV bolus single dose, 
-  two compartment model IV infusion single dose,
-  two compartment model extravascular single dose first-order absorption without lag time.
+  Provides the following three models for selection:
+    1. two-compartment, IV-bolus, and single-dose model;
+    2. two-compartment, IV-infusion, and single-dose model; and
+    3. two-compartment, extravascular, single-dose, and first-ordered absorption without lag time model.
 }
 
 \keyword{misc}
