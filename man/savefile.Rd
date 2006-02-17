@@ -2,10 +2,10 @@
 
 \alias{savefile}
 
-\title{Function for saving file}
+\title{Enter the name for file}
 
 \description{
-  Functions for saving file.
+  If users want to save file, allow them to enter the name for file.
 }
 
 \keyword{misc}
