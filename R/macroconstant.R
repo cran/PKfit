@@ -35,7 +35,7 @@ fmacro.one <- function(PKindex,
    for( i in 1:length(unique(PKindex$Subject)))  {
       cat("\n\n               << Subject",i,">>\n\n" )  
       objfun <- function(par) {
-         out<-defun(PKindex$conc[PKindex$Subject==i],par[1],par[2])
+         out<-defun(PKindex$time[PKindex$Subject==i],par[1],par[2])
          gift<- which( PKindex$conc[PKindex$Subject==i] != 0 )
          switch(pick,
                 sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2),
@@ -54,11 +54,11 @@ fmacro.one <- function(PKindex,
       print(data.frame(Parameter=namegen,Value=outgen)) 
       F<-objfun(gen$par)
       
-      #opt<-optim(c(gen$par[1],gen$par[2]),objfun,method="Nelder-Mead")       
-      #nameopt<-c("A","a")
-      #outopt<-c(opt$par[1],opt$par[2])
-      #cat("\n<< The value of parameter fitted by Nelder-Mead Simplex algorithm >>\n\n")
-      #print(data.frame(Parameter=nameopt,Value=outopt))
+      opt<-optim(c(gen$par[1],gen$par[2]),objfun,method="Nelder-Mead")       
+      nameopt<-c("A","a")
+      outopt<-c(opt$par[1],opt$par[2])
+      cat("\n<< The value of parameter fitted by Nelder-Mead Simplex algorithm >>\n\n")
+      print(data.frame(Parameter=nameopt,Value=outopt))
       cat("\n<< Residual sum-of-squares and parameter values fitted by nls >>\n\n")
       fm<-nls(conc~defun(time,A,a),data=PKindex, algorithm="default",subset=Subject==i,
           start=list(A=gen$par[1],a=gen$par[2]),trace=TRUE,
@@ -195,7 +195,7 @@ fmacro.three<- function(PKindex,
            wait.generations=10,
            starting.value=c(par[1,2],par[2,2],par[3,2],par[4,2],par[5,2],par[6,2]),
            BFGS=FALSE,print.level=0,boundary.enforcement=2,
-           Domains=matrix(c(1,0.1,1,0.01,0.1,0.01,100,10,50,10,10,1),6,2),
+           Domains=matrix(c(1,0.1,1,0.01,0.1,0.001,100,10,50,10,10,1),6,2),
            MemoryMatrix=TRUE)
            
       cat("<< The value of parameter fitted by genetic algorithm >>\n\n")   
