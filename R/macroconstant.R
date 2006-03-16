@@ -61,7 +61,7 @@ fmacro.one <- function(PKindex,
       print(data.frame(Parameter=nameopt,Value=outopt))
       cat("\n<< Residual sum-of-squares and parameter values fitted by nls >>\n\n")
       fm<-nls(conc~defun(time,A,a),data=PKindex, algorithm="default",subset=Subject==i,
-          start=list(A=gen$par[1],a=gen$par[2]),trace=TRUE,
+          start=list(A=opt$par[1],a=opt$par[2]),trace=TRUE,
           nls.control(maxiter=500,tol=1e-2,minFactor=1/1024))
       cat("\n")   
       coef<-data.frame(coef(fm)["a"])      
