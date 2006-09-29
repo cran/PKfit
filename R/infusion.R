@@ -122,7 +122,7 @@ finfu1 <- function(PKindex,
                 Domains=matrix(c(0.01,0.01,100,100),2,2),
                 MemoryMatrix=TRUE)
       }
-     cat("<< The value of parameter fitted by genetic algorithm >>\n\n")
+     cat("<< The value of parameter obtained from genetic algorithm >>\n\n")
      if (MMe) {
         namegen<-c("Vm","Km","Vd")
         outgen<-c(gen$par[1],gen$par[2],gen$par[3])

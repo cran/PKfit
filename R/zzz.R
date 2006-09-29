@@ -5,7 +5,7 @@
    cat("*********************************************************\n")
    cat("   Please type 'PKmenu()' to get started.                \n")
    cat("                                                         \n")
-   cat("   If you want to see some demo,                         \n")
+   cat("   If you want to see some demos,                         \n")
    cat("                                                         \n")
    cat("   Please type                                           \n")
    cat("                                                         \n")

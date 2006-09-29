@@ -25,12 +25,12 @@ PKmenu <- function()
   file.menu <- c("Normal Fitting", 
                  "Simulation", 
                  "Quit")
-  pick <- menu(file.menu, title = "<< PK startup menu >>")  
+  pick <- menu(file.menu, title = "<< PKfit:- menu >>")  
   if (pick == 1){
      cat("\n\n")
-     cat("**********************************\n")
-     cat(" Please manipulating data first!! \n")
-     cat("**********************************\n\n")
+     cat("************************************\n")
+     cat(" Please manipulate the data first.  \n")
+     cat("************************************\n\n")
      nor.fit()
   } else {
     if (pick == 2){
@@ -38,7 +38,7 @@ PKmenu <- function()
       PK.sim()
     } else {
       if (pick == 3){
-        cat("\nQuit !!\n\n")     
+        cat("\nbye-bye!\n\n")     
       }
     }  
   }
@@ -49,10 +49,10 @@ check<-function(par)
    repeat{
      if ( par[1,2] == 0 ){
        cat("\n")
-       cat("*********************************\n")
-       cat(" Parameter value can not be zero \n")
-       cat(" Press enter to continue !!      \n")
-       cat("*********************************\n\n")
+       cat("**********************************\n")
+       cat(" Parameter value can not be zero. \n")
+       cat(" Press enter to continue.         \n")
+       cat("**********************************\n\n")
        readline()
        cat("\n")
        par<-edit(par)
@@ -81,9 +81,9 @@ nor.fit <- function(PKindex)
   else if (pick == 2){
      cat("\n\n") 
      if (missing(PKindex)){
-        cat("***********************************\n")
-        cat(" Please manipulating data first !! \n")
-        cat("***********************************\n\n")
+        cat("*************************************\n")
+        cat(" Please manipulate the data first.   \n")
+        cat("*************************************\n\n")
         return(nor.fit())
        } 
      else
@@ -98,31 +98,32 @@ nor.fit <- function(PKindex)
 #Data manipulation
 data.manipulate <- function()
 {
-  file.menu <- c("Input Path",
+  file.menu <- c("Input Filepath",
                  "Load Data Files (.CSV)", 
                  "Load Data Files (.RData)", 
-                 "Key In Data", 
+                 "Input data from keyboard", 
                  "Go Back One Upper Level")  
   pick <- menu(file.menu, title = "<< Data edit >>")
   
   if (pick == 1){
      cat("\n")
-     cat("****************************\n")
-     cat(" Enter path for '.csv' file \n")
-     cat(" Without quote              \n")
-     cat(" With extension             \n")
-     cat("****************************\n\n")
+     cat("**********************************************\n")
+     cat(" Enter the path and filname for '.csv' file\n")
+     cat(" (e.g. 'c:/tmp/dataset') without quote &   \n")
+     cat(" file extention.                           \n")
+     cat("*********************************************\n\n")
      pk.path<-readline()
      pk.path<-paste(pk.path,".csv",sep="")
      PKindex<-read.csv(pk.path)
      cnames<-c("Subject", "time", "conc")
+     PKindex<-read.csv(pk.path,header=TRUE,sep=",",row.names=NULL,col.names=cnames)
      PKindex<-edit(PKindex)
      cat("\n\n")
      show(PKindex)
      cat("\n\n")
-     cat("***************************\n")
-     cat(" Please select PK model !! \n")
-     cat("***************************\n\n")  
+     cat("**********************************\n")
+     cat(" Now you can select a PK model.   \n")
+     cat("**********************************\n\n")  
      return(nor.fit(PKindex))   
   }
   
@@ -130,7 +131,7 @@ data.manipulate <- function()
      cat("\n")
      cat("*************************************************************\n")
      cat(" Enter data file name(.csv)                                  \n")
-     cat(" Data should consist of subject no., time, and concnetration \n")
+     cat(" Data should consist of subject no., time, and concentration \n")
      cat("*************************************************************\n\n")
      PK.file <-readline()
      PK.file<-paste(PK.file,".csv",sep="")
@@ -140,9 +141,9 @@ data.manipulate <- function()
      cat("\n\n")
      show(PKindex)
      cat("\n\n")
-     cat("***************************\n")
-     cat(" Please select PK model !! \n")
-     cat("***************************\n\n")  
+     cat("**********************************\n")
+     cat(" Now you can select a PK model.   \n")
+     cat("**********************************\n\n")   
      return(nor.fit(PKindex))   
   } 
   else if (pick == 3){
@@ -176,7 +177,7 @@ data.manipulate <- function()
         if(file.exists(PKname)){
            cat("\n")
            cat("****************************************\n")
-           cat(" The file name have been existed !!     \n")
+           cat(" The file name have been existed.       \n")
            cat(" Would you want to overwrite it ? (y/n) \n")
            cat("****************************************\n")
            ans<-readline()
@@ -193,7 +194,7 @@ data.manipulate <- function()
                       cat("\n")
                       cat("***********************************\n")
                       cat(" The file name have been existed **\n")
-                      cat(" Enter name again, OK !!         **\n")
+                      cat(" Enter name again, OK.           **\n")
                       cat("***********************************\n")
                       PKname<-readline()
                       PKname<-paste(PKname,".RData",sep="") 
@@ -225,7 +226,7 @@ PK.fit <- function(PKindex)
                  "2-Compartment PK Model",
                  "Macroconstant Exponential Functions",
                  "Go Back One Upper Level")
-  pick <- menu(file.menu, title = "<< Selection of PK Model >>")
+  pick <- menu(file.menu, title = "<< Selection of a PK Model >>")
   if (pick== 1){
      cat("\n\n")  
      one.list(PKindex)
@@ -826,7 +827,7 @@ savefile<-function(PKindex)
   ans<-readline()
   cat("\n")
   if (ans == "n" | ans == "N"){
-     cat("\nQuit !!\n")
+     cat("\nbye-bye!\n")
      }
   else {
      cat("Enter name you want to call this data\n")
@@ -836,7 +837,7 @@ savefile<-function(PKindex)
      if(file.exists(PKname)){
            cat("\n")
            cat("*******************************************\n")
-           cat("** The file name has been existed !!     **\n")
+           cat("** The file name has been existed.     **\n")
            cat("** Would you want to overwrite it ? (y/n)**\n")
            cat("*******************************************\n")
            ans<-readline()
@@ -851,8 +852,8 @@ savefile<-function(PKindex)
                   if (file.exists(PKname)){
                     cat("\n")
                     cat("***************************************\n")
-                    cat("** The file name has been existed !! **\n")
-                    cat("** Enter name again, OK !!           **\n")
+                    cat("** The file name has been existed. **\n")
+                    cat("** Enter name again, OK.           **\n")
                     cat("***************************************\n")
                     PKname<-readline()
                     PKname<-paste(PKname,".RData",sep="") 
@@ -1326,9 +1327,9 @@ entertitle<-function()
   cat("\nEnter the title of y-axis(Cp)\n")
   cat("(or a blank line to use default)\n\n") 
   yaxis<-readline()
-  #cat("\n\n Please Wait !!  Data is Processing !! \n")
+  #cat("\n\n Please Wait.  Data is Processing. \n")
   if (substr(yaxis, 1, 1) == "")  yaxis<-"Concentration"  else yaxis<-yaxis
-  #cat("\n\n Please Wait !!  Data is Processing !! \n")
+  #cat("\n\n Please Wait.  Data is Processing. \n")
   return(list(xaxis=xaxis,yaxis=yaxis))
 }
 

@@ -68,7 +68,7 @@ fbolus2<- function(PKindex,
           Domains=matrix(c(0.01,0.01,0.01,1,1,10,1,100),4,2),
           MemoryMatrix=TRUE)    
           
-     cat("<< The value of parameter fitted by genetic algorithm >>\n\n")
+     cat("<< The value of parameter obtained from genetic algorithm >>\n\n")
      
      namegen<-c("kel","k12","k21","Vd")
      outgen<-c(gen$par[1],gen$par[2],gen$par[3],gen$par[4])
@@ -177,7 +177,7 @@ finfu2<- function(PKindex,
           Domains=matrix(c(0.01,0.01,0.01,1,1,10,1,100),4,2),
           MemoryMatrix=TRUE)    
           
-     cat("<< The value of parameter fitted by genetic algorithm >>\n\n")
+     cat("<< The value of parameter obtained from genetic algorithm >>\n\n")
      
      namegen<-c("kel","k12","k21","Vd")
      outgen<-c(gen$par[1],gen$par[2],gen$par[3],gen$par[4])
@@ -272,7 +272,7 @@ ffirst2<- function(PKindex,
           Domains=matrix(c(0.01,0.01,0.01,0.01,1,10,1,10,1,100),5,2),
           MemoryMatrix=TRUE)     
           
-     cat("<< The value of parameter fitted by genetic algorithm >>\n\n")
+     cat("<< The value of parameter obtained from genetic algorithm >>\n\n")
      
      namegen<-c("ka","kel","k12","k21","Vd")
      outgen<-c(gen$par[1],gen$par[2],gen$par[3],gen$par[4],gen$par[5])

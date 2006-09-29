@@ -48,7 +48,7 @@ fmacro.one <- function(PKindex,
            wait.generations=10,starting.value=c(par[1,2],par[2,2]),
            BFGS=FALSE,print.level=0,boundary.enforcement=2,
            Domains=matrix(c(0,0,100,10),2,2),MemoryMatrix=TRUE)
-      cat("<< The value of parameter fitted by genetic algorithm >>\n\n")
+      cat("<< The value of parameter obtained from genetic algorithm >>\n\n")
       namegen<-c("A","a")
       outgen<-c(gen$par[1],gen$par[2])
       print(data.frame(Parameter=namegen,Value=outgen)) 
@@ -122,7 +122,7 @@ fmacro.two<- function(PKindex,
            Domains=matrix(c(1,0.01,0.1,0.01,100,10,50,1),4,2),
            MemoryMatrix=TRUE)     
            
-      cat("<< The value of parameter fitted by genetic algorithm >>\n\n")   
+      cat("<< The value of parameter obtained from genetic algorithm >>\n\n")   
       namegen<-c("A","a","B","b")
       outgen<-c(gen$par[1],gen$par[2],gen$par[3],gen$par[4])
       print(data.frame(Parameter=namegen,Value=outgen)) 
@@ -198,7 +198,7 @@ fmacro.three<- function(PKindex,
            Domains=matrix(c(1,0.1,1,0.01,0.1,0.001,100,10,50,10,10,1),6,2),
            MemoryMatrix=TRUE)
            
-      cat("<< The value of parameter fitted by genetic algorithm >>\n\n")   
+      cat("<< The value of parameter obtained from genetic algorithm >>\n\n")   
       namegen<-c("A","a","B","b","C","c")
       outgen<-c(gen$par[1],gen$par[2],gen$par[3],gen$par[4],gen$par[5],gen$par[6])
       print(data.frame(Parameter=namegen,Value=outgen)) 
