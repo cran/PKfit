@@ -494,11 +494,11 @@ sone.noniv.route <- function()
   cat("\n")
   
   file.menu <- c("Extravascular, SD, & 1-Ord Abs w Tlag",
-                 "Extravascular, SD, & 1-Ord Abs w\o Tlag",
-                 "Extravascular, SD, & Zero-Ord Abs w\o Tlag",
+                 "Extravascular, SD, & 1-Ord Abs w/o Tlag",
+                 "Extravascular, SD, & Zero-Ord Abs w/o Tlag",
                  "Extravascular, SD, 1-Ord Abs, & MM Elim w Tlag",
-                 "Extravascular, SD, 1-Ord Abs, & MM Elim w\o Tlag",
-                 "Extravascular, SD, Zero-Ord Abs, & MM Elim w\o Tlag",
+                 "Extravascular, SD, 1-Ord Abs, & MM Elim w/o Tlag",
+                 "Extravascular, SD, Zero-Ord Abs, & MM Elim w/o Tlag",
                  "Go Back One Upper Level")
   pick <- menu(file.menu, title = "<< Non IV Route >>")
   if (pick == 1){
