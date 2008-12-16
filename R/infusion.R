@@ -36,7 +36,24 @@ finfu1 <- function(PKindex,
       if (is.null(Vm) || is.null(Km) || is.null(Vd) ) {
         par<-data.frame(Parameter=c("Vm","Km","Vd"),Initial=c(0))
         par<-edit(par)
-        par<-check(par)
+        repeat{
+           if ( par[1,2] == 0 || par[2,2] ==0 || par[3,2]==0){
+             cat("\n")
+             cat("**********************************\n")
+             cat(" Parameter value can not be zero. \n")
+             cat(" Press enter to continue.         \n")
+             cat("**********************************\n\n")
+             readline()
+             cat("\n")
+             par<-edit(par)}   
+           else{
+             break
+             return(edit(par))}
+        } 
+        cat("\n")       
+        show(par)
+        
+        
       }
   } 
   else {
@@ -44,7 +61,22 @@ finfu1 <- function(PKindex,
       if (is.null(kel) || is.null(Vd)) {
         par<-data.frame(Parameter=c("kel","Vd"),Initial=c(0))
         par<-edit(par)
-        par<-check(par)
+        repeat{
+           if ( par[1,2] == 0 || par[2,2] ==0){
+             cat("\n")
+             cat("**********************************\n")
+             cat(" Parameter value can not be zero. \n")
+             cat(" Press enter to continue.         \n")
+             cat("**********************************\n\n")
+             readline()
+             cat("\n")
+             par<-edit(par)}   
+           else{
+             break
+             return(edit(par))}
+        } 
+        cat("\n")       
+        show(par)
 
       }
   }
@@ -60,7 +92,7 @@ finfu1 <- function(PKindex,
            dCpdt <- -parms["kel"]*y[1]
         list(dCpdt)
       }
-      modfun <- function(time,kel,Vd) { 
+      modfun1 <- function(time,kel,Vd) { 
         out<-lsoda(0,c(0,time),defun, parms=c(kel=kel,Vd=Vd),
                    rtol=1e-5,atol=1e-5)
         out[-1,2] 
@@ -76,7 +108,7 @@ finfu1 <- function(PKindex,
            dCpdt <- -(parms["Vm"]/parms["Vd"])*y[1]/(parms["Km"]/parms["Vd"]+y[1])
          list(dCpdt)
       }
-      modfun<-function(time,Vm,Km,Vd) { 
+      modfun2<-function(time,Vm,Km,Vd) { 
         out <- lsoda(0,c(0,time),defun,parms=c(Vm=Vm,Km=Km,Vd=Vd),rtol=1e-5,atol=1e-5)
         out[-1,2] 
       } 
@@ -94,11 +126,11 @@ finfu1 <- function(PKindex,
      cat("\n\n               << Subject",i,">>\n\n" )  
      objfun <- function(par) {
         if (MMe) {
-           out <- modfun(PKindex$time[PKindex$Subject==i], par[1], par[2],par[3])
+           out <- modfun2(PKindex$time[PKindex$Subject==i], par[1], par[2],par[3])
         } 
         else {
            ## No MM elimination
-           out <- modfun(PKindex$time[PKindex$Subject==i], par[1], par[2])
+           out <- modfun1(PKindex$time[PKindex$Subject==i], par[1], par[2])
         }
       gift <- which( PKindex$conc[PKindex$Subject==i] != 0 )
       switch(pick,
@@ -151,7 +183,7 @@ finfu1 <- function(PKindex,
      cat("\n<< Residual sum-of-squares and parameter values fitted by nls >>\n\n")
 
      if (MMe) {
-        fm<-nls(conc~modfun(time,Vm,Km,Vd),data=PKindex,subset=Subject==i,
+        fm<-nls(conc~modfun2(time,Vm,Km,Vd),data=PKindex,subset=Subject==i,
                 start=list(Vm=opt$par[1],Km=opt$par[2],Vd=opt$par[3]),trace=TRUE,
                 nls.control(tol=1))
         cat("\n")
@@ -159,7 +191,7 @@ finfu1 <- function(PKindex,
      } 
      else {
         ## No MM elimination
-        fm<-nls(conc ~ modfun(time, kel, Vd), data=PKindex,
+        fm<-nls(conc ~ modfun1(time, kel, Vd), data=PKindex,
                 start=list(kel=opt$par[1],Vd=opt$par[2]),trace=TRUE,subset=Subject==i,
                 nls.control(tol=1))
         cat("\n")
@@ -223,7 +255,24 @@ sinfu1 <- function(Subject=NULL,  # N Subj's
     if (is.null(kel) || is.null(Vd)) {
        par<-data.frame(Parameter=c("kel","Vd"),Initial=c(0))
        par<-edit(par)
-       par<-check(par)
+       repeat{
+           if ( par[1,2] == 0 || par[2,2] ==0){
+             cat("\n")
+             cat("**********************************\n")
+             cat(" Parameter value can not be zero. \n")
+             cat(" Press enter to continue.         \n")
+             cat("**********************************\n\n")
+             readline()
+             cat("\n")
+             par<-edit(par)}   
+           else{
+             break
+             return(edit(par))}
+        } 
+        cat("\n")       
+        show(par)
+       
+       
        cat("\n")
        par1<-par[1,2]
        par2<-par[2,2]
@@ -237,7 +286,23 @@ sinfu1 <- function(Subject=NULL,  # N Subj's
     if (is.null(Vm) || is.null(Km) || is.null(Vd)){
        par<-data.frame(Parameter=c("Vm","Km","Vd"),Initial=c(0))
        par<-edit(par)
-       par<-check(par)
+       repeat{
+           if ( par[1,2] == 0 || par[2,2] ==0 || par[3,2]==0){
+             cat("\n")
+             cat("**********************************\n")
+             cat(" Parameter value can not be zero. \n")
+             cat(" Press enter to continue.         \n")
+             cat("**********************************\n\n")
+             readline()
+             cat("\n")
+             par<-edit(par)}   
+           else{
+             break
+             return(edit(par))}
+        } 
+        cat("\n")       
+        show(par)
+       
        cat("\n")
        par1<-par[1,2]
        par2<-par[2,2]
@@ -313,8 +378,38 @@ sinfu1 <- function(Subject=NULL,  # N Subj's
          if (! MMe){
            cat("\n\nEnter error factor for kel\n")
            factor1<-scan(nlines=1,quiet=TRUE)
+           repeat{
+              if ( factor1 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor1<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor1)}
+           }
+           
            cat("\nEnter error factor for Vd\n")
            factor2<-scan(nlines=1,quiet=TRUE)
+           repeat{
+              if ( factor2 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor2<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor2)}
+           }
+           
            PKindex<-vector(Subject,mode="list")
            for( i in 1:Subject)  {
              cat("\n\n             << Subject",i,">>\n\n" )  
@@ -353,13 +448,59 @@ sinfu1 <- function(Subject=NULL,  # N Subj's
          else{
            cat("\n\nEnter error factor for Vm\n")
            factor1<-scan(nlines=1,quiet=TRUE)
+           repeat{
+              if ( factor1 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor1<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor1)}
+           }
+           
            cat("\nEnter error factor for Km\n")
            factor2<-scan(nlines=1,quiet=TRUE)
+           repeat{
+              if ( factor2 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor2<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor2)}
+           }
+           
            cat("\nEnter error factor for Vd\n")
-           PKindex<-vector(Subject,mode="list")
            factor3<-scan(nlines=1,quiet=TRUE)
+           repeat{
+              if ( factor3 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor3<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor3)}
+           }
+           
+           
+           PKindex<-vector(Subject,mode="list")
            for( i in 1:Subject)  {
-             cat("\n\n             << Subject",i,">>\n\n" )  
+           cat("\n\n             << Subject",i,">>\n\n" )  
              switch(pick-1,
                    {Vm<-par1+rnorm(1,mean=0,sd=factor1)
                     while(Vm<=0){
@@ -429,8 +570,38 @@ sinfu1 <- function(Subject=NULL,  # N Subj's
        if (! MMe){
          cat("\nEnter error factor for kel\n")
          factor1<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor1 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor1<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor1)}
+           }
+         
          cat("\nEnter error factor for Vd\n")
          factor2<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor2 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor2<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor2)}
+           }
+         
          cat("\n")
          cat("*******************************************************\n")
          cat("Summary Table                                          \n")
@@ -501,10 +672,10 @@ sinfu1 <- function(Subject=NULL,  # N Subj's
                     while(Vd<=0){
                       Vd<-par2*runif(1,min=-factor2,max=factor2)+par2}}     
               )    
-              time<-PKtime$time
+              time1<-PKtime$time
               parms<-c(kel=kel,Vd=Vd) 
-              XX<-data.frame(lsoda(0,c(0,time),defun,parms)) 
-              C1.lsoda[[j]]<-data.frame(XX[2:(length(time)+1),1],XX[2:(length(time)+1),2])
+              XX<-data.frame(lsoda(0,c(0,time1),defun,parms)) 
+              C1.lsoda[[j]]<-data.frame(XX[2:(length(time1)+1),1],XX[2:(length(time1)+1),2])
               colnames(C1.lsoda[[j]])<-list("time","concentration") 
            }
            else{
@@ -549,14 +720,14 @@ sinfu1 <- function(Subject=NULL,  # N Subj's
                     while(Vd<=0){
                        Vd<-par3*runif(1,min=-factor3,max=factor3)+par3}}       
               )
-              time<-PKtime$time
+              time1<-PKtime$time
               parms<-c(Vm=Vm,Km=Km,Vd=Vd)  
-              XX<-data.frame(lsoda(0,c(0,time),defun,parms))  
-              C1.lsoda[[j]]<-data.frame(XX[2:(length(time)+1),1],XX[2:(length(time)+1),2])
+              XX<-data.frame(lsoda(0,c(0,time1),defun,parms))  
+              C1.lsoda[[j]]<-data.frame(XX[2:(length(time1)+1),1],XX[2:(length(time1)+1),2])
               colnames(C1.lsoda[[j]])<-list("time","concentration")        
            } 
          }        
-         PKindex[[i]]<-montecarlo(C1.lsoda,time,i,re) 
+         PKindex[[i]]<-montecarlo(C1.lsoda,time1,i,re) 
      }  
      PKindex<-as.data.frame(do.call("rbind",PKindex))
      rownames(PKindex)<-seq(nrow(PKindex)) 

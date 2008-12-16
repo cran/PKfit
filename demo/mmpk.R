@@ -61,7 +61,7 @@ AUMC<-add$aumc
 output<-data.frame(x,y,cal,wei,AUC,AUMC)
 colnames(output)<-list("time","Observed","Calculated","Wtd Residuals","AUC","AUMC")
 
-get(getOption("device"))()
+windows(record=TRUE)
 
 par(mfrow=c(2,2))
 

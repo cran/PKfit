@@ -44,28 +44,6 @@ PKmenu <- function()
   }
 }
 
-check<-function(par)
-{
-   repeat{
-     if ( par[1,2] == 0 ){
-       cat("\n")
-       cat("**********************************\n")
-       cat(" Parameter value can not be zero. \n")
-       cat(" Press enter to continue.         \n")
-       cat("**********************************\n\n")
-       readline()
-       cat("\n")
-       par<-edit(par)
-       }   
-     else{
-       break
-       return(edit(par))
-      }
-  } 
-  cat("\n")       
-  show(par)     
-}
-
 
 #Normal fitting
 nor.fit <- function(PKindex)
@@ -651,7 +629,7 @@ plotting.lin <- function (PKindex, fm, i, pick, coef, xaxis, yaxis,
     
  #Divide plot console into four parts
   if (separateWindows) {
-    get(getOption("device"))()
+    windows(record=TRUE)
   }
   par(mfrow=c(2,2))
   main<-paste(c("Subject", i ,"plot"),collapse=" ")
@@ -734,7 +712,7 @@ plotting.non <- function (PKindex, fm, i, pick, xaxis, yaxis,
     
   ## Divide plot console into four parts
   if (separateWindows) {
-    get(getOption("device"))()
+    windows(record=TRUE)
   }
   par(mfrow=c(2,2))
   main<-paste(c("Subject", i ,"plot"),collapse=" ")
@@ -775,7 +753,7 @@ plotting.sim <- function(i,x,y,separateWindows=TRUE)
   #options(warn=-1)
   
   if (separateWindows) {
-    get(getOption("device"))()
+    windows(record=TRUE)
   }
   par(mfrow=c(2,2))
   main<-paste(c("Subject", i ,"plot"),collapse=" ")
@@ -1333,7 +1311,7 @@ entertitle<-function()
   return(list(xaxis=xaxis,yaxis=yaxis))
 }
 
-montecarlo<-function(C1.lsoda,time,i,re)
+montecarlo<-function(C1.lsoda,time1,i,re)
 {
   #options(warn=-1)
   conc<-rowMeans(as.data.frame(lapply(C1.lsoda,"[","concentration")))
@@ -1344,8 +1322,8 @@ montecarlo<-function(C1.lsoda,time,i,re)
                0,
                conc)
   
-  PKindex<-data.frame(i,time,conc)
-  get(getOption("device"))()
+  PKindex<-data.frame(i,time1,conc)
+  windows(record=TRUE)
   par(mfrow=c(2,2))
   x<-C1.lsoda$time
   #y<-C1.lsoda$concentration
@@ -1356,14 +1334,14 @@ montecarlo<-function(C1.lsoda,time,i,re)
   
   main<-paste(c("Subject", i ,"plot"),collapse=" ")
   plot(C1.lsoda,type="p",main=main,xlab="Time",ylab="Concentration")
-  lines(PKindex$time,PKindex$conc,type="l",lty=1,col="firebrick3",lwd="2")
+  lines(PKindex$time1,PKindex$conc,type="l",lty=1,col="firebrick3",lwd="2")
   mtext("Linear",side=3,cex=0.8)
   
   plot(x,y,log="y",type='p',main=main,xlab="Time",ylab="Concentration")
-  lines(PKindex$time,PKindex$conc,log="y",type="l",lty=1,col="firebrick3",lwd="2")
+  lines(PKindex$time1,PKindex$conc,log="y",type="l",lty=1,col="firebrick3",lwd="2")
   mtext("Semi-log",side=3,cex=0.8) 
   
-  len<-length(time)
+  len<-length(time1)
   sub<-len*re
   a<-seq(0,sub,by=len)
   AA<-a[2:(length(a)-1)]

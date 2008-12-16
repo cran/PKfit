@@ -62,7 +62,7 @@ auc<-AUC[length(y)]+auc.infinity
 aumc.infinity<-(x[length(x)]*y[length(y)])/coef[1,1]+x[length(x)]/((coef[1,1])^2)
 aumc<-AUMC[length(y)]+aumc.infinity
 
-get(getOption("device"))()
+windows(record=TRUE)
 
 par(mfrow=c(2,2))
 

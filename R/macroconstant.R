@@ -15,7 +15,22 @@ fmacro.one <- function(PKindex,
    if (is.null(A) || is.null(a) ) {
        par<-data.frame(Parameter=c("A","a"),Initial=c(0))
        par<-edit(par)
-       par<-check(par)
+       repeat{
+           if ( par[1,2] == 0 || par[2,2] ==0){
+             cat("\n")
+             cat("**********************************\n")
+             cat(" Parameter value can not be zero. \n")
+             cat(" Press enter to continue.         \n")
+             cat("**********************************\n\n")
+             readline()
+             cat("\n")
+             par<-edit(par)}   
+           else{
+             break
+             return(edit(par))}
+        } 
+        cat("\n")       
+        show(par)
    }
    
    cat("\n")
@@ -86,7 +101,22 @@ fmacro.two<- function(PKindex,
    if (is.null(A) || is.null(a) || is.null(B) || is.null(b) ) {
        par<-data.frame(Parameter=c("A","a","B","b"),Initial=c(0))
        par<-edit(par)
-       par<-check(par)
+       repeat{
+           if ( par[1,2] == 0 || par[2,2] ==0 || par[3,2]==0 || par[4,2]==0){
+             cat("\n")
+             cat("**********************************\n")
+             cat(" Parameter value can not be zero. \n")
+             cat(" Press enter to continue.         \n")
+             cat("**********************************\n\n")
+             readline()
+             cat("\n")
+             par<-edit(par)}   
+           else{
+             break
+             return(edit(par))}
+        } 
+        cat("\n")       
+        show(par)
       }
       
     cat("\n")
@@ -162,7 +192,22 @@ fmacro.three<- function(PKindex,
    if (is.null(A) || is.null(a) || is.null(B) || is.null(b) || is.null(C) || is.null(c) ) {
        par<-data.frame(Parameter=c("A","a","B","b","C","c"),Initial=c(0))
        par<-edit(par)
-       par<-check(par)
+       repeat{
+           if ( par[1,2] == 0 || par[2,2] ==0 || par[3,2]==0 || par[4,2]==0 || par[5,2]==0 || par[6,2]==0){
+             cat("\n")
+             cat("**********************************\n")
+             cat(" Parameter value can not be zero. \n")
+             cat(" Press enter to continue.         \n")
+             cat("**********************************\n\n")
+             readline()
+             cat("\n")
+             par<-edit(par)}   
+           else{
+             break
+             return(edit(par))}
+        } 
+        cat("\n")       
+        show(par)
       }
       
     cat("\n")
@@ -247,7 +292,24 @@ smacro.one <-function(Subject=NULL,  # N Subj's
    if (is.null(A) || is.null(a)) {
        par<-data.frame(Parameter=c("A","a"),Initial=c(0))
        par<-edit(par)
-       par<-check(par)
+       repeat{
+           if ( par[1,2] == 0 || par[2,2] ==0){
+             cat("\n")
+             cat("**********************************\n")
+             cat(" Parameter value can not be zero. \n")
+             cat(" Press enter to continue.         \n")
+             cat("**********************************\n\n")
+             readline()
+             cat("\n")
+             par<-edit(par)}   
+           else{
+             break
+             return(edit(par))}
+        } 
+        cat("\n")       
+        show(par)
+       
+       
        cat("\n")
        par1<-par[1,2]
        par2<-par[2,2]
@@ -283,7 +345,7 @@ smacro.one <-function(Subject=NULL,  # N Subj's
             cat("\n\n             << Subject",i,">>\n\n" ) 
             A<-par1
             a<-par2  
-            PKindex[[i]]<-smacro.one.out(PKtime,A,a,defun,par1,par2,Dose,i,type)
+            PKindex[[i]]<-smacro.one.out(PKtime,A,a,defun,par1,par2,i,type)
             }  
       PKindex<- as.data.frame(do.call("rbind",PKindex))
       rownames(PKindex) <- seq(nrow(PKindex)) 
@@ -292,8 +354,38 @@ smacro.one <-function(Subject=NULL,  # N Subj's
       else {
          cat("\n\nEnter error factor for A\n")
          factor1<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor1 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor1<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor1)}
+           }
+         
          cat("\nEnter error factor for a\n")
          factor2<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor2 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor2<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor2)}
+           }
+         
          PKindex<-vector(Subject,mode="list")
          for( i in 1:Subject)  { 
             cat("\n\n             << Subject",i,">>\n\n" )  
@@ -327,7 +419,7 @@ smacro.one <-function(Subject=NULL,  # N Subj's
                      while(a<=0){
                         a<-par2*runif(1,min=-factor2,max=factor2)+par2}}   
                     )
-            PKindex[[i]]<-smacro.one.out(PKtime,A,a,defun,par1,par2,Dose,i,type)    
+            PKindex[[i]]<-smacro.one.out(PKtime,A,a,defun,par1,par2,i,type)    
             }  
          PKindex<- as.data.frame(do.call("rbind",PKindex))
          rownames(PKindex) <- seq(nrow(PKindex)) 
@@ -353,8 +445,38 @@ smacro.one <-function(Subject=NULL,  # N Subj's
       
       cat("\nEnter error factor for A\n")
       factor1<-scan(nlines=1,quiet=TRUE)
+      repeat{
+              if ( factor1 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor1<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor1)}
+           }
+      
       cat("\nEnter error factor for a\n")
       factor2<-scan(nlines=1,quiet=TRUE)
+      repeat{
+              if ( factor2 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor2<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor2)}
+           }
+      
       cat("\n")
       cat("**********************************\n")
       cat("Summary Table                     \n")
@@ -400,13 +522,13 @@ smacro.one <-function(Subject=NULL,  # N Subj's
                        while(a<=0){
                           a<-par2*runif(1,min=-factor2,max=factor2)+par2}}
               )
-              time<-PKtime$time
-              defun<- A*exp(-a*time) 
-              XX<-data.frame(time,defun) 
-              C1.lsoda[[j]]<-data.frame(XX$time,XX$defun) 
+              time1<-PKtime$time
+              defun<- A*exp(-a*time1) 
+              XX<-data.frame(time1,defun) 
+              C1.lsoda[[j]]<-data.frame(XX$time1,XX$defun) 
               colnames(C1.lsoda[[j]])<-list("time","concentration")
            }
-         PKindex[[i]]<-montecarlo(C1.lsoda,time,i,re) 
+         PKindex[[i]]<-montecarlo(C1.lsoda,time1,i,re) 
          }
     PKindex<-as.data.frame(do.call("rbind",PKindex))
     rownames(PKindex)<-seq(nrow(PKindex)) 
@@ -441,7 +563,23 @@ smacro.two <-function(Subject=NULL,  # N Subj's
    if (is.null(A) || is.null(a) || is.null(B) || is.null(b)) {
        par<-data.frame(Parameter=c("A","a","B","b"),Initial=c(0))
        par<-edit(par)
-       par<-check(par)
+       repeat{
+           if ( par[1,2] == 0 || par[2,2] ==0 || par[3,2]==0 || par[4,2]==0){
+             cat("\n")
+             cat("**********************************\n")
+             cat(" Parameter value can not be zero. \n")
+             cat(" Press enter to continue.         \n")
+             cat("**********************************\n\n")
+             readline()
+             cat("\n")
+             par<-edit(par)}   
+           else{
+             break
+             return(edit(par))}
+        } 
+        cat("\n")       
+        show(par)
+       
        cat("\n")
        par1<-par[1,2]
        par2<-par[2,2]
@@ -482,7 +620,7 @@ smacro.two <-function(Subject=NULL,  # N Subj's
             a<-par2  
             B<-par3
             b<-par4
-            PKindex[[i]]<-smacro.two.out(PKtime,A,a,B,b,defun,par1,par2,par3,par4,Dose,i,type)
+            PKindex[[i]]<-smacro.two.out(PKtime,A,a,B,b,defun,par1,par2,par3,par4,i,type)
             }  
       PKindex<- as.data.frame(do.call("rbind",PKindex))
       rownames(PKindex) <- seq(nrow(PKindex)) 
@@ -491,12 +629,72 @@ smacro.two <-function(Subject=NULL,  # N Subj's
       else {
          cat("\n\nEnter error factor for A\n")
          factor1<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor1 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor1<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor1)}
+           }
+         
          cat("\nEnter error factor for a\n")
          factor2<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor2 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor2<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor2)}
+           }
+         
          cat("\nEnter error factor for B\n")
          factor3<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor3 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor3<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor3)}
+           }
+         
          cat("\nEnter error factor for b\n")
          factor4<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor4 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor4<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor4)}
+           }
+         
          PKindex<-vector(Subject,mode="list")
          for( i in 1:Subject)  { 
             cat("\n\n             << Subject",i,">>\n\n" )  
@@ -554,7 +752,7 @@ smacro.two <-function(Subject=NULL,  # N Subj's
                      while(b<=0){
                         b<-par4*runif(1,min=-factor4,max=factor4)+par4}}   
                     )
-            PKindex[[i]]<-smacro.two.out(PKtime,A,a,B,b,defun,par1,par2,par3,par4,Dose,i,type)          
+            PKindex[[i]]<-smacro.two.out(PKtime,A,a,B,b,defun,par1,par2,par3,par4,i,type)          
             }   
          PKindex<- as.data.frame(do.call("rbind",PKindex))
          rownames(PKindex) <- seq(nrow(PKindex)) 
@@ -580,12 +778,72 @@ smacro.two <-function(Subject=NULL,  # N Subj's
       
       cat("\nEnter error factor for A\n")
       factor1<-scan(nlines=1,quiet=TRUE)
+      repeat{
+              if ( factor1 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor1<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor1)}
+           }
+      
       cat("\nEnter error factor for a\n")
       factor2<-scan(nlines=1,quiet=TRUE)
+      repeat{
+              if ( factor2 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor2<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor2)}
+           }
+      
       cat("\nEnter error factor for B\n")
       factor3<-scan(nlines=1,quiet=TRUE)
+      repeat{
+              if ( factor3 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor3<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor3)}
+           }
+      
       cat("\nEnter error factor for b\n")
       factor4<-scan(nlines=1,quiet=TRUE)
+      repeat{
+              if ( factor4 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor4<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor4)}
+           }
+      
       cat("\n")
       cat("**********************************\n")
       cat("Summary Table                     \n")
@@ -655,13 +913,13 @@ smacro.two <-function(Subject=NULL,  # N Subj's
                      while(b<=0){
                         b<-par4*runif(1,min=-factor4,max=factor4)+par4}}   
               )
-              time<-PKtime$time
-              defun<- A*exp(-a*time)+B*exp(-b*time) 
-              XX<-data.frame(time,defun) 
-              C1.lsoda[[j]]<-data.frame(XX$time,XX$defun) 
+              time1<-PKtime$time
+              defun<- A*exp(-a*time1)+B*exp(-b*time1) 
+              XX<-data.frame(time1,defun) 
+              C1.lsoda[[j]]<-data.frame(XX$time1,XX$defun) 
               colnames(C1.lsoda[[j]])<-list("time","concentration")
            }
-         PKindex[[i]]<-montecarlo(C1.lsoda,time,i,re) 
+         PKindex[[i]]<-montecarlo(C1.lsoda,time1,i,re) 
          }
     PKindex<-as.data.frame(do.call("rbind",PKindex))
     rownames(PKindex)<-seq(nrow(PKindex)) 
@@ -700,7 +958,24 @@ smacro.three <-function(Subject=NULL,  # N Subj's
    if (is.null(A) || is.null(a) || is.null(B) || is.null(b) || is.null(C) || is.null(c)) {
        par<-data.frame(Parameter=c("A","a","B","b","C","c"),Initial=c(0))
        par<-edit(par)
-       par<-check(par)
+       repeat{
+           if ( par[1,2] == 0 || par[2,2] ==0 || par[3,2]==0 || par[4,2]==0 || par[5,2]==0 || par[6,2]==0){
+             cat("\n")
+             cat("**********************************\n")
+             cat(" Parameter value can not be zero. \n")
+             cat(" Press enter to continue.         \n")
+             cat("**********************************\n\n")
+             readline()
+             cat("\n")
+             par<-edit(par)}   
+           else{
+             break
+             return(edit(par))}
+        } 
+        cat("\n")       
+        show(par)
+       
+       
        cat("\n")
        par1<-par[1,2]
        par2<-par[2,2]
@@ -747,7 +1022,7 @@ smacro.three <-function(Subject=NULL,  # N Subj's
             b<-par4
             C<-par5
             c<-par6
-            PKindex[[i]]<-smacro.three.out(PKtime,A,a,B,b,C,c,defun,par1,par2,par3,par4,par5,par6,Dose,i,type)  
+            PKindex[[i]]<-smacro.three.out(PKtime,A,a,B,b,C,c,defun,par1,par2,par3,par4,par5,par6,i,type)  
             }  
       PKindex<- as.data.frame(do.call("rbind",PKindex))
       rownames(PKindex) <- seq(nrow(PKindex)) 
@@ -756,16 +1031,106 @@ smacro.three <-function(Subject=NULL,  # N Subj's
       else {
          cat("\n\nEnter error factor for A\n")
          factor1<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor1 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor1<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor1)}
+           }
+         
          cat("\nEnter error factor for a\n")
          factor2<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor2 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor2<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor2)}
+           }
+         
          cat("\nEnter error factor for B\n")
          factor3<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor3 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor3<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor3)}
+           }
+         
          cat("\nEnter error factor for b\n")
          factor4<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor4 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor4<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor4)}
+           }
+         
          cat("\nEnter error factor for C\n")
          factor5<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor5 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor5<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor5)}
+           }
+         
          cat("\nEnter error factor for c\n")
          factor6<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor6 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor6<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor6)}
+           }
+         
          PKindex<-vector(Subject,mode="list")
          for( i in 1:Subject)  { 
             cat("\n\n             << Subject",i,">>\n\n" )  
@@ -847,7 +1212,7 @@ smacro.three <-function(Subject=NULL,  # N Subj's
                      while(c<=0){
                         c<-par6*runif(1,min=-factor6,max=factor6)+par6}}   
                     )
-            PKindex[[i]]<-smacro.three.out(PKtime,A,a,B,b,C,c,defun,par1,par2,par3,par4,par5,par6,Dose,i,type)          
+            PKindex[[i]]<-smacro.three.out(PKtime,A,a,B,b,C,c,defun,par1,par2,par3,par4,par5,par6,i,type)          
             }  
          PKindex<- as.data.frame(do.call("rbind",PKindex))
          rownames(PKindex) <- seq(nrow(PKindex)) 
@@ -873,16 +1238,106 @@ smacro.three <-function(Subject=NULL,  # N Subj's
       
       cat("\nEnter error factor for A\n")
       factor1<-scan(nlines=1,quiet=TRUE)
+      repeat{
+              if ( factor1 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor1<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor1)}
+           }
+      
       cat("\nEnter error factor for a\n")
       factor2<-scan(nlines=1,quiet=TRUE)
+      repeat{
+              if ( factor2 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor2<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor2)}
+           }
+      
       cat("\nEnter error factor for B\n")
       factor3<-scan(nlines=1,quiet=TRUE)
+      repeat{
+              if ( factor3 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor3<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor3)}
+           }
+      
       cat("\nEnter error factor for b\n")
       factor4<-scan(nlines=1,quiet=TRUE)
+      repeat{
+              if ( factor4 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor4<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor4)}
+           }
+      
       cat("\nEnter error factor for C\n")
       factor5<-scan(nlines=1,quiet=TRUE)
+      repeat{
+              if ( factor5 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor5<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor5)}
+           }
+      
       cat("\nEnter error factor for c\n")
       factor6<-scan(nlines=1,quiet=TRUE)
+      repeat{
+              if ( factor6 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor6<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor6)}
+           }
+      
       cat("\n")
       cat("************************************\n")
       cat("Summary Table                       \n")
@@ -976,13 +1431,13 @@ smacro.three <-function(Subject=NULL,  # N Subj's
                      while(c<=0){
                         c<-par6*runif(1,min=-factor6,max=factor6)+par6}}   
               )
-              time<-PKtime$time
-              defun<- A*exp(-a*time)+B*exp(-b*time)+C*exp(-c*time)
-              XX<-data.frame(time,defun) 
-              C1.lsoda[[j]]<-data.frame(XX$time,XX$defun) 
+              time1<-PKtime$time
+              defun<- A*exp(-a*time1)+B*exp(-b*time1)+C*exp(-c*time1)
+              XX<-data.frame(time1,defun) 
+              C1.lsoda[[j]]<-data.frame(XX$time1,XX$defun) 
               colnames(C1.lsoda[[j]])<-list("time","concentration")
            }
-         PKindex[[i]]<-montecarlo(C1.lsoda,time,i,re) 
+         PKindex[[i]]<-montecarlo(C1.lsoda,time1,i,re) 
          }
     PKindex<-as.data.frame(do.call("rbind",PKindex))
     rownames(PKindex)<-seq(nrow(PKindex)) 

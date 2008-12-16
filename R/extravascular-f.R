@@ -2,15 +2,14 @@
 
 
 ### Normal fitting
-### One compartment PK model extravascualr single dose first-order absorption 
-### optional Michaelis-Menten Elimination
-### optional lag time
+### One compartment PK model extravascualr single dose first-order absorption
+### With lag time 
 ffirst.lag<- function(PKindex,
                       Dose=NULL, 
                       ka=NULL,
-                      Vm=NULL,Km=NULL, # MMe=TRUE
+                      Vm=NULL,Km=NULL, 
                       Vd=NULL,
-                      kel=NULL,        # MMe=FALSE
+                      kel=NULL,        
                       Tlag=TRUE,
                       MMe=FALSE) 
 {
@@ -37,7 +36,22 @@ ffirst.lag<- function(PKindex,
       if (is.null(ka) || is.null(Vm) || is.null(Km) || is.null(Vd) ) {
         par<-data.frame(Parameter=c("ka","Vm","Km","Vd"),Initial=c(0))
         par<-edit(par)
-        par<-check(par)
+        repeat{
+           if ( par[1,2] == 0 || par[2,2] ==0 || par[3,2]==0 ||par[4,2]==0){
+             cat("\n")
+             cat("**********************************\n")
+             cat(" Parameter value can not be zero. \n")
+             cat(" Press enter to continue.         \n")
+             cat("**********************************\n\n")
+             readline()
+             cat("\n")
+             par<-edit(par)}   
+           else{
+             break
+             return(edit(par))}
+        } 
+        cat("\n")       
+        show(par)
 
       }
    } 
@@ -45,7 +59,22 @@ ffirst.lag<- function(PKindex,
       if (is.null(ka) || is.null(kel) || is.null(Vd) ) {
         par<-data.frame(Parameter=c("ka","kel","Vd"),Initial=c(0))
         par<-edit(par)
-        par<-check(par)
+        repeat{
+           if ( par[1,2] == 0 || par[2,2] ==0 || par[3,2]==0){
+             cat("\n")
+             cat("**********************************\n")
+             cat(" Parameter value can not be zero. \n")
+             cat(" Press enter to continue.         \n")
+             cat("**********************************\n\n")
+             readline()
+             cat("\n")
+             par<-edit(par)}   
+           else{
+             break
+             return(edit(par))}
+        } 
+        cat("\n")       
+        show(par)
 
       }
    }
@@ -53,10 +82,7 @@ ffirst.lag<- function(PKindex,
    
    cat("\n")
    
-   if ( MMe ) {
-   
-     if (Tlag){
-     
+   if ( MMe ) { 
       ## User-supplied function w Michaelis-Mention elimination & w lag time
       defun<- function(time, y, parms) { 
       if(time <= Tlag) {
@@ -70,29 +96,13 @@ ffirst.lag<- function(PKindex,
       list(c(dy1dt,dy2dt)) 
       } 
     
-      modfun <- function(time,ka,Vm,Km,Vd) { 
+      modfun2 <- function(time,ka,Vm,Km,Vd) { 
       out <- lsoda(c(Dose,0),c(0,time),defun,parms=c(ka=ka,Vm=Vm,Km=Km,Vd=Vd),
                    rtol=1e-8,atol=1e-8) 
       out[-1,3] 
-      }
-     }
-     else{
-       ## User-supplied function with MM elimination w/o lag time
-      defun<- function(time, y, parms) { 
-      dy1dt <- -parms["ka"] * y[1]
-      dy2dt <-  parms["ka"] * y[1]/parms["Vd"] - (parms["Vm"]/parms["Vd"])*y[2]/(parms["Km"]/parms["Vd"]+y[2])
-      list(c(dy1dt,dy2dt)) 
       } 
-    
-      modfun <- function(time,ka,Vm,Km,Vd) { 
-      out <- lsoda(c(Dose,0),c(0,time),defun,parms=c(ka=ka,Vm=Vm,Km=Km,Vd=Vd),
-                   rtol=1e-5,atol=1e-7) 
-      out[-1,3] 
-      }
-     } 
    } 
    else {
-     if (Tlag){
       ## User-supplied function w/o MM elimination w lag time
       defun<- function(time, y, parms) { 
       if(time<=Tlag) {
@@ -106,26 +116,11 @@ ffirst.lag<- function(PKindex,
       list(c(dy1dt,dy2dt)) 
       } 
     
-      modfun <- function(time,ka,kel,Vd) { 
+      modfun1 <- function(time,ka,kel,Vd) { 
       out <- lsoda(c(Dose,0),c(0,time),defun,parms=c(ka=ka,kel=kel,Vd=Vd),
                    rtol=1e-5,atol=1e-8) 
       out[-1,3] 
-      }
-     }
-     else{
-      ## User-supplied function w/o MM elimination w/o lag time
-      defun <- function(time, y, parms) { 
-      dy1dt <- -parms["ka"] * y[1]
-      dy2dt <-  parms["ka"] * y[1]/parms["Vd"] - parms["kel"] * y[2]
-      list(c(dy1dt,dy2dt)) 
-      } 
-    
-      modfun <- function(time,ka,kel,Vd) { 
-      out <- lsoda(c(Dose, 0),c(0,time),defun,parms=c(ka=ka,kel=kel,Vd=Vd),
-                   rtol=1e-5,atol=1e-7) 
-      out[-1,3] 
-      }
-     }  
+      }  
    }
    ## Select weighting schemes
    file.menu <- c("equal weight", 
@@ -139,10 +134,10 @@ ffirst.lag<- function(PKindex,
       cat("\n\n               << Subject",i,">>\n\n" )  
       objfun <- function(par) {
         if (MMe) {
-           out <- modfun(PKindex$time[PKindex$Subject==i], par[1], par[2],par[3],par[4])
+           out <- modfun2(PKindex$time[PKindex$Subject==i], par[1], par[2],par[3],par[4]) 
         } 
         else  {
-           out <- modfun(PKindex$time[PKindex$Subject==i], par[1], par[2], par[3])
+           out <- modfun1(PKindex$time[PKindex$Subject==i], par[1], par[2], par[3])
         }
      gift <- which( PKindex$conc[PKindex$Subject==i] != 0 )
      switch(pick,
@@ -193,7 +188,7 @@ ffirst.lag<- function(PKindex,
       cat("\n<< Residual sum-of-squares and parameter values fitted by nls >>\n\n")
       
       if (MMe) {
-        fm<-nls(conc ~ modfun(time, ka, Vm, Km, Vd), data=PKindex,subset=Subject==i,
+        fm<-nls(conc ~ modfun2(time, ka, Vm, Km, Vd), data=PKindex,subset=Subject==i,
             start=list(ka=opt$par[1],Vm=opt$par[2],Km=opt$par[3],Vd=opt$par[4]),trace=TRUE,
             nls.control(maxiter=500,tol=1.0))
         cat("\n")
@@ -201,7 +196,7 @@ ffirst.lag<- function(PKindex,
       } 
       else {
         ## No MM elimination
-        fm <-nls(conc ~ modfun(time, ka, kel, Vd), data=PKindex,subset=Subject==i,
+        fm <-nls(conc ~ modfun1(time, ka, kel, Vd), data=PKindex,subset=Subject==i,
              start=list(ka=opt$par[1],kel=opt$par[2],Vd=opt$par[3]),trace=TRUE,
              nls.control(tol=1))
         cat("\n")
@@ -214,11 +209,6 @@ ffirst.lag<- function(PKindex,
 } 
 
 ## Legacy function
-ffirst.nolag <- function(PKindex,...) {
-  ffirst.lag(PKindex,...,Tlag=FALSE,MMe=FALSE)
-}
-
-## Legacy function
 ffirst.lagm <- function(PKindex,...) {
   ffirst.lag(PKindex,...,Tlag=TRUE,MMe=TRUE)
 }
@@ -227,6 +217,198 @@ ffirst.lagm <- function(PKindex,...) {
 ffirst.nolagm <- function(PKindex,...) {
   ffirst.lag(PKindex,...,Tlag=FALSE,MMe=TRUE)
 }
+
+### Normal fitting
+### One compartment PK model extravascualr single dose first-order absorption 
+### Without lag time
+ffirst.nolag<- function(PKindex,
+                        Dose=NULL, 
+                        ka=NULL,
+                        Vm=NULL,Km=NULL, 
+                        Vd=NULL,
+                        kel=NULL,        
+                        Tlag=FALSE,
+                        MMe=TRUE) 
+{
+   #options(warn=-1)
+        
+   ## Input dose and Tlag and initial value for ka, kel and Vd
+
+   if (is.null(Dose)) {
+     cat("Enter Dose value\n")
+     Dose <- scan(nlines=1,quiet=TRUE)
+   } 
+   else {
+     cat("Dose from arguments is = ",Dose,"\n")
+   }
+   
+   
+   if (MMe){
+      if (is.null(ka) || is.null(Vm) || is.null(Km) || is.null(Vd) ) {
+        par<-data.frame(Parameter=c("ka","Vm","Km","Vd"),Initial=c(0))
+        par<-edit(par)
+        repeat{
+           if ( par[1,2] == 0 || par[2,2] ==0 || par[3,2]==0 ||par[4,2]==0){
+             cat("\n")
+             cat("**********************************\n")
+             cat(" Parameter value can not be zero. \n")
+             cat(" Press enter to continue.         \n")
+             cat("**********************************\n\n")
+             readline()
+             cat("\n")
+             par<-edit(par)}   
+           else{
+             break
+             return(edit(par))}
+        } 
+        cat("\n")       
+        show(par)
+
+      }
+   } 
+   else{
+      if (is.null(ka) || is.null(kel) || is.null(Vd) ) {
+        par<-data.frame(Parameter=c("ka","kel","Vd"),Initial=c(0))
+        par<-edit(par)
+        repeat{
+           if ( par[1,2] == 0 || par[2,2] ==0 || par[3,2]==0){
+             cat("\n")
+             cat("**********************************\n")
+             cat(" Parameter value can not be zero. \n")
+             cat(" Press enter to continue.         \n")
+             cat("**********************************\n\n")
+             readline()
+             cat("\n")
+             par<-edit(par)}   
+           else{
+             break
+             return(edit(par))}
+        } 
+        cat("\n")       
+        show(par)
+
+      }
+   }
+   
+   
+   cat("\n")
+   
+   if ( MMe ) {
+
+      ## User-supplied function with MM elimination w/o lag time
+      defun<- function(time, y, parms) { 
+      dy1dt <- -parms["ka"] * y[1]
+      dy2dt <-  parms["ka"] * y[1]/parms["Vd"] - (parms["Vm"]/parms["Vd"])*y[2]/(parms["Km"]/parms["Vd"]+y[2])
+      list(c(dy1dt,dy2dt)) 
+      } 
+    
+      modfun4 <- function(time,ka,Vm,Km,Vd) { 
+      out <- lsoda(c(Dose,0),c(0,time),defun,parms=c(ka=ka,Vm=Vm,Km=Km,Vd=Vd),
+                   rtol=1e-5,atol=1e-7) 
+      out[-1,3] 
+      } 
+   } 
+   else {
+      ## User-supplied function w/o MM elimination w/o lag time
+      defun <- function(time, y, parms) { 
+      dy1dt <- -parms["ka"] * y[1]
+      dy2dt <-  parms["ka"] * y[1]/parms["Vd"] - parms["kel"] * y[2]
+      list(c(dy1dt,dy2dt)) 
+      } 
+    
+      modfun3 <- function(time,ka,kel,Vd) { 
+      out <- lsoda(c(Dose, 0),c(0,time),defun,parms=c(ka=ka,kel=kel,Vd=Vd),
+                   rtol=1e-5,atol=1e-7) 
+      out[-1,3] 
+      }
+   }
+   ## Select weighting schemes
+   file.menu <- c("equal weight", 
+                  "1/Cp",
+                  "1/Cp^2")           
+   pick <- menu(file.menu, title = "<< Weighting Schemes >>")
+
+   with(entertitle(),{
+
+   for( i in 1:length(unique(PKindex$Subject)))  {
+      cat("\n\n               << Subject",i,">>\n\n" )  
+      objfun <- function(par) {
+        if (MMe) {
+           out <- modfun4(PKindex$time[PKindex$Subject==i], par[1], par[2],par[3],par[4]) 
+        } 
+        else  {
+           out <- modfun3(PKindex$time[PKindex$Subject==i], par[1], par[2], par[3])
+        }
+     gift <- which( PKindex$conc[PKindex$Subject==i] != 0 )
+     switch(pick,
+            sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2),
+            sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2/PKindex$conc[gift]),
+            sum(((PKindex$conc[PKindex$Subject==i][gift] - out[gift])/PKindex$conc[gift])^2))
+     }
+     if (MMe) {
+          gen<-genoud(objfun,nvars=4,max=FALSE,pop.size=30,max.generations=20,
+               wait.generations=10,starting.value=c(par[1,2],par[2,2],par[3,2],par[4,2]),
+               BFGS=FALSE,print.level=0,boundary.enforcement=2,
+               Domains=matrix(c(0.01,1,1,1,10,100,100,100),4,2),
+               MemoryMatrix=TRUE) 
+      } 
+      else {
+          gen<-genoud(objfun,nvars=3,max=FALSE,pop.size=20,max.generations=15,
+               wait.generations=10,starting.value=c(par[1,2],par[2,2],par[3,2]),
+               BFGS=FALSE,print.level=0,boundary.enforcement=2,
+               Domains=matrix(c(0.01,0.01,1,10,1,100),3,2),
+               MemoryMatrix=TRUE)
+      }
+      cat("<< The value of parameter obtained from genetic algorithm >>\n\n")
+      if (MMe) {
+        namegen<-c("ka","Vm","Km","Vd")
+        outgen<-c(gen$par[1],gen$par[2],gen$par[3],gen$par[4])
+      } 
+      else {
+        ## No MM elimination
+        namegen<-c("ka","kel","Vd")
+        outgen<-c(gen$par[1],gen$par[2],gen$par[3])
+      }
+      print(data.frame(Parameter=namegen,Value=outgen))  
+      F<-objfun(gen$par)
+     
+      if (MMe) {
+        opt<-optim(c(gen$par[1],gen$par[2],gen$par[3],gen$par[4]),objfun, method="Nelder-Mead")
+        nameopt<-c("ka","Vm","Km","Vd")
+        outopt<-c(opt$par[1],opt$par[2],opt$par[3],opt$par[4])
+      }
+      else {
+        opt<-optim(c(gen$par[1],gen$par[2],gen$par[3]),objfun, method="Nelder-Mead") 
+        nameopt<-c("ka","kel","Vd")
+        outopt<-c(opt$par[1],opt$par[2],opt$par[3])
+      }
+      
+      cat("\n<< The value of parameter fitted by Nelder-Mead Simplex slgorithm >>\n\n")
+      print(data.frame(Parameter=nameopt,Value=outopt))
+      cat("\n<< Residual sum-of-squares and parameter values fitted by nls >>\n\n")
+      
+      if (MMe) {
+        fm<-nls(conc ~ modfun4(time, ka, Vm, Km, Vd), data=PKindex,subset=Subject==i,
+            start=list(ka=opt$par[1],Vm=opt$par[2],Km=opt$par[3],Vd=opt$par[4]),trace=TRUE,
+            nls.control(maxiter=500,tol=1.0))
+        cat("\n")
+        plotting.non(PKindex, fm, i, pick, xaxis, yaxis)
+      } 
+      else {
+        ## No MM elimination
+        fm <-nls(conc ~ modfun3(time, ka, kel, Vd), data=PKindex,subset=Subject==i,
+             start=list(ka=opt$par[1],kel=opt$par[2],Vd=opt$par[3]),trace=TRUE,
+             nls.control(tol=1))
+        cat("\n")
+        coef<-data.frame(coef(fm)["kel"])
+        plotting.lin(PKindex, fm, i, pick, coef, xaxis, yaxis)
+      }
+   }
+   })
+   cat("\n")   
+} 
+
+
 
 
 
@@ -274,7 +456,24 @@ sfirst.nolag <- function(Subject=NULL,  # N Subj's
       if (is.null(ka) || is.null(Vm) || is.null(Km)|| is.null(Vd)) {
          par<-data.frame(Parameter=c("ka","Vm","Km","Vd"),Initial=c(0))
          par<-edit(par)
-         par<-check(par)
+         repeat{
+           if ( par[1,2] == 0 || par[2,2] ==0 || par[3,2]==0 || par[4,2]==0){
+             cat("\n")
+             cat("**********************************\n")
+             cat(" Parameter value can not be zero. \n")
+             cat(" Press enter to continue.         \n")
+             cat("**********************************\n\n")
+             readline()
+             cat("\n")
+             par<-edit(par)}   
+           else{
+             break
+             return(edit(par))}
+        } 
+        cat("\n")       
+        show(par)
+         
+         
          cat("\n")
          par1<-par[1,2]
          par2<-par[2,2]
@@ -292,7 +491,24 @@ sfirst.nolag <- function(Subject=NULL,  # N Subj's
       if ( is.null(ka) || is.null(kel) || is.null(Vd)){
          par<-data.frame(Parameter=c("ka","kel","Vd"),Initial=c(0))
          par<-edit(par)
-         par<-check(par)
+         repeat{
+           if ( par[1,2] == 0 || par[2,2] ==0 || par[3,2]==0){
+             cat("\n")
+             cat("**********************************\n")
+             cat(" Parameter value can not be zero. \n")
+             cat(" Press enter to continue.         \n")
+             cat("**********************************\n\n")
+             readline()
+             cat("\n")
+             par<-edit(par)}   
+           else{
+             break
+             return(edit(par))}
+        } 
+        cat("\n")       
+        show(par)
+         
+         
          cat("\n")
          par1<-par[1,2]
          par2<-par[2,2]
@@ -400,10 +616,54 @@ sfirst.nolag <- function(Subject=NULL,  # N Subj's
           if ( !MMe ){
              cat("\n\nEnter error factor for ka\n")
              factor1<-scan(nlines=1,quiet=TRUE)
+             repeat{
+              if ( factor1 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor1<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor1)}
+           } 
+             
              cat("\nEnter error factor for kel\n")
              factor2<-scan(nlines=1,quiet=TRUE)
+             repeat{
+              if ( factor2 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor2<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor2)}
+           } 
+             
              cat("\nEnter error factor for Vd\n")
              factor3<-scan(nlines=1,quiet=TRUE)
+             repeat{
+              if ( factor3 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor3<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor3)}
+           } 
            
              PKindex<-vector(Subject,mode="list")
              for( i in 1:Subject)  {
@@ -455,12 +715,71 @@ sfirst.nolag <- function(Subject=NULL,  # N Subj's
           else{
              cat("\n\nEnter error factor for ka\n")
              factor1<-scan(nlines=1,quiet=TRUE)
+             repeat{
+              if ( factor1 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor1<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor1)}
+           } 
+             
              cat("\nEnter error factor for Vm\n")
              factor2<-scan(nlines=1,quiet=TRUE)
+             repeat{
+              if ( factor2 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor2<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor2)}
+           } 
+             
              cat("\nEnter error factor for Km\n")
              factor3<-scan(nlines=1,quiet=TRUE)
+             repeat{
+              if ( factor3 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor3<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor3)}
+           } 
+             
              cat("\nEnter error factor for Vd\n")
              factor4<-scan(nlines=1,quiet=TRUE)
+             repeat{
+              if ( factor4 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor4<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor4)}
+           } 
              
              PKindex<-vector(Subject,mode="list")
              for( i in 1:Subject)  {
@@ -547,12 +866,72 @@ sfirst.nolag <- function(Subject=NULL,  # N Subj's
          if (Tlag){
           cat("\nEnter error factor for ka\n")
           factor1<-scan(nlines=1,quiet=TRUE)
+          repeat{
+              if ( factor1 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor1<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor1)}
+           } 
+          
           cat("\nEnter error factor for Vm\n")
           factor2<-scan(nlines=1,quiet=TRUE)
+          repeat{
+              if ( factor2 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor2<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor2)}
+           } 
+          
           cat("\nEnter error factor for Km\n")
           factor3<-scan(nlines=1,quiet=TRUE)
+          repeat{
+              if ( factor3 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor3<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor3)}
+           } 
+          
           cat("\nEnter error factor for Vd\n")
           factor4<-scan(nlines=1,quiet=TRUE)
+          repeat{
+              if ( factor4 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor4<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor4)}
+           } 
+          
           cat("\n")
           cat("************************************************************************\n")
           cat("Summary Table                                                           \n")
@@ -682,13 +1061,13 @@ sfirst.nolag <- function(Subject=NULL,  # N Subj's
                     while(Vd<=0){
                        Vd<-par3*runif(1,min=-factor3,max=factor3)+par3}}   
                     )    
-              time<-PKtime$time
+              time1<-PKtime$time
               parms<-c(ka=ka,kel=kel,Vd=Vd)  
-              XX<-data.frame(lsoda(c(Dose,0),c(0,time), defun, parms))  
-              good<-ifelse(XX[2:(length(time)+1),3]<=1e-5,
+              XX<-data.frame(lsoda(c(Dose,0),c(0,time1), defun, parms))  
+              good<-ifelse(XX[2:(length(time1)+1),3]<=1e-5,
                            0,
-                           XX[2:(length(time)+1),3])
-              C1.lsoda[[j]]<-data.frame(XX[2:(length(time)+1),1],good)
+                           XX[2:(length(time1)+1),3])
+              C1.lsoda[[j]]<-data.frame(XX[2:(length(time1)+1),1],good)
               colnames(C1.lsoda[[j]])<-list("time","concentration") 
            }
            else{
@@ -745,17 +1124,17 @@ sfirst.nolag <- function(Subject=NULL,  # N Subj's
                     while(Vd<=0){
                        Vd<-par4*runif(1,min=-factor4,max=factor4)+par4}}  
                     )
-              time<-PKtime$time
+              time1<-PKtime$time
               parms<-c(ka=ka,Vm=Vm,Km=Km,Vd=Vd) 
-              XX<-data.frame(lsoda(c(Dose,0),c(0,time), defun, parms))  
-              good<-ifelse(XX[2:(length(time)+1),3]<=1e-5,
+              XX<-data.frame(lsoda(c(Dose,0),c(0,time1), defun, parms))  
+              good<-ifelse(XX[2:(length(time1)+1),3]<=1e-5,
                            0,
-                           XX[2:(length(time)+1),3])
-              C1.lsoda[[j]]<-data.frame(XX[2:(length(time)+1),1],good)
+                           XX[2:(length(time1)+1),3])
+              C1.lsoda[[j]]<-data.frame(XX[2:(length(time1)+1),1],good)
               colnames(C1.lsoda[[j]])<-list("time","concentration") 
            } 
          }        
-         PKindex[[i]]<-montecarlo(C1.lsoda,time,i,re) 
+         PKindex[[i]]<-montecarlo(C1.lsoda,time1,i,re) 
      }  
      PKindex<-as.data.frame(do.call("rbind",PKindex))
      rownames(PKindex)<-seq(nrow(PKindex)) 

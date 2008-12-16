@@ -25,7 +25,22 @@ fbolus2<- function(PKindex,
    if (is.null(kel) || is.null(k12) || is.null(k21) || is.null(Vd) ) {
         par<-data.frame(Parameter=c("kel","k12","k21","Vd"),Initial=c(0))
         par<-edit(par)
-        par<-check(par)
+        repeat{
+           if ( par[1,2] == 0 || par[2,2] ==0 || par[3,2]==0 || par[4,2]==0){
+             cat("\n")
+             cat("**********************************\n")
+             cat(" Parameter value can not be zero. \n")
+             cat(" Press enter to continue.         \n")
+             cat("**********************************\n\n")
+             readline()
+             cat("\n")
+             par<-edit(par)}   
+           else{
+             break
+             return(edit(par))}
+        } 
+        cat("\n")       
+        show(par)
    }
    
    cat("\n")
@@ -36,7 +51,7 @@ fbolus2<- function(PKindex,
      list(c(dCp1dt,dCp2dt)) 
    } 
     
-   modfun <- function(time,kel,k12,k21, Vd) { 
+   modfun1 <- function(time,kel,k12,k21, Vd) { 
      out <- lsoda(c(Dose/Vd,0),c(0,time),defun,parms=c(kel=kel,k12=k12,k21=k21,Vd=Vd),
                   rtol=1e-5,atol=1e-5) 
      out[-1,2] 
@@ -53,7 +68,7 @@ fbolus2<- function(PKindex,
    for( i in 1:length(unique(PKindex$Subject)))  {
      cat("\n\n               << Subject",i,">>\n\n" )  
      objfun <- function(par) {
-        out <- modfun(PKindex$time[PKindex$Subject==i], par[1], par[2], par[3], par[4])
+        out <- modfun1(PKindex$time[PKindex$Subject==i], par[1], par[2], par[3], par[4])
         gift <- which( PKindex$conc[PKindex$Subject==i] != 0 )
         switch(pick,
                sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2),
@@ -83,7 +98,7 @@ fbolus2<- function(PKindex,
      print(data.frame(Parameter=nameopt,Value=outopt))
      cat("\n<< Residual sum-of-squares and parameter values fitted by nls >>\n\n")
      
-     fm<-nls(conc ~ modfun(time,kel,k12,k21,Vd), data=PKindex,subset=Subject==i,
+     fm<-nls(conc ~ modfun1(time,kel,k12,k21,Vd), data=PKindex,subset=Subject==i,
          start=list(kel=opt$par[1],k12=opt$par[2],k21=opt$par[3],Vd=opt$par[4]),trace=TRUE,
          nls.control(maxiter=50,tol=1,minFactor=1/1024))
      cat("\n")
@@ -128,7 +143,22 @@ finfu2<- function(PKindex,
    if (is.null(kel) || is.null(k12) || is.null(k21) || is.null(Vd) ) {
         par<-data.frame(Parameter=c("kel","k12","k21","Vd"),Initial=c(0))
         par<-edit(par)
-        par<-check(par)
+        repeat{
+           if ( par[1,2] == 0 || par[2,2] ==0 || par[3,2]==0 || par[4,2]==0){
+             cat("\n")
+             cat("**********************************\n")
+             cat(" Parameter value can not be zero. \n")
+             cat(" Press enter to continue.         \n")
+             cat("**********************************\n\n")
+             readline()
+             cat("\n")
+             par<-edit(par)}   
+           else{
+             break
+             return(edit(par))}
+        } 
+        cat("\n")       
+        show(par)
    }
    
    cat("\n")
@@ -145,7 +175,7 @@ finfu2<- function(PKindex,
       list(c(dCp1dt,dCp2dt)) 
    } 
       
-   modfun <- function(time,kel,k12,k21,Vd) { 
+   modfun2 <- function(time,kel,k12,k21,Vd) { 
       out <- lsoda(c(0,0),c(0,time),defun,parms=c(kel=kel,k12=k12,k21=k21,Vd=Vd),
                    rtol=1e-8,atol=1e-8) 
       out[-1,2] 
@@ -162,7 +192,7 @@ finfu2<- function(PKindex,
    for( i in 1:length(unique(PKindex$Subject)))  {
      cat("\n\n               << Subject",i,">>\n\n" )  
      objfun <- function(par) {
-        out <- modfun(PKindex$time[PKindex$Subject==i], par[1], par[2], par[3], par[4])
+        out <- modfun2(PKindex$time[PKindex$Subject==i], par[1], par[2], par[3], par[4])
         gift <- which( PKindex$conc[PKindex$Subject==i] != 0 )
         switch(pick,
                sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2),
@@ -192,7 +222,7 @@ finfu2<- function(PKindex,
      print(data.frame(Parameter=nameopt,Value=outopt))
      cat("\n<< Residual sum-of-squares and parameter values fitted by nls >>\n\n")
      
-     fm<-nls(conc ~ modfun(time,kel,k12,k21,Vd), data=PKindex,subset=Subject==i,
+     fm<-nls(conc ~ modfun2(time,kel,k12,k21,Vd), data=PKindex,subset=Subject==i,
          start=list(kel=opt$par[1],k12=opt$par[2],k21=opt$par[3],Vd=opt$par[4]),trace=TRUE,
          nls.control(maxiter=50,tol=1,minFactor=1/1024))
      cat("\n")
@@ -228,7 +258,22 @@ ffirst2<- function(PKindex,
    if (is.null(ka) || is.null(kel) || is.null(k12) || is.null(k21) || is.null(Vd) ) {
         par<-data.frame(Parameter=c("ka","kel","k12","k21","Vd"),Initial=c(0))
         par<-edit(par)
-        par<-check(par)
+        repeat{
+           if ( par[1,2] == 0 || par[2,2] ==0 || par[3,2]==0 || par[4,2]==0 || par[5,2]==0){
+             cat("\n")
+             cat("**********************************\n")
+             cat(" Parameter value can not be zero. \n")
+             cat(" Press enter to continue.         \n")
+             cat("**********************************\n\n")
+             readline()
+             cat("\n")
+             par<-edit(par)}   
+           else{
+             break
+             return(edit(par))}
+        } 
+        cat("\n")       
+        show(par)
    }
    
    cat("\n")
@@ -240,7 +285,7 @@ ffirst2<- function(PKindex,
      list(c(dCp1dt,dCp2dt,dCp3dt)) 
    } 
     
-   modfun <- function(time,ka,kel,k12,k21,Vd) { 
+   modfun3 <- function(time,ka,kel,k12,k21,Vd) { 
      out <- lsoda(c(Dose,0,0),c(0,time),defun,parms=c(ka=ka,kel=kel,k12=k12,k21=k21,Vd=Vd),
                   rtol=1e-6,atol=1e-8) 
      out[-1,3] 
@@ -257,7 +302,7 @@ ffirst2<- function(PKindex,
    for( i in 1:length(unique(PKindex$Subject)))  {
      cat("\n\n               << Subject",i,">>\n\n" )  
      objfun <- function(par) {
-        out <- modfun(PKindex$time[PKindex$Subject==i],par[1],par[2],par[3],par[4],par[5])
+        out <- modfun3(PKindex$time[PKindex$Subject==i],par[1],par[2],par[3],par[4],par[5])
         gift <- which( PKindex$conc[PKindex$Subject==i] != 0 )
         switch(pick,
                sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2),
@@ -287,7 +332,7 @@ ffirst2<- function(PKindex,
      print(data.frame(Parameter=nameopt,Value=outopt))
      cat("\n<< Residual sum-of-squares and parameter values fitted by nls >>\n\n")
      
-     fm<-nls(conc ~ modfun(time,ka,kel,k12,k21,Vd), data=PKindex,subset=Subject==i,
+     fm<-nls(conc ~ modfun3(time,ka,kel,k12,k21,Vd), data=PKindex,subset=Subject==i,
          start=list(ka=opt$par[1],kel=opt$par[2],k12=opt$par[3],k21=opt$par[4],Vd=opt$par[5]),trace=TRUE,
          nls.control(maxiter=50,tol=1e-2,minFactor=1/1024))
      cat("\n")
@@ -332,7 +377,23 @@ sbolus2 <- function(Subject=NULL,  # N Subj's
    if (is.null(kel) || is.null(k12) || is.null(k21) || is.null(Vd)) {
        par<-data.frame(Parameter=c("kel","k12","k21","Vd"),Initial=c(0))
        par<-edit(par)
-       par<-check(par)
+       repeat{
+           if ( par[1,2] == 0 || par[2,2] ==0 || par[3,2]==0 || par[4,2]==0){
+             cat("\n")
+             cat("**********************************\n")
+             cat(" Parameter value can not be zero. \n")
+             cat(" Press enter to continue.         \n")
+             cat("**********************************\n\n")
+             readline()
+             cat("\n")
+             par<-edit(par)}   
+           else{
+             break
+             return(edit(par))}
+        } 
+        cat("\n")       
+        show(par)
+       
        cat("\n")
        par1<-par[1,2]
        par2<-par[2,2]
@@ -388,12 +449,72 @@ sbolus2 <- function(Subject=NULL,  # N Subj's
        else {
          cat("\n\nEnter error factor for kel\n")
          factor1<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor1 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor1<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor1)}
+           }
+         
          cat("\nEnter error factor for k12\n")
          factor2<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor2 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor2<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor2)}
+           }
+         
          cat("\nEnter error factor for k21\n")
          factor3<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor3 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor3<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor3)}
+           }
+         
          cat("\nEnter error factor for Vd\n")
          factor4<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor4 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor4<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor4)}
+           }
+         
          PKindex<-vector(Subject,mode="list")
          for( i in 1:Subject)  {
              cat("\n\n             << Subject",i,">>\n\n" )  
@@ -476,12 +597,72 @@ sbolus2 <- function(Subject=NULL,  # N Subj's
      
      cat("\nEnter error factor for kel\n")
      factor1<-scan(nlines=1,quiet=TRUE)
+     repeat{
+              if ( factor1 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor1<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor1)}
+           }
+     
      cat("\nEnter error factor for k12\n")
      factor2<-scan(nlines=1,quiet=TRUE)
+     repeat{
+              if ( factor2 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor2<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor2)}
+           }
+     
      cat("\nEnter error factor for k21\n")
      factor3<-scan(nlines=1,quiet=TRUE)
+     repeat{
+              if ( factor3 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor3<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor3)}
+           }
+     
      cat("\nEnter error factor for Vd\n")
      factor4<-scan(nlines=1,quiet=TRUE)
+     repeat{
+              if ( factor4 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor4<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor4)}
+           }
+     
      cat("\n")
      cat("****************************************************\n")
      cat("Summary Table                                       \n")
@@ -552,13 +733,13 @@ sbolus2 <- function(Subject=NULL,  # N Subj's
                        while(Vd<=0){
                           Vd<-par4*runif(1,min=-factor4,max=factor4)+par4}}
                )
-               time<-PKtime$time
+               time1<-PKtime$time
                parms<-c(kel=kel,k12=k12,k21=k21,Vd=Vd)  
-               XX<-data.frame(lsoda(c(Dose/Vd,0),c(0,time),defun,parms)) 
-               C1.lsoda[[j]]<-data.frame(XX[2:(length(time)+1),1],XX[2:(length(time)+1),2])
+               XX<-data.frame(lsoda(c(Dose/Vd,0),c(0,time1),defun,parms)) 
+               C1.lsoda[[j]]<-data.frame(XX[2:(length(time1)+1),1],XX[2:(length(time1)+1),2])
                colnames(C1.lsoda[[j]])<-list("time","concentration") 
           }   
-       PKindex[[i]]<-montecarlo(C1.lsoda,time,i,re) 
+       PKindex[[i]]<-montecarlo(C1.lsoda,time1,i,re) 
       }  
     PKindex<-as.data.frame(do.call("rbind",PKindex))
     rownames(PKindex)<-seq(nrow(PKindex)) 
@@ -607,7 +788,23 @@ sinfu2<- function(Subject=NULL,  # N Subj's
    if (is.null(kel) || is.null(k12) || is.null(k21) || is.null(Vd)) {
        par<-data.frame(Parameter=c("kel","k12","k21","Vd"),Initial=c(0))
        par<-edit(par)
-       par<-check(par)
+       repeat{
+           if ( par[1,2] == 0 || par[2,2] ==0 || par[3,2]==0 || par[4,2]==0){
+             cat("\n")
+             cat("**********************************\n")
+             cat(" Parameter value can not be zero. \n")
+             cat(" Press enter to continue.         \n")
+             cat("**********************************\n\n")
+             readline()
+             cat("\n")
+             par<-edit(par)}   
+           else{
+             break
+             return(edit(par))}
+        } 
+        cat("\n")       
+        show(par)
+       
        cat("\n")
        par1<-par[1,2]
        par2<-par[2,2]
@@ -669,12 +866,72 @@ sinfu2<- function(Subject=NULL,  # N Subj's
        else {
          cat("\n\nEnter error factor for kel\n")
          factor1<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor1 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor1<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor1)}
+           }
+         
          cat("\nEnter error factor for k12\n")
          factor2<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor2 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor2<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor2)}
+           }
+         
          cat("\nEnter error factor for k21\n")
          factor3<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor3 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor3<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor3)}
+           }
+         
          cat("\nEnter error factor for Vd\n")
          factor4<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor4 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor4<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor4)}
+           }
+         
          PKindex<-vector(Subject,mode="list")
          for( i in 1:Subject)  {
              cat("\n\n             << Subject",i,">>\n\n" )  
@@ -757,12 +1014,72 @@ sinfu2<- function(Subject=NULL,  # N Subj's
      
      cat("\nEnter error factor for kel\n")
      factor1<-scan(nlines=1,quiet=TRUE)
+     repeat{
+              if ( factor1 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor1<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor1)}
+           }
+     
      cat("\nEnter error factor for k12\n")
      factor2<-scan(nlines=1,quiet=TRUE)
+     repeat{
+              if ( factor2 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor2<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor2)}
+           }
+     
      cat("\nEnter error factor for k21\n")
      factor3<-scan(nlines=1,quiet=TRUE)
+     repeat{
+              if ( factor3 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor3<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor3)}
+           }
+     
      cat("\nEnter error factor for Vd\n")
      factor4<-scan(nlines=1,quiet=TRUE)
+     repeat{
+              if ( factor4 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor4<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor4)}
+           }
+     
      cat("\n")
      cat("*******************************************************\n")
      cat("Summary Table                                          \n")
@@ -833,13 +1150,13 @@ sinfu2<- function(Subject=NULL,  # N Subj's
                        while(Vd<=0){
                           Vd<-par4*runif(1,min=-factor4,max=factor4)+par4}}
                )
-               time<-PKtime$time
+               time1<-PKtime$time
                parms<-c(kel=kel,k12=k12,k21=k21,Vd=Vd)  
-               XX<-data.frame(lsoda(c(0,0),c(0,time),defun,parms)) 
-               C1.lsoda[[j]]<-data.frame(XX[2:(length(time)+1),1],XX[2:(length(time)+1),2])
+               XX<-data.frame(lsoda(c(0,0),c(0,time1),defun,parms)) 
+               C1.lsoda[[j]]<-data.frame(XX[2:(length(time1)+1),1],XX[2:(length(time1)+1),2])
                colnames(C1.lsoda[[j]])<-list("time","concentration") 
           }   
-      PKindex[[i]]<-montecarlo(C1.lsoda,time,i,re) 
+      PKindex[[i]]<-montecarlo(C1.lsoda,time1,i,re) 
      }  
     PKindex<-as.data.frame(do.call("rbind",PKindex))
     rownames(PKindex)<-seq(nrow(PKindex)) 
@@ -883,7 +1200,23 @@ sfirst2<- function(Subject=NULL,  # N Subj's
    if (is.null(ka) || is.null(kel) || is.null(k12) || is.null(k21) || is.null(Vd)) {
        par<-data.frame(Parameter=c("ka","kel","k12","k21","Vd"),Initial=c(0))
        par<-edit(par)
-       par<-check(par)
+       repeat{
+           if ( par[1,2] == 0 || par[2,2] ==0 || par[3,2]==0 || par[4,2]==0 || par[5,2]==0){
+             cat("\n")
+             cat("**********************************\n")
+             cat(" Parameter value can not be zero. \n")
+             cat(" Press enter to continue.         \n")
+             cat("**********************************\n\n")
+             readline()
+             cat("\n")
+             par<-edit(par)}   
+           else{
+             break
+             return(edit(par))}
+        } 
+        cat("\n")       
+        show(par)
+       
        cat("\n")
        par1<-par[1,2]
        par2<-par[2,2]
@@ -943,14 +1276,89 @@ sfirst2<- function(Subject=NULL,  # N Subj's
        else {
          cat("\n\nEnter error factor for ka\n")
          factor1<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor1 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor1<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor1)}
+           }
+         
          cat("\nEnter error factor for kel\n")
          factor2<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor2 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor2<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor2)}
+           }
+         
          cat("\nEnter error factor for k12\n")
          factor3<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor3 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor3<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor3)}
+           }
+         
          cat("\nEnter error factor for k21\n")
          factor4<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor4 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor4<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor4)}
+           }
+         
          cat("\nEnter error factor for Vd\n")
          factor5<-scan(nlines=1,quiet=TRUE)
+         repeat{
+              if ( factor5 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor5<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor5)}
+           }
+         
          PKindex<-vector(Subject,mode="list")
          for( i in 1:Subject)  {
              cat("\n\n             << Subject",i,">>\n\n" )  
@@ -1045,14 +1453,89 @@ sfirst2<- function(Subject=NULL,  # N Subj's
      
      cat("\nEnter error factor for ka\n")
      factor1<-scan(nlines=1,quiet=TRUE)
+     repeat{
+              if ( factor1 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor1<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor1)}
+           }
+     
      cat("\nEnter error factor for kel\n")
      factor2<-scan(nlines=1,quiet=TRUE)
+     repeat{
+              if ( factor2 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor2<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor2)}
+           }
+     
      cat("\nEnter error factor for k12\n")
      factor3<-scan(nlines=1,quiet=TRUE)
+     repeat{
+              if ( factor3 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor3<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor3)}
+           }
+     
      cat("\nEnter error factor for k21\n")
      factor4<-scan(nlines=1,quiet=TRUE)
+     repeat{
+              if ( factor4 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor4<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor4)}
+           }
+     
      cat("\nEnter error factor for Vd\n")
      factor5<-scan(nlines=1,quiet=TRUE)
+     repeat{
+              if ( factor5 == 0 ){
+                cat("\n")
+                cat("**********************************\n")
+                cat(" Parameter value can not be zero. \n")
+                cat(" Press enter to continue.         \n")
+                cat("**********************************\n\n")
+                readline()
+                cat("\n")
+                factor5<-scan(nlines=1,quiet=TRUE)}   
+           else{
+                break
+                return(factor5)}
+           }
+     
      cat("\n")
      cat("******************************************************\n")
      cat("Summary Table                                         \n")
@@ -1136,13 +1619,13 @@ sfirst2<- function(Subject=NULL,  # N Subj's
                        while(Vd<=0){
                           Vd<-par5*runif(1,min=-factor5,max=factor5)+par5}}
                )
-               time<-PKtime$time
+               time1<-PKtime$time
                parms<-c(ka=ka,kel=kel,k12=k12,k21=k21,Vd=Vd)
-               XX<-data.frame(lsoda(c(Dose,0,0),c(0,time),defun,parms)) 
-               C1.lsoda[[j]]<-data.frame(XX[2:(length(time)+1),1],XX[2:(length(time)+1),3])
+               XX<-data.frame(lsoda(c(Dose,0,0),c(0,time1),defun,parms)) 
+               C1.lsoda[[j]]<-data.frame(XX[2:(length(time1)+1),1],XX[2:(length(time1)+1),3])
                colnames(C1.lsoda[[j]])<-list("time","concentration") 
           }      
-    PKindex[[i]]<-montecarlo(C1.lsoda,time,i,re) 
+    PKindex[[i]]<-montecarlo(C1.lsoda,time1,i,re) 
     }  
     PKindex<-as.data.frame(do.call("rbind",PKindex))
     rownames(PKindex)<-seq(nrow(PKindex)) 

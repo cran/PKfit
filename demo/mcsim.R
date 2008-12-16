@@ -46,7 +46,7 @@ C1.lsoda<-do.call("rbind",C1.lsoda)
 rownames(C1.lsoda)<-seq(nrow(C1.lsoda))
 conc<-ifelse(conc<=0, 0, conc)
 PKindex<-data.frame(i,time,conc)
-get(getOption("device"))()
+windows(record=TRUE)
 par(mfrow=c(2,2))
 x<-C1.lsoda$time
 y<-ifelse(C1.lsoda$concentration<=0, 0, C1.lsoda$concentration)
