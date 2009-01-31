@@ -1,4 +1,4 @@
-### PKindex is usually the Dataset.
+### PKindex is the target Dataset.
 
 
 ### Normal fitting
@@ -18,7 +18,7 @@ fzero.nolag <- function(PKindex,
    ## Input dose and initial value for Tabs, kel and Vd
    
    if (is.null(Dose)) {
-     cat("Enter Dose value\n")
+     cat("Enter Dose\n")
      Dose <- scan(nlines=1,quiet=TRUE)
    } 
    else {
@@ -34,7 +34,7 @@ fzero.nolag <- function(PKindex,
              cat("\n")
              cat("**********************************\n")
              cat(" Parameter value can not be zero. \n")
-             cat(" Press enter to continue.         \n")
+             cat(" Press Enter to continue.         \n")
              cat("**********************************\n\n")
              readline()
              cat("\n")
@@ -58,7 +58,7 @@ fzero.nolag <- function(PKindex,
              cat("\n")
              cat("**********************************\n")
              cat(" Parameter value can not be zero. \n")
-             cat(" Press enter to continue.         \n")
+             cat(" Press Enter to continue.         \n")
              cat("**********************************\n\n")
              readline()
              cat("\n")
@@ -150,7 +150,7 @@ fzero.nolag <- function(PKindex,
               MemoryMatrix=TRUE)
       }
       
-     cat("<< The value of parameter obtained from genetic algorithm >>\n\n")
+     cat("<< PK parameters obtained from genetic algorithm >>\n\n")
      if (MMe) {
         namegen<-c("Tabs","Vm","Km","Vd")
         outgen<-c(gen$par[1],gen$par[2],gen$par[3],gen$par[4])
@@ -174,9 +174,9 @@ fzero.nolag <- function(PKindex,
         outopt<-c(opt$par[1],opt$par[2],opt$par[3])
      }
      
-     cat("\n<< The value of parameter fitted by Nelder-Mead Simplex slgorithm >>\n\n")
+     cat("\n<< PK parameters obtained from Nelder-Mead Simplex algorithm >>\n\n")
      print(data.frame(Parameter=nameopt,Value=outopt))
-     cat("\n<< Residual sum-of-squares and parameter values fitted by nls >>\n\n")
+     cat("\n<< Residual sum-of-square (RSS) and final PK parameters with nls >>\n\n")
 
      if (MMe) {
         fm<-nls(conc~modfun2(time,Tabs,Vm,Km,Vd),data=PKindex, algorithm="default",subset=Subject==i,
@@ -221,7 +221,7 @@ szero.nolag<- function(Subject=NULL,  # N Subj's
    #options(warn=-1)
    
    if (is.null(Subject) || !is.integer(Subject)) {
-     cat("How many subject do you want?\n")
+     cat("How many subjects do you want?\n")
      Subject<-scan(nlines=1,quiet=TRUE)
    }
 
@@ -235,7 +235,7 @@ szero.nolag<- function(Subject=NULL,  # N Subj's
    show(PKtime)
    
    if (is.null(Dose)) {
-    cat("\nEnter dose value\n")
+    cat("\nEnter dose\n")
     Dose<-scan(nlines=1,quiet=TRUE)
    }
    
@@ -248,7 +248,7 @@ szero.nolag<- function(Subject=NULL,  # N Subj's
              cat("\n")
              cat("**********************************\n")
              cat(" Parameter value can not be zero. \n")
-             cat(" Press enter to continue.         \n")
+             cat(" Press Enter to continue.         \n")
              cat("**********************************\n\n")
              readline()
              cat("\n")
@@ -281,7 +281,7 @@ szero.nolag<- function(Subject=NULL,  # N Subj's
              cat("\n")
              cat("**********************************\n")
              cat(" Parameter value can not be zero. \n")
-             cat(" Press enter to continue.         \n")
+             cat(" Press Enter to continue.         \n")
              cat("**********************************\n\n")
              readline()
              cat("\n")
@@ -329,22 +329,22 @@ szero.nolag<- function(Subject=NULL,  # N Subj's
   
   file.menu <- c("Simulation with Error",
                  "Monte Carlo Simulation")
-  pick <- menu(file.menu, title = "<< Simulation Type >>")
+  pick <- menu(file.menu, title = "<< Simulation Types >>")
   if (pick ==1){
      cat("\n\n")
      file.menu <- c("No Error",
-                    "Error=Normal Error", 
-                    "Error=Uniform Error",
-                    "Error=Normal Error*True Value",
-                    "Error=Uniform Error*True Value")
-     pick <- menu(file.menu, title = "<< Error Type >>")      
+                    "Error = Normal Error", 
+                    "Error = Uniform Error",
+                    "Error = Normal Error*True Value",
+                    "Error = Uniform Error*True Value")
+     pick <- menu(file.menu, title = "<< Error Types >>")      
      
      type<-switch(pick, 
                   "No Error",
-                  "Error=Normal Error", 
-                  "Error=Uniform Error",
-                  "Error=Normal Error*True Value",
-                  "Error=Uniform Error*True Value")
+                  "Error = Normal Error", 
+                  "Error = Uniform Error",
+                  "Error = Normal Error*True Value",
+                  "Error = Uniform Error*True Value")
      
      
        if (pick ==1){
@@ -380,7 +380,7 @@ szero.nolag<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -397,7 +397,7 @@ szero.nolag<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -414,7 +414,7 @@ szero.nolag<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -480,7 +480,7 @@ szero.nolag<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -497,7 +497,7 @@ szero.nolag<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -514,7 +514,7 @@ szero.nolag<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -531,7 +531,7 @@ szero.nolag<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -608,19 +608,19 @@ szero.nolag<- function(Subject=NULL,  # N Subj's
   } 
   else if (pick ==2){ 
      cat("\n\n")
-     file.menu <- c("Error=Normal Error", 
-                    "Error=Uniform Error",
-                    "Error=Normal Error*True Value",
-                    "Error=Uniform Error*True Value")
+     file.menu <- c("Error = Normal Error", 
+                    "Error = Uniform Error",
+                    "Error = Normal Error*True Value",
+                    "Error = Uniform Error*True Value")
                     
      type<-switch(pick, 
-                  "Error=Normal Error", 
-                  "Error=Uniform Error",
-                  "Error=Normal Error*True Value",
-                  "Error=Uniform Error*True Value")
+                  "Error = Normal Error", 
+                  "Error = Uniform Error",
+                  "Error = Normal Error*True Value",
+                  "Error = Uniform Error*True Value")
                     
-     pick <- menu(file.menu, title = "<< Error Type >>")
-     cat("\n\nHow many times do you want to iteration ?\n")
+     pick <- menu(file.menu, title = "<< Error Types >>")
+     cat("\n\nHow many interations do you want to run?\n")
      re<-scan(nlines=1,quiet=TRUE)
      
        if (! MMe){
@@ -631,7 +631,7 @@ szero.nolag<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -648,7 +648,7 @@ szero.nolag<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -665,7 +665,7 @@ szero.nolag<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -684,7 +684,7 @@ szero.nolag<- function(Subject=NULL,  # N Subj's
          cat("Error Type:", type,"                                    \n")
          cat("Simulation #:", re,"                                    \n\n")
          sim<-matrix(c(par1,par2,par3,factor1,factor2,factor3),3,2)
-         dimnames(sim)<-list(c("Tabs","kel","Vd"),c("Original","Error factor"))
+         dimnames(sim)<-list(c("Tabs","kel","Vd"),c("Selected","Error factor"))
          show(sim)   
          cat("********************************************************\n\n")
        }
@@ -706,7 +706,7 @@ szero.nolag<- function(Subject=NULL,  # N Subj's
          cat("Error Type:", type,"                                                       \n")
          cat("Simulation #:", re,"                                                       \n\n")
          sim<-matrix(c(par1,par2,par3,par4,factor1,factor2,factor3,factor4),4,2)
-         dimnames(sim)<-list(c("Tabs","Vm","Km","Vd"),c("Original","Error factor"))
+         dimnames(sim)<-list(c("Tabs","Vm","Km","Vd"),c("Selected","Error factor"))
          show(sim)   
          cat("**************************************************************************\n\n")
        }

@@ -10,7 +10,7 @@ par1<-1.1
 par2<-0.14
 par3<-22.9   
 
-re<-200
+re<-600
 
 factor1<-0.02
 factor2<-0.02
@@ -52,11 +52,11 @@ x<-C1.lsoda$time
 y<-ifelse(C1.lsoda$concentration<=0, 0, C1.lsoda$concentration)
   
 
-plot(C1.lsoda,type="p",main="Monte Carlo Simulation",xlab="Time",ylab="Concentration")
+plot(C1.lsoda,type="p",main="Monte Carlo Simulation",xlab="Time (hr)",ylab="Drug Conc.")
 lines(PKindex$time,PKindex$conc,type="l",lty=1,col="firebrick3",lwd="2")
 mtext("Linear",side=3,cex=0.8)
   
-plot(x,y,log="y",type='p',main="Monte Carlo Simulation",xlab="Time",ylab="Concentration")
+plot(x,y,log="y",type='p',main="Monte Carlo Simulation",xlab="Time (hr)",ylab="Drug Conc.")
 lines(PKindex$time,PKindex$conc,log="y",type="l",lty=1,col="firebrick3",lwd="2")
 mtext("Semi-log",side=3,cex=0.8) 
   
@@ -69,14 +69,14 @@ colnames(PKindex)<-list("Subject","time","conc")
 for(i in rev(AA))
   C1.lsoda<-C1.lsoda[append(1:(sub+(length(AA)-1)),NA,after=i),]   
  
-plot(C1.lsoda,type="l",main="Monte Carlo Simulation",xlab="Time",ylab="Concentration")  
+plot(C1.lsoda,type="l",main="Monte Carlo Simulation",xlab="Time (hr)",ylab="Drug Conc.")  
 lines(PKindex$time,PKindex$conc,type="l",lty=1,col="firebrick3",lwd="2")
 mtext("Linear",side=3,cex=0.8)
   
 x<-C1.lsoda$time
 y<-C1.lsoda$concentration
   
-plot(x,y,log="y",type='l',main="Monte Carlo Simulation",xlab="Time",ylab="Concentration")
+plot(x,y,log="y",type='l',main="Monte Carlo Simulation",xlab="Time (hr)",ylab="Drug Conc.")
 lines(PKindex$time,PKindex$conc,log="y",type="l",lty=1,col="firebrick3",lwd="2")
 mtext("Semi-log",side=3,cex=0.8) 
 

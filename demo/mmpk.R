@@ -55,31 +55,31 @@ add<-function(time,conc){
      }
      return(list(auc=auc,aumc=aumc))
   }
-add<-add(x,y)
-AUC<-add$auc
-AUMC<-add$aumc
+add1 <- add(x,y)
+AUC<-c(NA,add1$auc[-1])
+AUMC<-c(NA,add1$aumc[-1])
 output<-data.frame(x,y,cal,wei,AUC,AUMC)
-colnames(output)<-list("time","Observed","Calculated","Wtd Residuals","AUC","AUMC")
+colnames(output)<-list("Time","Observed","Calculated","Wt. Residuals","AUC","AUMC")
 
 windows(record=TRUE)
 
 par(mfrow=c(2,2))
 
-plot(y~x,data=PKindex,type='p',main="time-concentration curve", 
-     xlab="time", ylab="concentration",pch=15,col="black",bty="l",
+plot(y~x,data=PKindex,type='p',main="time - drug conc. curve", 
+     xlab="Time", ylab="concentration",pch=15,col="black",bty="l",
      font.lab=2,cex.lab=1,cex.axis=1,cex.main=1) 
 lines(x,predict(fm,list(time=x)),type="l",lty=1,
       col="firebrick3",lwd="2")
 mtext("Linear",side=3,cex=0.88)
     
-plot(x,y,log="y",type='p',main="time-concentration curve",
-     xlab="time", ylab="concentration",pch=15,col="black",bty="l",
+plot(x,y,log="y",type='p',main="time - drug conc. curve",
+     xlab="Time", ylab="concentration",pch=15,col="black",bty="l",
      font.lab=2,cex.lab=1,cex.axis=1,cex.main=1) 
 lines(x,predict(fm,list(time=x)),type="l",lty=1,
       col="firebrick3",lwd="2")
 mtext("Semi-log",side=3,cex=0.88)
      
-plot(x,wei,pch=15,col="blue",bty="l",xlab="time",
+plot(x,wei,pch=15,col="blue",bty="l",xlab="Time",
      ylab="Weighted Residual",main="Residual Plots",cex.lab=1,
      cex.axis=1,cex.main=1,font.lab=2)
 abline(h=0,lwd=2,col="black",lty=2)

@@ -1,4 +1,4 @@
-### PKindex is usually the Dataset.
+### PKindex is the target Dataset.
 
 
 ### Normal fitting
@@ -20,7 +20,7 @@ fmacro.one <- function(PKindex,
              cat("\n")
              cat("**********************************\n")
              cat(" Parameter value can not be zero. \n")
-             cat(" Press enter to continue.         \n")
+             cat(" Press Enter to continue.         \n")
              cat("**********************************\n\n")
              readline()
              cat("\n")
@@ -63,7 +63,7 @@ fmacro.one <- function(PKindex,
            wait.generations=10,starting.value=c(par[1,2],par[2,2]),
            BFGS=FALSE,print.level=0,boundary.enforcement=2,
            Domains=matrix(c(0,0,100,10),2,2),MemoryMatrix=TRUE)
-      cat("<< The value of parameter obtained from genetic algorithm >>\n\n")
+      cat("<< PK parameters obtained from genetic algorithm >>\n\n")
       namegen<-c("A","a")
       outgen<-c(gen$par[1],gen$par[2])
       print(data.frame(Parameter=namegen,Value=outgen)) 
@@ -72,9 +72,9 @@ fmacro.one <- function(PKindex,
       opt<-optim(c(gen$par[1],gen$par[2]),objfun,method="Nelder-Mead")       
       nameopt<-c("A","a")
       outopt<-c(opt$par[1],opt$par[2])
-      cat("\n<< The value of parameter fitted by Nelder-Mead Simplex algorithm >>\n\n")
+      cat("\n<< PK parameters obtained from Nelder-Mead Simplex algorithm >>\n\n")
       print(data.frame(Parameter=nameopt,Value=outopt))
-      cat("\n<< Residual sum-of-squares and parameter values fitted by nls >>\n\n")
+      cat("\n<< Residual sum-of-square (RSS) and final PK parameters with nls >>\n\n")
       fm<-nls(conc~defun(time,A,a),data=PKindex, algorithm="default",subset=Subject==i,
           start=list(A=opt$par[1],a=opt$par[2]),trace=TRUE,
           nls.control(maxiter=500,tol=1e-2,minFactor=1/1024))
@@ -106,7 +106,7 @@ fmacro.two<- function(PKindex,
              cat("\n")
              cat("**********************************\n")
              cat(" Parameter value can not be zero. \n")
-             cat(" Press enter to continue.         \n")
+             cat(" Press Enter to continue.         \n")
              cat("**********************************\n\n")
              readline()
              cat("\n")
@@ -152,7 +152,7 @@ fmacro.two<- function(PKindex,
            Domains=matrix(c(1,0.01,0.1,0.01,100,10,50,1),4,2),
            MemoryMatrix=TRUE)     
            
-      cat("<< The value of parameter obtained from genetic algorithm >>\n\n")   
+      cat("<< PK parameters obtained from genetic algorithm >>\n\n")   
       namegen<-c("A","a","B","b")
       outgen<-c(gen$par[1],gen$par[2],gen$par[3],gen$par[4])
       print(data.frame(Parameter=namegen,Value=outgen)) 
@@ -161,9 +161,9 @@ fmacro.two<- function(PKindex,
       opt<-optim(c(gen$par[1],gen$par[2],gen$par[3],gen$par[4]),objfun,method="Nelder-Mead")             
       nameopt<-c("A","a","B","b")
       outopt<-c(opt$par[1],opt$par[2],opt$par[3],opt$par[4])
-      cat("\n<< The value of parameter fitted by Nelder-Mead Simplex algorithm >>\n\n")
+      cat("\n<< PK parameters obtained from Nelder-Mead Simplex algorithm >>\n\n")
       print(data.frame(Parameter=nameopt,Value=outopt))
-      cat("\n<< Residuals sum-of-squares and parameter values fitted by nls >>\n\n")
+      cat("\n<< Residuals sum-of-squares and final PK parameters with nls >>\n\n")
       fm<-nls(conc~defun(time,A,a,B,b),data=PKindex, algorithm="default",subset=Subject==i,
           start=list(A=opt$par[1], a=opt$par[2], B=opt$par[3], b=opt$par[4]),trace=TRUE,
           nls.control(maxiter=500,tol=1e-2,minFactor=1/1024))
@@ -197,7 +197,7 @@ fmacro.three<- function(PKindex,
              cat("\n")
              cat("**********************************\n")
              cat(" Parameter value can not be zero. \n")
-             cat(" Press enter to continue.         \n")
+             cat(" Press Enter to continue.         \n")
              cat("**********************************\n\n")
              readline()
              cat("\n")
@@ -243,7 +243,7 @@ fmacro.three<- function(PKindex,
            Domains=matrix(c(1,0.1,1,0.01,0.1,0.001,100,10,50,10,10,1),6,2),
            MemoryMatrix=TRUE)
            
-      cat("<< The value of parameter obtained from genetic algorithm >>\n\n")   
+      cat("<< PK parameters obtained from genetic algorithm >>\n\n")   
       namegen<-c("A","a","B","b","C","c")
       outgen<-c(gen$par[1],gen$par[2],gen$par[3],gen$par[4],gen$par[5],gen$par[6])
       print(data.frame(Parameter=namegen,Value=outgen)) 
@@ -252,9 +252,9 @@ fmacro.three<- function(PKindex,
       opt<-optim(c(gen$par[1],gen$par[2],gen$par[3],gen$par[4],gen$par[5],gen$par[6]),objfun,method="Nelder-Mead")       
       nameopt<-c("A","a","B","b","C","c")
       outopt<-c(opt$par[1],opt$par[2],opt$par[3],opt$par[4],opt$par[5],opt$par[6])
-      cat("\n<< The value of parameter fitted by Nelder-Mead Simplex algorithm >>\n\n")
+      cat("\n<< PK parameters obtained from Nelder-Mead Simplex algorithm >>\n\n")
       print(data.frame(Parameter=nameopt,Value=outopt))
-      cat("\n<< Residuals sum-of-squares and parameter values fitted by nls >>\n\n")
+      cat("\n<< Residuals sum-of-squares and final PK parameters with nls >>\n\n")
       fm<-nls(conc~defun(time,A,a,B,b,C,c),data=PKindex, algorithm="default",subset=Subject==i,
           start=list(A=opt$par[1],a=opt$par[2],B=opt$par[3],b=opt$par[4],C=opt$par[5],c=opt$par[6]),
           trace=TRUE,nls.control(maxiter=500,tol=1,minFactor=1/2048))
@@ -276,7 +276,7 @@ smacro.one <-function(Subject=NULL,  # N Subj's
    #options(warn=-1)
    
    if (is.null(Subject) || !is.integer(Subject)) {
-     cat("How many subject do you want?\n")
+     cat("How many subjects do you want?\n")
      Subject<-scan(nlines=1,quiet=TRUE)
    }
 
@@ -297,7 +297,7 @@ smacro.one <-function(Subject=NULL,  # N Subj's
              cat("\n")
              cat("**********************************\n")
              cat(" Parameter value can not be zero. \n")
-             cat(" Press enter to continue.         \n")
+             cat(" Press Enter to continue.         \n")
              cat("**********************************\n\n")
              readline()
              cat("\n")
@@ -321,23 +321,23 @@ smacro.one <-function(Subject=NULL,  # N Subj's
     
     file.menu <- c("Simulation with Error",
                    "Monte Carlo Simulation")
-    pick <- menu(file.menu, title = "<< Simulation Type >>") 
+    pick <- menu(file.menu, title = "<< Simulation Types >>") 
     
     if (pick ==1){
       cat("\n\n")
-      file.menu <- c("no error",
-                     "error=normal error", 
-                     "error=uniform error",
-                     "error=normal error*true value",
-                     "error=uniform error*true value")
-      pick <- menu(file.menu, title = "<< Error type >>")      
+      file.menu <- c("No Error",
+                     "Error = Normal Error", 
+                     "Error = Uniform Error",
+                     "Error = Normal Error*True Value",
+                     "Error = Uniform Error*True Value")
+      pick <- menu(file.menu, title = "<< Error types >>")      
       
       type<-switch(pick, 
                    "No Error",
-                   "Error=Normal Error", 
-                   "Error=Uniform Error",
-                   "Error=Normal Error*True Value",
-                   "Error=Uniform Error*True Value")
+                   "Error = Normal Error", 
+                   "Error = Uniform Error",
+                   "Error = Normal Error*True Value",
+                   "Error = Uniform Error*True Value")
       
       if (pick ==1){
           PKindex<-vector(Subject,mode="list")
@@ -359,7 +359,7 @@ smacro.one <-function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -376,7 +376,7 @@ smacro.one <-function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -428,19 +428,19 @@ smacro.one <-function(Subject=NULL,  # N Subj's
       }
       else if (pick ==2){ 
       cat("\n\n")
-      file.menu <- c("error=normal error", 
+      file.menu <- c("Error = Normal Error", 
                      "error=uniform error",
                      "error=normal error*true value",
                      "error=uniform error*true value")
-      pick <- menu(file.menu, title = "<< Error type >>")
+      pick <- menu(file.menu, title = "<< Error types >>")
       
       type<-switch(pick, 
-                  "Error=Normal Error", 
-                  "Error=Uniform Error",
-                  "Error=Normal Error*True Value",
-                  "Error=Uniform Error*True Value")
+                  "Error = Normal Error", 
+                  "Error = Uniform Error",
+                  "Error = Normal Error*True Value",
+                  "Error = Uniform Error*True Value")
       
-      cat("\n\nHow many times do you want to iteration ?\n")
+      cat("\n\nHow many interations do you want to run?\n")
       re<-scan(nlines=1,quiet=TRUE)
       
       cat("\nEnter error factor for A\n")
@@ -450,7 +450,7 @@ smacro.one <-function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -467,7 +467,7 @@ smacro.one <-function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -485,7 +485,7 @@ smacro.one <-function(Subject=NULL,  # N Subj's
       cat("Error Type:", type,"              \n")
       cat("Simulation #:", re,"              \n\n")
       sim<-matrix(c(par1,par2,factor1,factor2),2,2)
-      dimnames(sim)<-list(c("A","a"),c("Original","Error factor"))
+      dimnames(sim)<-list(c("A","a"),c("Selected","Error factor"))
       show(sim)   
       cat("**********************************\n\n")
       PKindex<-vector(Subject,mode="list")
@@ -547,7 +547,7 @@ smacro.two <-function(Subject=NULL,  # N Subj's
    #options(warn=-1)
    
    if (is.null(Subject) || !is.integer(Subject)) {
-     cat("How many subject do you want?\n")
+     cat("How many subjects do you want?\n")
      Subject<-scan(nlines=1,quiet=TRUE)
    }
 
@@ -568,7 +568,7 @@ smacro.two <-function(Subject=NULL,  # N Subj's
              cat("\n")
              cat("**********************************\n")
              cat(" Parameter value can not be zero. \n")
-             cat(" Press enter to continue.         \n")
+             cat(" Press Enter to continue.         \n")
              cat("**********************************\n\n")
              readline()
              cat("\n")
@@ -595,22 +595,22 @@ smacro.two <-function(Subject=NULL,  # N Subj's
     
     file.menu <- c("Simulation with Error",
                    "Monte Carlo Simulation")
-    pick <- menu(file.menu, title = "<< Simulation Type >>") 
+    pick <- menu(file.menu, title = "<< Simulation Types >>") 
     if (pick ==1){
       cat("\n\n")
       file.menu <- c("No Error",
-                     "Error=Normal Error", 
-                     "Error=Uniform Error",
-                     "Error=Normal Error*True Value",
-                     "Error=Uniform Error*True Value")
-      pick <- menu(file.menu, title = "<< Error Type >>")      
+                     "Error = Normal Error", 
+                     "Error = Uniform Error",
+                     "Error = Normal Error*True Value",
+                     "Error = Uniform Error*True Value")
+      pick <- menu(file.menu, title = "<< Error Types >>")      
       
       type<-switch(pick, 
                   "No Error",
-                  "Error=Normal Error", 
-                  "Error=Uniform Error",
-                  "Error=Normal Error*True Value",
-                  "Error=Uniform Error*True Value")
+                  "Error = Normal Error", 
+                  "Error = Uniform Error",
+                  "Error = Normal Error*True Value",
+                  "Error = Uniform Error*True Value")
       
       if (pick ==1){
           PKindex<-vector(Subject,mode="list")
@@ -634,7 +634,7 @@ smacro.two <-function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -651,7 +651,7 @@ smacro.two <-function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -668,7 +668,7 @@ smacro.two <-function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -685,7 +685,7 @@ smacro.two <-function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -761,19 +761,19 @@ smacro.two <-function(Subject=NULL,  # N Subj's
       }
       else if (pick ==2){ 
       cat("\n\n")
-      file.menu <- c("Error=Normal Error", 
-                     "Error=Uniform Error",
-                     "Error=Normal Error*True Value",
-                     "Error=Uniform Error*True Value")
-      pick <- menu(file.menu, title = "<< Error Type >>")
+      file.menu <- c("Error = Normal Error", 
+                     "Error = Uniform Error",
+                     "Error = Normal Error*True Value",
+                     "Error = Uniform Error*True Value")
+      pick <- menu(file.menu, title = "<< Error Types >>")
       
       type<-switch(pick, 
-                  "Error=Normal Error", 
-                  "Error=Uniform Error",
-                  "Error=Normal Error*True Value",
-                  "Error=Uniform Error*True Value")
+                  "Error = Normal Error", 
+                  "Error = Uniform Error",
+                  "Error = Normal Error*True Value",
+                  "Error = Uniform Error*True Value")
       
-      cat("\n\nHow many times do you want to iteration ?\n")
+      cat("\n\nHow many interations do you want to run?\n")
       re<-scan(nlines=1,quiet=TRUE)
       
       cat("\nEnter error factor for A\n")
@@ -783,7 +783,7 @@ smacro.two <-function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -800,7 +800,7 @@ smacro.two <-function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -817,7 +817,7 @@ smacro.two <-function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -834,7 +834,7 @@ smacro.two <-function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -852,7 +852,7 @@ smacro.two <-function(Subject=NULL,  # N Subj's
       cat("Error Type:", type,"              \n")
       cat("Simulation #:", re,"              \n\n")
       sim<-matrix(c(par1,par2,par3,par4,factor1,factor2,factor3,factor4),4,2)
-      dimnames(sim)<-list(c("A","a","B","b"),c("Original","Error factor"))
+      dimnames(sim)<-list(c("A","a","B","b"),c("Selected","Error factor"))
       show(sim)   
       cat("**********************************\n\n")
       PKindex<-vector(Subject,mode="list")
@@ -942,7 +942,7 @@ smacro.three <-function(Subject=NULL,  # N Subj's
    #options(warn=-1)
   
    if (is.null(Subject) || !is.integer(Subject)) {
-     cat("How many subject do you want?\n")
+     cat("How many subjects do you want?\n")
      Subject<-scan(nlines=1,quiet=TRUE)
    }
 
@@ -963,7 +963,7 @@ smacro.three <-function(Subject=NULL,  # N Subj's
              cat("\n")
              cat("**********************************\n")
              cat(" Parameter value can not be zero. \n")
-             cat(" Press enter to continue.         \n")
+             cat(" Press Enter to continue.         \n")
              cat("**********************************\n\n")
              readline()
              cat("\n")
@@ -995,22 +995,22 @@ smacro.three <-function(Subject=NULL,  # N Subj's
     
     file.menu <- c("Simulation with Error",
                    "Monte Carlo Simulation")
-    pick <- menu(file.menu, title = "<< Simulation Type >>") 
+    pick <- menu(file.menu, title = "<< Simulation Types >>") 
     if (pick ==1){
       cat("\n\n")
       file.menu <- c("No Error",
-                     "Error=Normal Error", 
-                     "Error=Uniform Error",
-                     "Error=Normal Error*True Value",
-                     "Error=Uniform Error*True Value")
-      pick <- menu(file.menu, title = "<< Error Type >>")      
+                     "Error = Normal Error", 
+                     "Error = Uniform Error",
+                     "Error = Normal Error*True Value",
+                     "Error = Uniform Error*True Value")
+      pick <- menu(file.menu, title = "<< Error Types >>")      
       
       type<-switch(pick, 
                   "No Error",
-                  "Error=Normal Error", 
-                  "Error=Uniform Error",
-                  "Error=Normal Error*True Value",
-                  "Error=Uniform Error*True Value")
+                  "Error = Normal Error", 
+                  "Error = Uniform Error",
+                  "Error = Normal Error*True Value",
+                  "Error = Uniform Error*True Value")
       
       if (pick ==1){
           PKindex<-vector(Subject,mode="list")
@@ -1036,7 +1036,7 @@ smacro.three <-function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -1053,7 +1053,7 @@ smacro.three <-function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -1070,7 +1070,7 @@ smacro.three <-function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -1087,7 +1087,7 @@ smacro.three <-function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -1104,7 +1104,7 @@ smacro.three <-function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -1121,7 +1121,7 @@ smacro.three <-function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -1221,19 +1221,19 @@ smacro.three <-function(Subject=NULL,  # N Subj's
       }
       else if (pick ==2){ 
       cat("\n\n")
-      file.menu <- c("Error=Normal Error", 
-                     "Error=Uniform Error",
-                     "Error=Normal Error*True Value",
-                     "Error=Uniform Error*True Value")
-      pick <- menu(file.menu, title = "<< Error Type >>")
+      file.menu <- c("Error = Normal Error", 
+                     "Error = Uniform Error",
+                     "Error = Normal Error*True Value",
+                     "Error = Uniform Error*True Value")
+      pick <- menu(file.menu, title = "<< Error Types >>")
       
       type<-switch(pick, 
-                  "Error=Normal Error", 
-                  "Error=Uniform Error",
-                  "Error=Normal Error*True Value",
-                  "Error=Uniform Error*True Value")
+                  "Error = Normal Error", 
+                  "Error = Uniform Error",
+                  "Error = Normal Error*True Value",
+                  "Error = Uniform Error*True Value")
       
-      cat("\n\nHow many times do you want to iteration ?\n")
+      cat("\n\nHow many interations do you want to run?\n")
       re<-scan(nlines=1,quiet=TRUE)
       
       cat("\nEnter error factor for A\n")
@@ -1243,7 +1243,7 @@ smacro.three <-function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -1260,7 +1260,7 @@ smacro.three <-function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -1277,7 +1277,7 @@ smacro.three <-function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -1294,7 +1294,7 @@ smacro.three <-function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -1311,7 +1311,7 @@ smacro.three <-function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -1328,7 +1328,7 @@ smacro.three <-function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -1346,7 +1346,7 @@ smacro.three <-function(Subject=NULL,  # N Subj's
       cat("Error Type:", type,"                \n")
       cat("Simulation #:", re,"                \n\n")
       sim<-matrix(c(par1,par2,par3,par4,par5,par6,factor1,factor2,factor3,factor4,factor5,factor6),6,2)
-      dimnames(sim)<-list(c("A","a","B","b","C","c"),c("Original","Error factor"))
+      dimnames(sim)<-list(c("A","a","B","b","C","c"),c("Selected","Error factor"))
       show(sim)   
       cat("************************************\n\n")
       PKindex<-vector(Subject,mode="list")

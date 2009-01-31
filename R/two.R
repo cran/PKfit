@@ -1,4 +1,4 @@
-### PKindex is usually the Dataset.
+### PKindex is the target Dataset.
 
 
 ### Normal fitting
@@ -15,7 +15,7 @@ fbolus2<- function(PKindex,
    ## Input dose and initial value for kel, k12, k21 and Vd
 
    if (is.null(Dose)) {
-     cat("Enter Dose value\n")
+     cat("Enter Dose\n")
      Dose <- scan(nlines=1,quiet=TRUE)
    } 
    else {
@@ -30,7 +30,7 @@ fbolus2<- function(PKindex,
              cat("\n")
              cat("**********************************\n")
              cat(" Parameter value can not be zero. \n")
-             cat(" Press enter to continue.         \n")
+             cat(" Press Enter to continue.         \n")
              cat("**********************************\n\n")
              readline()
              cat("\n")
@@ -83,7 +83,7 @@ fbolus2<- function(PKindex,
           Domains=matrix(c(0.01,0.01,0.01,1,1,10,1,100),4,2),
           MemoryMatrix=TRUE)    
           
-     cat("<< The value of parameter obtained from genetic algorithm >>\n\n")
+     cat("<< PK parameters obtained from genetic algorithm >>\n\n")
      
      namegen<-c("kel","k12","k21","Vd")
      outgen<-c(gen$par[1],gen$par[2],gen$par[3],gen$par[4])
@@ -94,9 +94,9 @@ fbolus2<- function(PKindex,
      nameopt<-c("kel","k12","k21","Vd")
      outopt<-c(opt$par[1],opt$par[2],opt$par[3],opt$par[4])
      
-     cat("\n<< The value of parameter fitted by Nelder-Mead Simplex slgorithm >>\n\n")
+     cat("\n<< PK parameters obtained from Nelder-Mead Simplex algorithm >>\n\n")
      print(data.frame(Parameter=nameopt,Value=outopt))
-     cat("\n<< Residual sum-of-squares and parameter values fitted by nls >>\n\n")
+     cat("\n<< Residual sum-of-squares and PK parameter values with nls >>\n\n")
      
      fm<-nls(conc ~ modfun1(time,kel,k12,k21,Vd), data=PKindex,subset=Subject==i,
          start=list(kel=opt$par[1],k12=opt$par[2],k21=opt$par[3],Vd=opt$par[4]),trace=TRUE,
@@ -124,7 +124,7 @@ finfu2<- function(PKindex,
    ## Input dose and Tinf and initial value for kel, k12, k21 and Vd
 
    if (is.null(Dose)) {
-     cat("Enter Dose value\n")
+     cat("Enter Dose\n")
      Dose <- scan(nlines=1,quiet=TRUE)
    } 
    else {
@@ -148,7 +148,7 @@ finfu2<- function(PKindex,
              cat("\n")
              cat("**********************************\n")
              cat(" Parameter value can not be zero. \n")
-             cat(" Press enter to continue.         \n")
+             cat(" Press Enter to continue.         \n")
              cat("**********************************\n\n")
              readline()
              cat("\n")
@@ -207,7 +207,7 @@ finfu2<- function(PKindex,
           Domains=matrix(c(0.01,0.01,0.01,1,1,10,1,100),4,2),
           MemoryMatrix=TRUE)    
           
-     cat("<< The value of parameter obtained from genetic algorithm >>\n\n")
+     cat("<< PK parameters obtained from genetic algorithm >>\n\n")
      
      namegen<-c("kel","k12","k21","Vd")
      outgen<-c(gen$par[1],gen$par[2],gen$par[3],gen$par[4])
@@ -218,9 +218,9 @@ finfu2<- function(PKindex,
      nameopt<-c("kel","k12","k21","Vd")
      outopt<-c(opt$par[1],opt$par[2],opt$par[3],opt$par[4])
      
-     cat("\n<< The value of parameter fitted by Nelder-Mead Simplex slgorithm >>\n\n")
+     cat("\n<< PK parameters obtained from Nelder-Mead Simplex algorithm >>\n\n")
      print(data.frame(Parameter=nameopt,Value=outopt))
-     cat("\n<< Residual sum-of-squares and parameter values fitted by nls >>\n\n")
+     cat("\n<< Residual sum-of-square (RSS) and final PK parameters with nls >>\n\n")
      
      fm<-nls(conc ~ modfun2(time,kel,k12,k21,Vd), data=PKindex,subset=Subject==i,
          start=list(kel=opt$par[1],k12=opt$par[2],k21=opt$par[3],Vd=opt$par[4]),trace=TRUE,
@@ -248,7 +248,7 @@ ffirst2<- function(PKindex,
    ## Input dose and initial value for ka, kel, k12, k21 and Vd
 
    if (is.null(Dose)) {
-     cat("Enter Dose value\n")
+     cat("Enter Dose\n")
      Dose <- scan(nlines=1,quiet=TRUE)
    } 
    else {
@@ -263,7 +263,7 @@ ffirst2<- function(PKindex,
              cat("\n")
              cat("**********************************\n")
              cat(" Parameter value can not be zero. \n")
-             cat(" Press enter to continue.         \n")
+             cat(" Press Enter to continue.         \n")
              cat("**********************************\n\n")
              readline()
              cat("\n")
@@ -317,7 +317,7 @@ ffirst2<- function(PKindex,
           Domains=matrix(c(0.01,0.01,0.01,0.01,1,10,1,10,1,100),5,2),
           MemoryMatrix=TRUE)     
           
-     cat("<< The value of parameter obtained from genetic algorithm >>\n\n")
+     cat("<< PK parameters obtained from genetic algorithm >>\n\n")
      
      namegen<-c("ka","kel","k12","k21","Vd")
      outgen<-c(gen$par[1],gen$par[2],gen$par[3],gen$par[4],gen$par[5])
@@ -328,9 +328,9 @@ ffirst2<- function(PKindex,
      nameopt<-c("ka","kel","k12","k21","Vd")
      outopt<-c(opt$par[1],opt$par[2],opt$par[3],opt$par[4],opt$par[5])
      
-     cat("\n<< The value of parameter fitted by Nelder-Mead Simplex slgorithm >>\n\n")
+     cat("\n<< PK parameter obtained from Nelder-Mead Simplex algorithm >>\n\n")
      print(data.frame(Parameter=nameopt,Value=outopt))
-     cat("\n<< Residual sum-of-squares and parameter values fitted by nls >>\n\n")
+     cat("\n<< Residual sum-of-squares and final PK parameters values with nls >>\n\n")
      
      fm<-nls(conc ~ modfun3(time,ka,kel,k12,k21,Vd), data=PKindex,subset=Subject==i,
          start=list(ka=opt$par[1],kel=opt$par[2],k12=opt$par[3],k21=opt$par[4],Vd=opt$par[5]),trace=TRUE,
@@ -356,7 +356,7 @@ sbolus2 <- function(Subject=NULL,  # N Subj's
    #options(warn=-1)
    
    if (is.null(Subject) || !is.integer(Subject)) {
-     cat("How many subject do you want?\n")
+     cat("How many subjects do you want?\n")
      Subject<-scan(nlines=1,quiet=TRUE)
    }
 
@@ -370,7 +370,7 @@ sbolus2 <- function(Subject=NULL,  # N Subj's
    show(PKtime)
    
    if (is.null(Dose)) {
-    cat("\nEnter dose value\n")
+    cat("\nEnter dose\n")
     Dose<-scan(nlines=1,quiet=TRUE)
    }
    
@@ -382,7 +382,7 @@ sbolus2 <- function(Subject=NULL,  # N Subj's
              cat("\n")
              cat("**********************************\n")
              cat(" Parameter value can not be zero. \n")
-             cat(" Press enter to continue.         \n")
+             cat(" Press Enter to continue.         \n")
              cat("**********************************\n\n")
              readline()
              cat("\n")
@@ -415,22 +415,22 @@ sbolus2 <- function(Subject=NULL,  # N Subj's
      
     file.menu <- c("Simulation with Error",
                    "Monte Carlo Simulation")
-    pick <- menu(file.menu, title = "<< Simulation Type >>")
+    pick <- menu(file.menu, title = "<< Simulation Types >>")
     if (pick ==1){
        cat("\n\n")
        file.menu <- c("No Error",
-                      "Error=Normal Error", 
-                      "Error=Uniform Error",
-                      "Error=Normal Error*True Value",
-                      "Error=Uniform Error*True Value")
-       pick <- menu(file.menu, title = "<< Error Type >>")  
+                      "Error = Normal Error", 
+                      "Error = Uniform Error",
+                      "Error = Normal Error*True Value",
+                      "Error = Uniform Error*True Value")
+       pick <- menu(file.menu, title = "<< Error Types >>")  
        
        type<-switch(pick, 
                   "No Error",
-                  "Error=Normal Error", 
-                  "Error=Uniform Error",
-                  "Error=Normal Error*True Value",
-                  "Error=Uniform Error*True Value") 
+                  "Error = Normal Error", 
+                  "Error = Uniform Error",
+                  "Error = Normal Error*True Value",
+                  "Error = Uniform Error*True Value") 
        
        if (pick ==1){
          PKindex<-vector(Subject,mode="list")
@@ -454,7 +454,7 @@ sbolus2 <- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -471,7 +471,7 @@ sbolus2 <- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -488,7 +488,7 @@ sbolus2 <- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -505,7 +505,7 @@ sbolus2 <- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -580,19 +580,19 @@ sbolus2 <- function(Subject=NULL,  # N Subj's
   }
   else if (pick ==2){ 
      cat("\n\n")
-     file.menu <- c("Error=Normal Error", 
-                    "Error=Uniform Error",
-                    "Error=Normal Error*True Value",
-                    "Error=Uniform Error*True Value")
-     pick <- menu(file.menu, title = "<< Error Type >>")
+     file.menu <- c("Error = Normal Error", 
+                    "Error = Uniform Error",
+                    "Error = Normal Error*True Value",
+                    "Error = Uniform Error*True Value")
+     pick <- menu(file.menu, title = "<< Error Types >>")
      
      type<-switch(pick, 
-                  "Error=Normal Error", 
-                  "Error=Uniform Error",
-                  "Error=Normal Error*True Value",
-                  "Error=Uniform Error*True Value")
+                  "Error = Normal Error", 
+                  "Error = Uniform Error",
+                  "Error = Normal Error*True Value",
+                  "Error = Uniform Error*True Value")
      
-     cat("\n\nHow many times do you want to iteration ?\n")
+     cat("\n\nHow many interations do you want to run?\n")
      re<-scan(nlines=1,quiet=TRUE)
      
      cat("\nEnter error factor for kel\n")
@@ -602,7 +602,7 @@ sbolus2 <- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -619,7 +619,7 @@ sbolus2 <- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -636,7 +636,7 @@ sbolus2 <- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -653,7 +653,7 @@ sbolus2 <- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -671,7 +671,7 @@ sbolus2 <- function(Subject=NULL,  # N Subj's
      cat("Error Type:", type,"                                \n")
      cat("Simulation #:", re,"                                \n\n")
      sim<-matrix(c(par1,par2,par3,par4,factor1,factor2,factor3,factor4),4,2)
-     dimnames(sim)<-list(c("kel","k12","k21","Vd"),c("Original","Error factor"))
+     dimnames(sim)<-list(c("kel","k12","k21","Vd"),c("Selected","Error factor"))
      show(sim)   
      cat("****************************************************\n\n")
      
@@ -761,7 +761,7 @@ sinfu2<- function(Subject=NULL,  # N Subj's
    #options(warn=-1)
    
    if (is.null(Subject) || !is.integer(Subject)) {
-     cat("How many subject do you want?\n")
+     cat("How many subjects do you want?\n")
      Subject<-scan(nlines=1,quiet=TRUE)
    }
 
@@ -775,7 +775,7 @@ sinfu2<- function(Subject=NULL,  # N Subj's
    show(PKtime)
    
    if (is.null(Dose)) {
-    cat("\nEnter dose value\n")
+    cat("\nEnter dose\n")
     Dose<-scan(nlines=1,quiet=TRUE)
    }
    
@@ -793,7 +793,7 @@ sinfu2<- function(Subject=NULL,  # N Subj's
              cat("\n")
              cat("**********************************\n")
              cat(" Parameter value can not be zero. \n")
-             cat(" Press enter to continue.         \n")
+             cat(" Press Enter to continue.         \n")
              cat("**********************************\n\n")
              readline()
              cat("\n")
@@ -832,22 +832,22 @@ sinfu2<- function(Subject=NULL,  # N Subj's
      
     file.menu <- c("Simulation with Error",
                    "Monte Carlo Simulation")
-    pick <- menu(file.menu, title = "<< Simulation Type >>")
+    pick <- menu(file.menu, title = "<< Simulation Types >>")
     if (pick ==1){
        cat("\n\n")
        file.menu <- c("No Error",
-                      "Error=Normal Error", 
-                      "Error=Uniform Error",
-                      "Error=Normal Error*True Value",
-                      "Error=Uniform Error*True Value")
-       pick <- menu(file.menu, title = "<< Error Type >>")   
+                      "Error = Normal Error", 
+                      "Error = Uniform Error",
+                      "Error = Normal Error*True Value",
+                      "Error = Uniform Error*True Value")
+       pick <- menu(file.menu, title = "<< Error Types >>")   
        
        type<-switch(pick, 
                   "No Error",
-                  "Error=Normal Error", 
-                  "Error=Uniform Error",
-                  "Error=Normal Error*True Value",
-                  "Error=Uniform Error*True Value")
+                  "Error = Normal Error", 
+                  "Error = Uniform Error",
+                  "Error = Normal Error*True Value",
+                  "Error = Uniform Error*True Value")
        
        if (pick ==1){
          PKindex<-vector(Subject,mode="list")
@@ -871,7 +871,7 @@ sinfu2<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -888,7 +888,7 @@ sinfu2<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -905,7 +905,7 @@ sinfu2<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -922,7 +922,7 @@ sinfu2<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -997,19 +997,19 @@ sinfu2<- function(Subject=NULL,  # N Subj's
   }
   else if (pick ==2){ 
      cat("\n\n")
-     file.menu <- c("Error=Normal Error", 
-                    "Error=Uniform Error",
-                    "Error=Normal Error*True Value",
-                    "Error=Uniform Error*True Value")
-     pick <- menu(file.menu, title = "<< Error Type >>")
+     file.menu <- c("Error = Normal Error", 
+                    "Error = Uniform Error",
+                    "Error = Normal Error*True Value",
+                    "Error = Uniform Error*True Value")
+     pick <- menu(file.menu, title = "<< Error Types >>")
      
      type<-switch(pick, 
-                  "Error=Normal Error", 
-                  "Error=Uniform Error",
-                  "Error=Normal Error*True Value",
-                  "Error=Uniform Error*True Value")
+                  "Error = Normal Error", 
+                  "Error = Uniform Error",
+                  "Error = Normal Error*True Value",
+                  "Error = Uniform Error*True Value")
      
-     cat("\n\nHow many times do you want to iteration ?\n")
+     cat("\n\nHow many interations do you want to run?\n")
      re<-scan(nlines=1,quiet=TRUE)
      
      cat("\nEnter error factor for kel\n")
@@ -1019,7 +1019,7 @@ sinfu2<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -1036,7 +1036,7 @@ sinfu2<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -1053,7 +1053,7 @@ sinfu2<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -1070,7 +1070,7 @@ sinfu2<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -1088,7 +1088,7 @@ sinfu2<- function(Subject=NULL,  # N Subj's
      cat("Error Type:", type,"                                   \n")
      cat("Simulation #:", re,"                                   \n\n")
      sim<-matrix(c(par1,par2,par3,par4,factor1,factor2,factor3,factor4),4,2)
-     dimnames(sim)<-list(c("kel","k12","k21","Vd"),c("Original","Error factor"))
+     dimnames(sim)<-list(c("kel","k12","k21","Vd"),c("Selected","Error factor"))
      show(sim)   
      cat("*******************************************************\n\n")
      
@@ -1178,7 +1178,7 @@ sfirst2<- function(Subject=NULL,  # N Subj's
    #options(warn=-1)
    
    if (is.null(Subject) || !is.integer(Subject)) {
-     cat("How many subject do you want?\n")
+     cat("How many subjects do you want?\n")
      Subject<-scan(nlines=1,quiet=TRUE)
    }
 
@@ -1192,7 +1192,7 @@ sfirst2<- function(Subject=NULL,  # N Subj's
    show(PKtime)
    
    if (is.null(Dose)) {
-    cat("\nEnter dose value\n")
+    cat("\nEnter dose\n")
     Dose<-scan(nlines=1,quiet=TRUE)
    }
    
@@ -1205,7 +1205,7 @@ sfirst2<- function(Subject=NULL,  # N Subj's
              cat("\n")
              cat("**********************************\n")
              cat(" Parameter value can not be zero. \n")
-             cat(" Press enter to continue.         \n")
+             cat(" Press Enter to continue.         \n")
              cat("**********************************\n\n")
              readline()
              cat("\n")
@@ -1241,22 +1241,22 @@ sfirst2<- function(Subject=NULL,  # N Subj's
      
     file.menu <- c("Simulation with Error",
                    "Monte Carlo Simulation")
-    pick <- menu(file.menu, title = "<< Simulation Type >>")
+    pick <- menu(file.menu, title = "<< Simulation Types >>")
     if (pick ==1){
        cat("\n\n")
        file.menu <- c("No Error",
-                      "Error=Normal Error", 
-                      "Error=Uniform Error",
-                      "Error=Normal Error*True Value",
-                      "Error=Uniform Error*True Value")
-       pick <- menu(file.menu, title = "<< Error Type >>") 
+                      "Error = Normal Error", 
+                      "Error = Uniform Error",
+                      "Error = Normal Error*True Value",
+                      "Error = Uniform Error*True Value")
+       pick <- menu(file.menu, title = "<< Error Types >>") 
        
        type<-switch(pick, 
                   "No Error",
-                  "Error=Normal Error", 
-                  "Error=Uniform Error",
-                  "Error=Normal Error*True Value",
-                  "Error=Uniform Error*True Value")
+                  "Error = Normal Error", 
+                  "Error = Uniform Error",
+                  "Error = Normal Error*True Value",
+                  "Error = Uniform Error*True Value")
          
        if (pick ==1){
          PKindex<-vector(Subject,mode="list")
@@ -1281,7 +1281,7 @@ sfirst2<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -1298,7 +1298,7 @@ sfirst2<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -1315,7 +1315,7 @@ sfirst2<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -1332,7 +1332,7 @@ sfirst2<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -1349,7 +1349,7 @@ sfirst2<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -1436,19 +1436,19 @@ sfirst2<- function(Subject=NULL,  # N Subj's
   }
   else if (pick ==2){ 
      cat("\n\n")
-     file.menu <- c("Error=Normal Error", 
-                    "Error=Uniform Error",
-                    "Error=Normal Error*True Value",
-                    "Error=Uniform Error*True Value")
-     pick <- menu(file.menu, title = "<< Error Type >>")
+     file.menu <- c("Error = Normal Error", 
+                    "Error = Uniform Error",
+                    "Error = Normal Error*True Value",
+                    "Error = Uniform Error*True Value")
+     pick <- menu(file.menu, title = "<< Error Types >>")
      
      type<-switch(pick, 
-                  "Error=Normal Error", 
-                  "Error=Uniform Error",
-                  "Error=Normal Error*True Value",
-                  "Error=Uniform Error*True Value")
+                  "Error = Normal Error", 
+                  "Error = Uniform Error",
+                  "Error = Normal Error*True Value",
+                  "Error = Uniform Error*True Value")
      
-     cat("\n\nHow many times do you want to iteration ?\n")
+     cat("\n\nHow many interations do you want to run?\n")
      re<-scan(nlines=1,quiet=TRUE)
      
      cat("\nEnter error factor for ka\n")
@@ -1458,7 +1458,7 @@ sfirst2<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -1475,7 +1475,7 @@ sfirst2<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -1492,7 +1492,7 @@ sfirst2<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -1509,7 +1509,7 @@ sfirst2<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -1526,7 +1526,7 @@ sfirst2<- function(Subject=NULL,  # N Subj's
                 cat("\n")
                 cat("**********************************\n")
                 cat(" Parameter value can not be zero. \n")
-                cat(" Press enter to continue.         \n")
+                cat(" Press Enter to continue.         \n")
                 cat("**********************************\n\n")
                 readline()
                 cat("\n")
@@ -1545,7 +1545,7 @@ sfirst2<- function(Subject=NULL,  # N Subj's
      cat("Error Type:", type,"                                  \n")
      cat("Simulation #:", re,"                                  \n\n")
      sim<-matrix(c(par1,par2,par3,par4,par5,factor1,factor2,factor3,factor4,factor5),5,2)
-     dimnames(sim)<-list(c("ka","kel","k12","k21","Vd"),c("Original","Error factor"))
+     dimnames(sim)<-list(c("ka","kel","k12","k21","Vd"),c("Selected","Error factor"))
      show(sim)   
      cat("******************************************************\n\n")
      

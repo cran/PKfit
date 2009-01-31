@@ -8,17 +8,17 @@ PKmenu <- function()
   
   if (!require(odesolve)) {
     ## lsoda is belong to odesolve package
-    stop("Package odesolve not found.")
+    stop("Package odesolve is not found.")
   }
 
   #if (!require(stats4)) {
   #  ## BIC is belong to stats4 package
-  #  stop("Package stats4 not found.")
+  #  stop("Package stats4 is not found.")
   #}
 
   if (!require(rgenoud)) {
     ## genoud is belong to rgenoud package
-    stop("Package rgenoud not found.")
+    stop("Package rgenoud is not found.")
   }  
   
   cat("\n")
@@ -28,9 +28,9 @@ PKmenu <- function()
   pick <- menu(file.menu, title = "<< PKfit:- menu >>")  
   if (pick == 1){
      cat("\n\n")
-     cat("************************************\n")
-     cat(" Please manipulate the data first.  \n")
-     cat("************************************\n\n")
+     cat("****************************************************\n")
+     cat(" Please enter the data or load your data file first.  \n")
+     cat("****************************************************\n\n")
      nor.fit()
   } else {
     if (pick == 2){
@@ -59,9 +59,9 @@ nor.fit <- function(PKindex)
   else if (pick == 2){
      cat("\n\n") 
      if (missing(PKindex)){
-        cat("*************************************\n")
-        cat(" Please manipulate the data first.   \n")
-        cat("*************************************\n\n")
+        cat("****************************************************\n")
+        cat(" Please enter the data or load your data file first.  \n")
+        cat("****************************************************\n\n")
         return(nor.fit())
        } 
      else
@@ -76,7 +76,7 @@ nor.fit <- function(PKindex)
 #Data manipulation
 data.manipulate <- function()
 {
-  file.menu <- c("Input Filepath",
+  file.menu <- c("Setup Filepath",
                  "Load Data Files (.CSV)", 
                  "Load Data Files (.RData)", 
                  "Input data from keyboard", 
@@ -94,7 +94,7 @@ data.manipulate <- function()
      pk.path<-paste(pk.path,".csv",sep="")
      PKindex<-read.csv(pk.path)
      cnames<-c("Subject", "time", "conc")
-     PKindex<-read.csv(pk.path,header=TRUE,sep=",",row.names=NULL,col.names=cnames)
+     PKindex<-read.csv(pk.path,header=FALSE,sep=",",row.names=NULL,col.names=cnames)
      PKindex<-edit(PKindex)
      cat("\n\n")
      show(PKindex)
@@ -109,12 +109,12 @@ data.manipulate <- function()
      cat("\n")
      cat("*************************************************************\n")
      cat(" Enter data file name(.csv)                                  \n")
-     cat(" Data should consist of subject no., time, and concentration \n")
+     cat(" Data should consist of subject no., time, and drug conc. (Cp). \n")
      cat("*************************************************************\n\n")
      PK.file <-readline()
      PK.file<-paste(PK.file,".csv",sep="")
      cnames<-c("Subject", "time", "conc")
-     PKindex<-read.csv(PK.file,header=TRUE,sep=",",row.names=NULL,col.names=cnames)
+     PKindex<-read.csv(PK.file,header=FALSE,sep=",",row.names=NULL,col.names=cnames)
      PKindex<-edit(PKindex)
      cat("\n\n")
      show(PKindex)
@@ -142,21 +142,21 @@ data.manipulate <- function()
      PKindex<-data.frame(Subject=c(1),time=c(0),conc=c(0))
      PKindex<-edit(PKindex)
      show(PKindex)     
-     cat("\nSave data (y/n) ?\n")
+     cat("\nSave data (y/n)?\n")
      ans<-readline()
      cat("\n")
      if (ans == "n" | ans == "N"){
         return(nor.fit(PKindex))
         }
      else {
-        cat("Enter name you want to call this data\n")
+        cat("Enter the file name for input data:\n")
         PKname <-readline() 
         PKname<-paste(PKname,".RData",sep="")      
         if(file.exists(PKname)){
            cat("\n")
            cat("****************************************\n")
-           cat(" The file name have been existed.       \n")
-           cat(" Would you want to overwrite it ? (y/n) \n")
+           cat(" The file has been existed.       \n")
+           cat(" Would you like to overwrite it? (y/n) \n")
            cat("****************************************\n")
            ans<-readline()
              if (ans == "y" | ans == "Y"){
@@ -164,15 +164,15 @@ data.manipulate <- function()
                 cat("\n")
               }
               else{
-                cat("\nEnter name you want to call this data\n")
+                cat("\nEnter the file name for input data:\n")
                 PKname <-readline() 
                 PKname<-paste(PKname,".RData",sep="") 
                 repeat{
                     if(file.exists(PKname)){
                       cat("\n")
                       cat("***********************************\n")
-                      cat(" The file name have been existed **\n")
-                      cat(" Enter name again, OK.           **\n")
+                      cat(" The file has been existed. \n")
+                      cat(" Please enter the file name again.\n")
                       cat("***********************************\n")
                       PKname<-readline()
                       PKname<-paste(PKname,".RData",sep="") 
@@ -229,7 +229,7 @@ one.list <- function(PKindex)
   file.menu <- c("IV Route", 
                  "Non IV Route",
                  "Go Back One Upper Level")
-  pick <- menu(file.menu, title = "<< 1-Compartment Model >>")
+  pick <- menu(file.menu, title = "<< 1-Compartment PK Model >>")
   if (pick == 1){
      cat("\n\n")  
      iv.route(PKindex)
@@ -259,7 +259,7 @@ two.list <- function(PKindex)
                  "IV-Infusion, & SD",
                  "Extravascular, SD, & 1st-Ord Abs w/o Tlag",
                  "Go Back One Upper Level")
-  pick <- menu(file.menu, title = "<< 2-Compartment Model >>")
+  pick <- menu(file.menu, title = "<< 2-Compartment PK Model >>")
   if (pick == 1){
      cat("\n\n")  
      fbolus2(PKindex)
@@ -280,9 +280,9 @@ two.list <- function(PKindex)
 
 PK.sim <- function()
 {
-  file.menu <- c("1-Compartment Model: IV Route", 
-                 "1-Compartment Model: Non IV Route",
-                 "2-Compartment Model",
+  file.menu <- c("1-Compartment PK Model: IV Route", 
+                 "1-Compartment PK Model: Non IV Route",
+                 "2-Compartment PK Model",
                  "Macroconstant Exponential Functions",
                  "Go Back One Upper Level")
   pick <- menu(file.menu, title = "<< Selection of PK Model >>")
@@ -548,7 +548,7 @@ stwo.all <- function()
                  "IV-Infusion, & SD",
                  "Extravascular, SD, & 1-Ord Abs w/o Tlag",
                  "Go Back One Upper Level")
-  pick <- menu(file.menu, title = "<< 2-Compartment Model >>")
+  pick <- menu(file.menu, title = "<< 2-Compartment PK Model >>")
   if (pick ==1){
      cat("\n\n")
      sbolus2()
@@ -601,14 +601,20 @@ plotting.lin <- function (PKindex, fm, i, pick, coef, xaxis, yaxis,
      }
      return(list(auc=auc,aumc=aumc))
   }
-  add<-add(x,y)
-  AUC<-add$auc
-  AUMC<-add$aumc
+  add1<-add(x,y)
+  if (x[1]==0){
+    AUC<-add1$auc
+    AUMC<-add1$aumc
+    }
+  else {
+  AUC<-c(NA,add1$auc[-1])
+  AUMC<-c(NA,add1$aumc[-1])
+  }
         
  #Output   
   cat("<< Output >>\n")  
   output<-data.frame(x,y,cal,wei,AUC,AUMC)
-  colnames(output)<-list("time","Observed","Calculated","Wtd Residuals","AUC","AUMC")
+  colnames(output)<-list("Time","Observed","Calculated","Wt. Residuals","AUC","AUMC")
   show(output)  
   
  #AUC (0 to infinity)              
@@ -619,7 +625,7 @@ plotting.lin <- function (PKindex, fm, i, pick, coef, xaxis, yaxis,
   
  #AUMC (0 to infinity) 
   cat("\n<< AUMC (0 to infinity) computed by trapezoidal rule >>\n\n")
-  aumc.infinity<-(x[length(x)]*y[length(y)])/coef[1,1]+x[length(x)]/((coef[1,1])^2)
+  aumc.infinity<-(x[length(x)]*y[length(y)])/coef[1,1]+y[length(y)]/((coef[1,1])^2)
   aumc<-AUMC[length(y)]+aumc.infinity
   show(aumc)   
   cat("\n")
@@ -698,12 +704,12 @@ plotting.non <- function (PKindex, fm, i, pick, xaxis, yaxis,
   }
   
   add1 <- add(x,y)
-  AUC <- add1$auc
-  AUMC <- add1$aumc
+  AUC<-c(NA,add1$auc[-1])
+  AUMC<-c(NA,add1$aumc[-1])
               
   cat("<< Output >>\n\n")      
   output <- data.frame(x,y,cal,wei,AUC,AUMC)
-  colnames(output) <- list("time","Observed","Calculated","Wtd Residuals","AUC","AUMC")
+  colnames(output) <- list("Time","Observed","Calculated","Wt. Residuals","AUC","AUMC")
   show(output)
   cat("\n") 
         
@@ -801,14 +807,14 @@ aicllsbc <- function(fm)
 
 savefile<-function(PKindex)  
 {
-  cat("\nSave data as a .RData file (y/n) ?\n")
+  cat("\nSave input data as a .RData file (y/n)?\n")
   ans<-readline()
   cat("\n")
   if (ans == "n" | ans == "N"){
      cat("\nbye-bye!\n")
      }
   else {
-     cat("Enter name you want to call this data\n")
+     cat("Enter the data file name:\n")
      PKname <-readline() 
      dataExt<- ".RData"
      PKname<-paste(PKname,dataExt,sep="")
@@ -816,14 +822,14 @@ savefile<-function(PKindex)
            cat("\n")
            cat("*******************************************\n")
            cat("** The file name has been existed.     **\n")
-           cat("** Would you want to overwrite it ? (y/n)**\n")
+           cat("** Would you like to overwrite it? (y/n)**\n")
            cat("*******************************************\n")
            ans<-readline()
              if (ans == "y" | ans == "Y"){
                 save(PKindex,file=PKname)
               }
               else{
-                cat("\nEnter name you want to call this data\n")
+                cat("\nEnter the file name for input data:\n")
                 PKname <-readline() 
                 PKname<-paste(PKname,".RData",sep="") 
                 repeat{
@@ -831,7 +837,7 @@ savefile<-function(PKindex)
                     cat("\n")
                     cat("***************************************\n")
                     cat("** The file name has been existed. **\n")
-                    cat("** Enter name again, OK.           **\n")
+                    cat("** Please enter file name again.           **\n")
                     cat("***************************************\n")
                     PKname<-readline()
                     PKname<-paste(PKname,".RData",sep="") 
@@ -864,7 +870,7 @@ sbolus1.out<-function(PKtime,kel,Vd,defun,par1,par2,Dose,i,type)
   cat("Model: 1-Compartment, IV-Bolus, & Single-Dose Model \n")
   cat("Error Type:", type,"                                \n\n") 
   sim<-matrix(c(kel,Vd,par1,par2),2,2)
-  dimnames(sim)<-list(c("kel","Vd"),c("Value","Original"))
+  dimnames(sim)<-list(c("kel","Vd"),c("Value","Selected"))
   show(sim)
   cat("****************************************************\n\n")
   
@@ -895,7 +901,7 @@ sbolus.mm.out<-function(PKtime,Vm,Km,Vd,defun,par1,par2,par3,Dose,i,type)
   cat("       & Michaelis-Menten Elimination Model  \n") 
   cat("Error Type:", type,"                         \n\n") 
   sim<-matrix(c(Vm,Km,Vd,par1,par2,par3),3,2)
-  dimnames(sim)<-list(c("Vm","Km","Vd"),c("Value","Original"))
+  dimnames(sim)<-list(c("Vm","Km","Vd"),c("Value","Selected"))
   show(sim)
   cat("*********************************************\n\n")
   
@@ -925,7 +931,7 @@ sinfu1.out<-function(PKtime,kel,Vd,defun,par1,par2,Dose,i,type)
   cat("Model: 1-Compartment, IV-Infusion, & Single-Dose Model \n")
   cat("Error Type:", type,"                                   \n\n")
   sim<-matrix(c(kel,Vd,par1,par2),2,2)
-  dimnames(sim)<-list(c("kel","Vd"),c("Value","Original"))
+  dimnames(sim)<-list(c("kel","Vd"),c("Value","Selected"))
   show(sim)
   cat("*******************************************************\n\n")
   
@@ -956,7 +962,7 @@ sinfu.mm.out<-function(PKtime,Vm,Km,Vd,defun,par1,par2,par3,Dose,i,type)
   cat("       & Michaelis-Menten Elimination Model     \n")
   cat("Error Type:", type,"                            \n\n")
   sim<-matrix(c(Vm,Km,Vd,par1,par2,par3),3,2)
-  dimnames(sim)<-list(c("Vm","Km","Vd"),c("Value","Original"))
+  dimnames(sim)<-list(c("Vm","Km","Vd"),c("Value","Selected"))
   show(sim)    
   cat("************************************************\n\n")
   
@@ -990,7 +996,7 @@ sfirst1.out<-function(PKtime,ka,kel,Vd,defun,par1,par2,par3,Dose,i,type,Tlag)
   cat("       & 1-Ordered Absorption without Lag Time Model \n")
   cat("Error Type:", type,"                                 \n\n")
   sim<-matrix(c(ka,kel,Vd,par1,par2,par3),3,2)
-  dimnames(sim)<-list(c("ka","kel","Vd"),c("Value","Original"))
+  dimnames(sim)<-list(c("ka","kel","Vd"),c("Value","Selected"))
   show(sim)
   cat("*****************************************************\n\n")
   }
@@ -1004,7 +1010,7 @@ sfirst1.out<-function(PKtime,ka,kel,Vd,defun,par1,par2,par3,Dose,i,type,Tlag)
   cat("       & 1-Ordered Absorption with Lag Time Model \n")
   cat("Error Type:", type,"                              \n\n")
   sim<-matrix(c(ka,kel,Vd,par1,par2,par3),3,2)
-  dimnames(sim)<-list(c("ka","kel","Vd"),c("Value","Original"))
+  dimnames(sim)<-list(c("ka","kel","Vd"),c("Value","Selected"))
   show(sim)
   cat("**************************************************\n\n")
   }  
@@ -1040,7 +1046,7 @@ sfirst.mm.out<-function(PKtime,ka,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i,type
   cat("       & Michaelis-Menten Elimination without Lag Time Model            \n")
   cat("Error Type:", type,"                                                    \n\n")
   sim<-matrix(c(ka,Vm,Km,Vd,par1,par2,par3,par4),4,2)
-  dimnames(sim)<-list(c("ka","Vm","Km","Vd"),c("Value","Original"))
+  dimnames(sim)<-list(c("ka","Vm","Km","Vd"),c("Value","Selected"))
   show(sim)
   cat("************************************************************************\n\n")
   }
@@ -1053,7 +1059,7 @@ sfirst.mm.out<-function(PKtime,ka,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i,type
   cat("       & Michaelis-Menten Elimination with Lag Time Model               \n")
   cat("Error Type:", type,"                                                    \n\n")
   sim<-matrix(c(ka,Vm,Km,Vd,par1,par2,par3,par4),4,2)
-  dimnames(sim)<-list(c("ka","Vm","Km","Vd"),c("Value","Original"))
+  dimnames(sim)<-list(c("ka","Vm","Km","Vd"),c("Value","Selected"))
   show(sim)
   cat("************************************************************************\n\n")
   }
@@ -1086,7 +1092,7 @@ szero.out<-function(PKtime,Tabs,kel,Vd,defun,par1,par2,par3,Dose,i,type)
   cat("       & Zero-Ordered Absorption without Lag Time Model \n")
   cat("Error Type:", type,"                                    \n\n")
   sim<-matrix(c(Tabs,kel,Vd,par1,par2,par3),3,2)
-  dimnames(sim)<-list(c("Tabs","kel","Vd"),c("Value","Original"))
+  dimnames(sim)<-list(c("Tabs","kel","Vd"),c("Value","Selected"))
   show(sim)  
   cat("********************************************************\n\n")
   
@@ -1117,7 +1123,7 @@ szero.mm.out<-function(PKtime,Tabs,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i,typ
   cat("       & Michaelis-Menten Elimination without Lag Time Model               \n")
   cat("Error Type:", type,"                                                       \n\n")
   sim<-matrix(c(Tabs,Vm,Km,Vd,par1,par2,par3,par4),4,2)
-  dimnames(sim)<-list(c("Tabs","Vm","Km","Vd"),c("Value","Original"))
+  dimnames(sim)<-list(c("Tabs","Vm","Km","Vd"),c("Value","Selected"))
   show(sim)
   cat("***************************************************************************\n\n")
   
@@ -1147,7 +1153,7 @@ smacro.one.out<-function(PKtime,A,a,defun,par1,par2,Dose,i,type)
   cat("Model: One-exponential Term Model          \n") 
   cat("Error Type:", type,"                       \n\n")
   sim<-matrix(c(A,a,par1,par2),2,2)
-  dimnames(sim)<-list(c("A","a"),c("Value","Original"))
+  dimnames(sim)<-list(c("A","a"),c("Value","Selected"))
   show(sim)
   cat("******************************************\n\n")
   
@@ -1172,7 +1178,7 @@ smacro.two.out<-function(PKtime,A,a,B,b,defun,par1,par2,par3,par4,Dose,i,type)
   cat("Model: Two-exponential Term Model          \n") 
   cat("Error Type:", type,"                       \n\n")
   sim<-matrix(c(A,a,B,b,par1,par2,par3,par4),4,2)
-  dimnames(sim)<-list(c("A","a","B","b"),c("Value","Original"))
+  dimnames(sim)<-list(c("A","a","B","b"),c("Value","Selected"))
   show(sim)
   cat("*******************************************\n\n")
   PKindex<-data.frame(i,output)
@@ -1196,7 +1202,7 @@ smacro.three.out<-function(PKtime,A,a,B,b,C,c,defun,par1,par2,par3,par4,par5,par
   cat("Model: Three-exponential Term Model        \n") 
   cat("Error Type:", type,"                       \n\n")
   sim<-matrix(c(A,a,B,b,C,c,par1,par2,par3,par4,par5,par6),6,2)
-  dimnames(sim)<-list(c("A","a","B","b","C","c"),c("Value","Original"))
+  dimnames(sim)<-list(c("A","a","B","b","C","c"),c("Value","Selected"))
   show(sim)
   cat("*******************************************\n\n")
   PKindex<-data.frame(i,output)
@@ -1220,7 +1226,7 @@ sbolus2.out<-function(PKtime,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i,typ
   cat("Model: 2-Compartment, IV-Bolus, & Single-Dose Model \n") 
   cat("Error Type:", type,"                                \n\n")
   sim<-matrix(c(kel,k12,k21,Vd,par1,par2,par3,par4),4,2)
-  dimnames(sim)<-list(c("kel","k12","k21","Vd"),c("Value","Original"))
+  dimnames(sim)<-list(c("kel","k12","k21","Vd"),c("Value","Selected"))
   show(sim)
   cat("****************************************************\n\n")
   good<-ifelse(C1.lsoda[2:(length(time)+1),2]<=0,
@@ -1249,7 +1255,7 @@ sinfu2.out<-function(PKtime,kel,k12,k21,Vd,defun,par1,par2,par3,par4,Dose,i,type
   cat("Model: 2-Compartment, IV-Infusion, & Single-Dose Model \n") 
   cat("Error Type:", type,"                                   \n\n")
   sim<-matrix(c(kel,k12,k21,Vd,par1,par2,par3,par4),4,2)
-  dimnames(sim)<-list(c("kel","k12","k21","Vd"),c("Value","Original"))
+  dimnames(sim)<-list(c("kel","k12","k21","Vd"),c("Value","Selected"))
   show(sim)
   cat("*******************************************************\n\n")
   good<-ifelse(C1.lsoda[2:(length(time)+1),2]<=0,
@@ -1279,7 +1285,7 @@ sfirst2.out<-function(PKtime,ka,kel,k12,k21,Vd,defun,par1,par2,par3,par4,par5,Do
   cat("       Single-Dose, & 1-Ordered without Lag Time Model \n") 
   cat("Error Type:", type,"                                   \n\n")
   sim<-matrix(c(ka,kel,k12,k21,Vd,par1,par2,par3,par4,par5),5,2)
-  dimnames(sim)<-list(c("ka","kel","k12","k21","Vd"),c("Value","Original"))
+  dimnames(sim)<-list(c("ka","kel","k12","k21","Vd"),c("Value","Selected"))
   show(sim)
   cat("*******************************************************\n\n")
   good<-ifelse(C1.lsoda[2:(length(time)+1),3]<=0,
@@ -1355,7 +1361,7 @@ montecarlo<-function(C1.lsoda,time1,i,re)
   mtext("Linear",side=3,cex=0.8)
   
   x<-C1.lsoda$time
-  y<-C1.lsoda$concentration
+  y<-C1.lsoda$conc
   
   plot(x,y,log="y",type='l',main=main,xlab="Time",ylab="Concentration")
   lines(PKindex$time,PKindex$conc,log="y",type="l",lty=1,col="firebrick3",lwd="2")
