@@ -228,7 +228,7 @@ ffirst.nolag<- function(PKindex,
                         Vd=NULL,
                         kel=NULL,        
                         Tlag=FALSE,
-                        MMe=TRUE) 
+                        MMe=FALSE) 
 {
    #options(warn=-1)
         
