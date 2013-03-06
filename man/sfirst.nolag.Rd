@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{sfirst.nolag}
 
 \alias{sfirst.nolag}

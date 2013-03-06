@@ -190,7 +190,7 @@ ffirst.lag<- function(PKindex,
       if (MMe) {
         fm<-nls(conc ~ modfun2(time, ka, Vm, Km, Vd), data=PKindex,subset=Subject==i,
             start=list(ka=opt$par[1],Vm=opt$par[2],Km=opt$par[3],Vd=opt$par[4]),trace=TRUE,
-            nls.control(maxiter=500,tol=1.0))
+            nls.control(maxiter=500,tol=1.0,minFactor = 1/2048))
         cat("\n")
         plotting.non(PKindex, fm, i, pick, xaxis, yaxis)
       } 
@@ -198,7 +198,7 @@ ffirst.lag<- function(PKindex,
         ## No MM elimination
         fm <-nls(conc ~ modfun1(time, ka, kel, Vd), data=PKindex,subset=Subject==i,
              start=list(ka=opt$par[1],kel=opt$par[2],Vd=opt$par[3]),trace=TRUE,
-             nls.control(tol=1))
+             nls.control(tol=1.0,minFactor = 1/2048))
         cat("\n")
         coef<-data.frame(coef(fm)["kel"])
         plotting.lin(PKindex, fm, i, pick, coef, xaxis, yaxis)
@@ -398,7 +398,7 @@ ffirst.nolag<- function(PKindex,
         ## No MM elimination
         fm <-nls(conc ~ modfun3(time, ka, kel, Vd), data=PKindex,subset=Subject==i,
              start=list(ka=opt$par[1],kel=opt$par[2],Vd=opt$par[3]),trace=TRUE,
-             nls.control(tol=1))
+             nls.control(maxiter=500, tol=1.0))
         cat("\n")
         coef<-data.frame(coef(fm)["kel"])
         plotting.lin(PKindex, fm, i, pick, coef, xaxis, yaxis)

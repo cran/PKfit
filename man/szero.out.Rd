@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{szero.out}
 
 \alias{szero.out}

@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{sfirst1.out}
 
 \alias{sfirst1.out}

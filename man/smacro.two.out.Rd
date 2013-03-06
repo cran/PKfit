@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{smacro.two.out}
 
 \alias{smacro.two.out}

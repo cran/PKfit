@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{plotting.sim}
 
 \alias{plotting.sim}

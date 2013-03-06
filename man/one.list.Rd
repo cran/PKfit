@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{one.list}
 
 \alias{one.list}

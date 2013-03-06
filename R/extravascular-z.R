@@ -181,7 +181,7 @@ fzero.nolag <- function(PKindex,
      if (MMe) {
         fm<-nls(conc~modfun2(time,Tabs,Vm,Km,Vd),data=PKindex, algorithm="default",subset=Subject==i,
             start=list(Tabs=opt$par[1],Vm=opt$par[2],Km=opt$par[3],Vd=opt$par[4]),trace=TRUE,
-            nls.control(maxiter=50,tol=10,minFactor=1/1024))
+            nls.control(maxiter=50,tol=10,minFactor=1/2048))
         cat("\n")
         plotting.non(PKindex, fm, i, pick,xaxis,yaxis)
      } 
@@ -189,7 +189,7 @@ fzero.nolag <- function(PKindex,
         ## No MM elimination
         fm<-nls(conc~modfun1(time,Tabs,kel,Vd),data=PKindex, algorithm="default",subset=Subject==i,
             start=list(Tabs=opt$par[1],kel=opt$par[2],Vd=opt$par[3]),trace=TRUE,
-            nls.control(tol=1))
+            nls.control(tol=1.0,minFactor=1/2048))
         cat("\n")
         coef<-data.frame(coef(fm)["kel"])
         plotting.lin(PKindex, fm, i, pick, coef, xaxis, yaxis)

@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{sinfu1.out}
 
 \alias{sinfu1.out}

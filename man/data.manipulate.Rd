@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{data.manipulate}
 
 \alias{data.manipulate}

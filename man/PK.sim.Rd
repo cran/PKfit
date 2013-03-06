@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{PK.sim}
 
 \alias{PK.sim}

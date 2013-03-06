@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{finfu1}
 
 \alias{finfu1}

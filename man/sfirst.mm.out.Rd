@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{sfirst.mm.out}
 
 \alias{sfirst.mm.out}

@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{smacro.two}
 
 \alias{smacro.two}

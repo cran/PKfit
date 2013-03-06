@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{sbolus2.out}
 
 \alias{sbolus2.out}

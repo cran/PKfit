@@ -1,26 +1,9 @@
 #PKfit main menu
-PKmenu <- function() 
+run <- function() 
 {
   
   ## Need to clean up the requirements.
-  
-  options(warn=-1)
-  
-  if (!require(odesolve)) {
-    ## lsoda is belong to odesolve package
-    stop("Package odesolve is not found.")
-  }
-
-  #if (!require(stats4)) {
-  #  ## BIC is belong to stats4 package
-  #  stop("Package stats4 is not found.")
-  #}
-
-  if (!require(rgenoud)) {
-    ## genoud is belong to rgenoud package
-    stop("Package rgenoud is not found.")
-  }  
-  
+  options(warn=-1) 
   cat("\n")
   file.menu <- c("Normal Fitting", 
                  "Simulation", 
@@ -69,7 +52,7 @@ nor.fit <- function(PKindex)
   }      
   else if (pick == 3){
          cat("\n\n") 
-         PKmenu()
+         run()
   }  
 }
 
@@ -219,7 +202,7 @@ PK.fit <- function(PKindex)
   }
   else if (pick == 4){
      cat("\n\n")
-     PKmenu()
+     run()
   }        
 }
 
@@ -304,7 +287,7 @@ PK.sim <- function()
   }
   else if (pick == 5){
      cat("\n\n")
-     PKmenu()
+     run()
   }
 }
 
@@ -612,7 +595,7 @@ plotting.lin <- function (PKindex, fm, i, pick, coef, xaxis, yaxis,
   }
         
  #Output   
-  cat("<< Output >>\n")  
+  cat("<< Output >>\n\n")  
   output<-data.frame(x,y,cal,wei,AUC,AUMC)
   colnames(output)<-list("Time","Observed","Calculated","Wt. Residuals","AUC","AUMC")
   show(output)  
@@ -783,25 +766,20 @@ plotting.sim <- function(i,x,y,separateWindows=TRUE)
 aicllsbc <- function(fm)
 {   
   cat("\n") 
-  cat("<< Akaike's Information Criterion (AIC) >>\n\n")
+  cat("<< Akaike's Information Criterion (AIC) >>\n")
   show(AIC(fm))
     
-  cat("\n<< Log likelihood >>\n\n")
+  cat("\n<< Log likelihood >>\n")
   show(logLik(fm))
     
-  if (!require(stats4)) {
-    ## BIC is belong to stats4 package
-    stop("Package stats4 not found.")
-  }  
-    
-  cat("\n<< Schwarz's Bayesian Criterion (SBC) >>\n\n")
+  cat("\n<< Schwarz's Bayesian Criterion (SBC/BIC) >>\n")
   show(BIC(fm))
   cat("\n")     
     
  #Summary the results of nls
-  print(summary(fm))  
+  print(summary(fm))
   cat("\n")   
-  cat(date(),"\n\n")     
+  cat(date(),"\n")     
 }  
 
 

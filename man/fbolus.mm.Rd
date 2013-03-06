@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{fbolus.mm}
 
 \alias{fbolus.mm}

@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{sinfu.mm.out}
 
 \alias{sinfu.mm.out}

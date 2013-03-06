@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{sone.noniv.route}
 
 \alias{sone.noniv.route}

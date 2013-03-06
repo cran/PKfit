@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{noniv.route}
 
 \alias{noniv.route}

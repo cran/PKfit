@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{szero.nolag}
 
 \alias{szero.nolag}

@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{plotting.lin}
 
 \alias{plotting.lin}

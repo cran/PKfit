@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{PK.fit}
 
 \alias{PK.fit}

@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{sinfu2}
 
 \alias{sinfu2}

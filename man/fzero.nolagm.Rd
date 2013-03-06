@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{fzero.nolagm}
 
 \alias{fzero.nolagm}

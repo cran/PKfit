@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{plotting.non}
 
 \alias{plotting.non}

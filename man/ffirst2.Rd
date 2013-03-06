@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{ffirst2}
 
 \alias{ffirst2}

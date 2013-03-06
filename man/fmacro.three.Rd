@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{fmacro.three}
 
 \alias{fmacro.three}

@@ -1,3 +1,5 @@
+\encoding{UTF-8}
+
 \name{stwo.all}
 
 \alias{stwo.all}
