@@ -1,12 +1,12 @@
 # change the following line since R v.2.15.3 as .onAttach [2013/3/4 AM06:27:15]
-# .First.lib <- function(...) {
 
 .onAttach <- function(lib, pkg)  {
 
 # echo output to screen
 packageStartupMessage("
 
-*********************** PKfit v1.1.9 *********************
+....................... PKfit v1.2.0 .....................
+
    Please type 'run()' to get started.                
                                                          
    If you want to see some demos, type                   
@@ -17,5 +17,5 @@ packageStartupMessage("
                                                          
    'demo(mmpk)' for Michaelis-Menten Model.              
 
-**********************************************************")
+..........................................................")
 }

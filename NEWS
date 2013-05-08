@@ -1,0 +1,25 @@
+PKfit v1.2.0
+ A Data Analysis Tool for Pharmacokinetics
+ 
+Update logs
+---
+
+04/04/2013
+---
+1. Remove genetic algorithm from PKfit; it still keep
+   Nelder-Mead Simplex (optim) and nls() for Guass_newton.
+   
+2. fixed some settings for methods used in model-fitting.
+   most difficult in this part.
+   
+3. If you get error message something like 'minFactors...',
+   please check your model, check your data and check your
+   initial values.
+ 
+4. A .txt output and a .pdf file generated for fitting
+   results and plots, respectively.
+
+---
+  
+ 
+ 

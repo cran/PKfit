@@ -36,7 +36,7 @@ for (j in 1:re){
      Vd<-par3+runif(1,min=-factor3,max=factor3)}
   time<-PKtime
   parms<-c(ka=ka,kel=kel,Vd=Vd)  
-  XX<-data.frame(lsoda(c(Dose,0),c(0,time), defun, parms))  
+  XX<-data.frame(lsoda(c(Dose,0),c(0,time), defun, parms,rtol=1e-6,atol=1e-6)) 
   C1.lsoda[[j]]<-data.frame(XX[2:(length(time)+1),1],XX[2:(length(time)+1),3])
   colnames(C1.lsoda[[j]])<-list("time","concentration") 
 } 

@@ -11,7 +11,7 @@ defun<- function(time, y, parms) {
     
 modfun <- function(time,kel, Vd) {  
       out <- lsoda(Dose/Vd,c(0,time),defun,parms=c(kel=kel,Vd=Vd),
-                   rtol=1e-3,atol=1e-5) 
+                   rtol=1e-3,atol=1e-3) 
       out[-1,2] 
 }
 
@@ -21,20 +21,25 @@ objfun <- function(par) {
         sum((PKindex$conc[gift]-out[gift])^2)
 }        
 
-gen<-genoud(objfun,nvars=2,max=FALSE,pop.size=30,
-            max.generations=20,wait.generations=10,
-            starting.values=c(0.13,20),
-            BFGS=FALSE,print.level=0,boundary.enforcement=2,
-            Domains=matrix(c(0.01,0.01,100,100),2,2),
-            MemoryMatrix=TRUE)  
-namegen<-c("kel","Vd")
-outgen<-c(gen$par[1],gen$par[2])      
-opt<-optim(c(gen$par[1],gen$par[2]),objfun,method="Nelder-Mead")  
+### gen<-genoud(objfun,nvars=2,max=FALSE,pop.size=30,
+###             max.generations=20,wait.generations=10,
+###             starting.values=c(0.13,20),
+###             BFGS=FALSE,print.level=0,boundary.enforcement=2,
+###             Domains=matrix(c(0.01,0.01,100,100),2,2),
+###             MemoryMatrix=TRUE)  
+### namegen<-c("kel","Vd")
+### outgen<-c(gen$par[1],gen$par[2]) 
+     
+opt<-optim(c(0.13,20),objfun,method="Nelder-Mead")  
 nameopt<-c("kel","Vd")
-outopt<-c(opt$par[1],opt$par[2])     
+outopt<-c(opt$par[1],opt$par[2])
+
+  if(opt$par[1]<0) {opt$par[1]<-0.01}
+  if(opt$par[2]<0) {opt$par[2]<-0.01}
+    
 fm<-nls(conc ~ modfun(time, kel, Vd), data=PKindex,
         start=list(kel=opt$par[1],Vd=opt$par[2]),trace=TRUE,
-        nls.control(tol=1))    
+        nls.control(maxiter=5000,tol=1e-06,minFactor=1/1024/1024),algorithm = "port",lower=c(0,0,0,0))
 coef<-data.frame(coef(fm)["kel"])
 x<-PKindex$time
 y<-PKindex$conc
@@ -66,15 +71,15 @@ windows(record=TRUE)
 
 par(mfrow=c(2,2), ask = FALSE)
 
-plot(y~x,data=PKindex,type='p',main="Drug conc. vs. Time curve", 
-     xlab="Time", ylab="Concentration",pch=15,col="black",bty="l",
+plot(y~x,data=PKindex,type='p',main="Drug Plasma Conc. vs. Time Curve", 
+     xlab="Time", ylab="Drug Plasma Conc.",pch=15,col="black",bty="l",
      font.lab=2,cex.lab=1,cex.axis=1,cex.main=1) 
 lines(x,predict(fm,list(time=x)),type="l",lty=1,
       col="firebrick3",lwd="2")
 mtext("Linear",side=3,cex=0.88)
     
-plot(x,y,log="y",type='p',main="Drug conc. vs. Time curve",
-     xlab="Time", ylab="Concentration",pch=15,col="black",bty="l",
+plot(x,y,log="y",type='p',main="Drug Plasma Conc. vs. Time Curve",
+     xlab="Time", ylab="Drug Plasma Conc.",pch=15,col="black",bty="l",
      font.lab=2,cex.lab=1,cex.axis=1,cex.main=1) 
 lines(x,predict(fm,list(time=x)),type="l",lty=1,
       col="firebrick3",lwd="2")

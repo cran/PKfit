@@ -1,195 +1,3 @@
-### PKindex is the target Dataset.
-
-
-### Normal fitting
-### One compartment PK model iv bolus single dose
-### optional Michaelis-Menten Elimination
-fbolus1 <- function(PKindex,
-                    Dose=NULL,
-                    Vm=NULL,Km=NULL, ## MMe=TRUE
-                    Vd=NULL,
-                    kel=NULL,        ## MMe=FALSE
-                    MMe=FALSE)
-{
-   #options(warn=-1)
-   
-   ## Input dose and initial value for kel and Vd
-   
-   if (is.null(Dose)) {
-     cat("Enter Dose\n")
-     Dose <- scan(nlines=1,quiet=TRUE)
-   } 
-   else {
-     cat("Dose from arguments is = ",Dose,"\n")
-   }
-   
-   if (MMe){
-      if (is.null(Vm) || is.null(Km) || is.null(Vd) ) {
-        par<-data.frame(Parameter=c("Vm","Km","Vd"),Initial=c(0))
-        par<-edit(par)
-        repeat{
-           if ( par[1,2] == 0 || par[2,2] ==0 || par[3,2]==0){
-             cat("\n")
-             cat("**********************************\n")
-             cat(" Parameter value can not be zero. \n")
-             cat(" Press Enter to continue.         \n")
-             cat("**********************************\n\n")
-             readline()
-             cat("\n")
-             par<-edit(par)}   
-           else{
-             break
-             return(edit(par))}
-        } 
-        cat("\n")       
-        show(par)
-      }
-   } 
-   else {
-      ## No MM elimination
-      if (is.null(kel) || is.null(Vd)) {
-        par<-data.frame(Parameter=c("kel","Vd"),Initial=c(0))
-        par<-edit(par)
-        repeat{
-           if ( par[1,2] == 0 || par[2,2] ==0 ){
-             cat("\n")
-             cat("**********************************\n")
-             cat(" Parameter value can not be zero. \n")
-             cat(" Press Enter to continue.         \n")
-             cat("**********************************\n\n")
-             readline()
-             cat("\n")
-             par<-edit(par)}   
-           else{
-             break
-            return(edit(par))}
-         } 
-        cat("\n")       
-        show(par) 
-
-      }
-   }
-   
-   cat("\n")
-   
-   if (!MMe) {
-      ## User-supplied function w/o Michaelis-Mention elimination
-      defun <- function(time, y, parms) { 
-      dCpdt <- -parms["kel"] * y[1] 
-      list(dCpdt) 
-      } 
-    
-      modfun1 <- function(time,kel, Vd) {  
-      out <- lsoda(Dose/Vd,c(0,time),defun,parms=c(kel=kel,Vd=Vd),
-                   rtol=1e-3,atol=1e-5) 
-      out[-1,2] 
-      }
-   } 
-   else {
-      ## User-supplied function with MM elimination
-      defun<- function(time, y, parms) { 
-      dCpdt <- -(parms["Vm"]/parms["Vd"])*y[1]/(parms["Km"]/parms["Vd"]+y[1]) 
-      list(dCpdt)
-      }
-
-      modfun2 <- function(time,Vm,Km,Vd) { 
-      out <- lsoda(Dose/Vd,c(0,time),defun,parms=c(Vm=Vm,Km=Km,Vd=Vd),
-                   rtol=1e-3,atol=1e-5)
-      out[-1,2] 
-      }
-   }
-   ## Select weighting schemes
-   file.menu <- c("equal weight", 
-                  "1/Cp",
-                  "1/Cp^2")           
-   pick <- menu(file.menu, title = "<< Weighting Schemes >>")
-   
-   with(entertitle(),{  
-   
-   for( i in 1:length(unique(PKindex$Subject)))  {
-     cat("\n\n               << Subject",i,">>\n\n" ) 
-     objfun <- function(par) {
-        if (MMe) {
-           out <- modfun2(PKindex$time[PKindex$Subject==i], par[1], par[2],par[3])
-        } 
-        else {
-           ## No MM elimination
-           out <- modfun1(PKindex$time[PKindex$Subject==i], par[1], par[2])
-        }
-        gift <- which( PKindex$conc[PKindex$Subject==i] != 0 )
-        switch(pick,
-             sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2),
-             sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2/PKindex$conc[gift]),
-             sum(((PKindex$conc[PKindex$Subject==i][gift]-out[gift])/PKindex$conc[gift])^2))
-        }
-        if (MMe) {
-          gen<-genoud(objfun,nvars=3,max=FALSE,pop.size=30,
-               max.generations=20,wait.generations=10,
-               starting.value=c(par[1,2],par[2,2],par[3,2]),
-               BFGS=FALSE,print.level=0,boundary.enforcement=2,
-               Domains=matrix(c(1,1,1,100,100,100),3,2),
-               MemoryMatrix=TRUE) 
-        }
-        else {
-          gen<-genoud(objfun,nvars=2,max=FALSE,pop.size=30,
-               max.generations=20,wait.generations=10,
-               starting.value=c(par[1,2],par[2,2]),
-               BFGS=FALSE,print.level=0,boundary.enforcement=2,
-               Domains=matrix(c(0.01,0.01,100,100),2,2),
-               MemoryMatrix=TRUE)  
-         }
-       cat("<< PK parameters obtained from genetic algorithm >>\n\n")
-       if (MMe) {
-          namegen<-c("Vm","Km","Vd")
-          outgen<-c(gen$par[1],gen$par[2],gen$par[3])
-       } 
-       else {
-          ## No MM elimination
-          namegen<-c("kel","Vd")
-          outgen<-c(gen$par[1],gen$par[2])
-       }
-       print(data.frame(Parameter=namegen,Value=outgen))  
-       F<-objfun(gen$par)
-       
-       if (MMe) {
-        opt<-optim(c(gen$par[1],gen$par[2],gen$par[3]),objfun, method="Nelder-Mead")
-        nameopt<-c("Vm","Km","Vd")
-        outopt<-c(opt$par[1],opt$par[2],opt$par[3])
-       }
-       else {
-        opt<-optim(c(gen$par[1],gen$par[2]),objfun,method="Nelder-Mead")  
-        nameopt<-c("kel","Vd")
-        outopt<-c(opt$par[1],opt$par[2])
-       }
-       cat("\n<< PK parameters obtained from Nelder-Mead Simplex algorithm >>\n\n")
-       print(data.frame(Parameter=nameopt,Value=outopt))
-       cat("\n<< Residual sum-of-square (RSS) and final PK parameters with nls >>\n\n")
-       if (MMe) {
-         fm<-nls(conc~modfun2(time,Vm,Km,Vd),data=PKindex,subset=Subject==i,
-                 start=list(Vm=opt$par[1],Km=opt$par[2],Vd=opt$par[3]),trace=TRUE,
-                 nls.control(tol=1))
-         cat("\n")
-         plotting.non(PKindex, fm, i, pick, xaxis, yaxis)
-       } 
-       else {
-        ## No MM elimination
-         fm<-nls(conc ~ modfun1(time, kel, Vd), data=PKindex,
-                 start=list(kel=opt$par[1],Vd=opt$par[2]),trace=TRUE,subset=Subject==i,
-                 nls.control(tol=1))
-         cat("\n")
-         coef<-data.frame(coef(fm)["kel"])
-         plotting.lin(PKindex, fm, i, pick, coef, xaxis, yaxis)
-       }
-   }
-   })
-   cat("\n")   
-}
-
-## Legacy function
-fbolus.mm <- function(PKindex,...) {
-  fbolus1(PKindex,...,MMe=TRUE)
-}
-
 ###Simulation
 ###One compartment PK model iv infusion single dose
 ###optional Michaelis-Menten Elimination
@@ -684,7 +492,7 @@ sbolus1 <- function(Subject=NULL,  # N Subj's
               )    
               time1<-PKtime$time
               parms<-c(kel=kel,Vd=Vd) 
-              XX<-data.frame(lsoda(Dose/Vd,c(0,time1),defun,parms))
+              XX<-data.frame(lsoda(Dose/Vd,c(0,time1),defun,parms,rtol=1e-6,atol=1e-6))
               C1.lsoda[[j]]<-data.frame(XX[2:(length(time1)+1),1],XX[2:(length(time1)+1),2])
               colnames(C1.lsoda[[j]])<-list("time","concentration") 
            }
@@ -732,7 +540,7 @@ sbolus1 <- function(Subject=NULL,  # N Subj's
               )
               time1<-PKtime$time
               parms<-c(Vm=Vm,Km=Km,Vd=Vd)  
-              XX<-data.frame(lsoda(Dose/Vd,c(0,time1),defun,parms))
+              XX<-data.frame(lsoda(Dose/Vd,c(0,time1),defun,parms,rtol=1e-6,atol=1e-6))
               C1.lsoda[[j]]<-data.frame(XX[2:(length(time1)+1),1],XX[2:(length(time1)+1),2])
               colnames(C1.lsoda[[j]])<-list("time","concentration")     
            } 
@@ -744,12 +552,3 @@ sbolus1 <- function(Subject=NULL,  # N Subj's
      savefile(PKindex) 
   }
 } 
-
-
-
-## Legacy function
-sbolus.mm <- function(...) {
-  sbolus1(...,MMe=TRUE)
-}
-
-  
