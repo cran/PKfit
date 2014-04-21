@@ -1,27 +1,30 @@
 mmpk.demo<-function(){
 cat("\n\n")
+modfun<-NULL
 options(warn=-1)
-PKindex<-data.frame(Subject=c(1),time=c(0.25,0.5,0.75,1,1.5,2,2.5,3,3.5,4,4.5,5,6,7,8,9,10,12,16,20,24),
-conc=c(1.03,2.25,3.46,3.66,6.27,7.57,10.88,11.88,12.06,11.94,10.82,11.41,10.97,10.73,9.29,9.13,9.43,8.45,5.71,4.39,3.31))
+PKindex<-data.frame(Subject=c(1),time=c(0,6,12,24,36,48,72,96,144),
+conc=c(7.88,7.10,6.79,5.27,4.52,3.43,1.97,1.01,0.23))
 Dose<-300
-Tinf<-3
-cat("--- This is an infusion drug exhibiting with Mechaelis-Menten elimination ---\n")
-cat("    PK and drug plasma samples were collected and assayed after dosing.\n\n")
-cat(" 1.          Dose =",Dose,"\n\n")
-cat(" 2. Infusion time = ",Tinf,"\n\n")
-cat(" 3. Drug Plasma Conc. vs. Time:-\n\n")
+par<-data.frame(Parameter=c("Vm","Km","Vd"),Initial=c(17,5,10))
+
+cat("- This is an iv-bolus drug exhibiting with Mechaelis-Menten elimination -\n")
+cat(" PK and drug plasma samples were collected and assayed after dosing.\n")
+cat(" Data was from: Fitting Models to Biological Data using Linear and \n")
+cat(" Nonlinear Regression, A pratical guide to curve fitting. GraphPad \n")
+cat(" PRISM, version 4.0, Harvey Motulsky & Arthur Christopoulos. 2ed. ed.,\n")
+cat(" 2003, pp. 74-77. (Note: we do correct Vm here with Vd.)\n\n")
+cat(" 1. Dose =",Dose,"\n")
+cat(" 2. Input data:-\n")
 show(PKindex);cat("\n\n")
+cat(" 3. Initial values for parameters:-\n")
+show(par);cat("\n")
 
 defun<-function(time, y, parms) { 
-        if(time<=Tinf)  
-           dCpdt <- (Dose/Tinf)/parms["Vd"] -
-           (parms["Vm"]/parms["Vd"])*y[1]/(parms["Km"]/parms["Vd"]+y[1]) 
-         else
-           dCpdt <- -(parms["Vm"]/parms["Vd"])*y[1]/(parms["Km"]/parms["Vd"]+y[1])
+         dCpdt <- -parms["Vm"]*y[1]/(parms["Km"]+y[1])
          list(dCpdt)
 }
-modfun<-function(time,Vm,Km,Vd) { 
-        out <- lsoda(0,c(0,time),defun,parms=c(Vm=Vm,Km=Km,Vd=Vd),rtol=1e-6,atol=1e-6)
+modfun<<-function(time,Vm,Km,Vd) { 
+        out <- lsoda(Dose/Vd,c(0,time),defun,parms=c(Vm=Vm,Km=Km,Vd=Vd),rtol=1e-6,atol=1e-6)
         out[-1,2] 
 } 
 
@@ -30,7 +33,8 @@ objfun <- function(par) {
         gift <- which( PKindex$conc != 0 )
         sum((PKindex$conc[gift]-out[gift])^2)
 }        
-
+cat("- weighting scheme: equal weight\n")
+cat("- model selection: a one-compartment, iv bolus pk model with\n  M-M elim.\n\n")
 ### gen <- genoud(objfun,nvars=3,max=FALSE,pop.size=30,max.generations=20,
 ###               wait.generations=10,
 ###               starting.values=c(40,8,12),BFGS=FALSE,
@@ -43,15 +47,23 @@ objfun <- function(par) {
 ### print(data.frame(Parameter=namegen,Value=outgen))  
 ### F<-objfun(gen$par)
       
-opt<-optim(c(40,8,12),objfun,method="Nelder-Mead")  
+opt<-optim(c(par[1,2],par[2,2],par[3,2]),objfun,method="Nelder-Mead")  
 nameopt<-c("Vm","Km","Vd")
 outopt<-c(opt$par[1],opt$par[2],opt$par[3]) 
-cat("\n<< PK parameters obtained from Nelder-Mead Simplex algorithm >>\n\n")
+cat("<< PK parameters obtained from Nelder-Mead Simplex algorithm >>\n\n")
 print(data.frame(Parameter=nameopt,Value=outopt))
 cat("\n\n")
-fm<-nls(conc~modfun(time,Vm,Km,Vd),data=PKindex,
-        start=list(Vm=opt$par[1],Km=opt$par[2],Vd=opt$par[3]),trace=TRUE,
-        nls.control(tol=1e-01)) ### it seems MM should use 'nls.control(tol=1e-01)'; 'tol' cannot be too tight... otherwise don't work.  --YJ
+if(opt$par[1]<0) {opt$par[1]<-0.01}
+if(opt$par[2]<0) {opt$par[2]<-0.01}
+if(opt$par[3]<0) {opt$par[3]<-0.01}
+
+cat("<< Residual sum-of-squares and PK parameter values with nlsLM >>\n\n")
+fm<-nlsLM(conc ~ modfun(time,Vm,Km,Vd), data=PKindex,start=list(Vm=opt$par[1],Km=opt$par[2],Vd=opt$par[3]),
+         control=nls.lm.control(maxiter=500),lower=c(0,0,1e-06)) ### lower of Vd should not be zero due to Dose/Vd. --YJ
+
+### tried to use self-starter function for nls()
+### fm<-nls(conc~SSmicmen(time,Vm,Km),data=PKindex)  ### no Vd?  so SSmicmen() is not useful for this.
+### print(summary(fm))
 
 x<-PKindex$time
 y<-PKindex$conc
@@ -73,19 +85,20 @@ AUMC<-c(NA,add1$aumc[-1])
 output<-data.frame(x,y,cal,wei,AUC,AUMC)
 colnames(output)<-list("Time","Observed","Calculated","Wt. Residuals","AUC","AUMC")
 
-windows(record=TRUE)
+### windows(record=TRUE)
+dev.new()
 
 par(mfrow=c(2,2), ask = FALSE)
 
-plot(y~x,data=PKindex,type='p',main="Drug Plasma Conc. vs. Time Curve", 
-     xlab="Time", ylab="Drug Plasma Conc.",pch=15,col="black",bty="l",
+plot(y~x,data=PKindex,type='p',main="Phenytoin Plasma Conc. vs. Time Curve", 
+     xlab="Time after dosing (hr)", ylab="Phenytoin Plasma Conc. (mg/L)",pch=15,col="black",bty="l",
      font.lab=2,cex.lab=1,cex.axis=1,cex.main=1) 
 lines(x,predict(fm,list(time=x)),type="l",lty=1,
      col="firebrick3",lwd="2")
 mtext("Linear plot",side=3,cex=0.88)
     
-plot(x,y,log="y",type='p',main="Drug Plasma Conc. vs. Time Curve",
-     xlab="Time", ylab="Drug Plasma Conc.",pch=15,col="black",bty="l",
+plot(x,y,log="y",type='p',main="Phenytoin Plasma Conc. vs. Time Curve",
+     xlab="Time after dosing (hr)", ylab="Phenytoin Plasma Conc. (mg/L)",pch=15,col="black",bty="l",
      font.lab=2,cex.lab=1,cex.axis=1,cex.main=1) 
 lines(x,predict(fm,list(time=x)),type="l",lty=1,
      col="firebrick3",lwd="2")

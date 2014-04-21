@@ -1,15 +1,15 @@
 \encoding{UTF-8}
 
-\name{fbolus2}
+\name{fbolus3}
 
-\alias{fbolus2}
+\alias{fbolus3}
 
 \title{Fitting Functions for a three-Compartment, IV-Bolus, and Single-Dose Model}
 
 \description{
-  Includes user-supplied functions for model definition, integration method
+  Includes user-supplied functions for model definition, integration method 
   for solving ordinary differential equations, three kinds of weighting schemes 
-  for selection, and fitting algorithms for a two-compartment, IV-bolus, and
+  for selection, and fitting algorithms for a three-compartment, IV-bolus, and
   single-dose model.
 }
 

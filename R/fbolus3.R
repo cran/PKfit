@@ -1,22 +1,24 @@
-### Two compartment PK model iv infusion single dose    
-finfu2<- function(PKindex,
-                  Tinf=NULL,
-                  Dose=NULL, 
-                  kel=NULL,
-                  k12=NULL,  
-                  k21=NULL,      
-                  Vd=NULL) 
+### PKindex is the target Dataset.
+### Normal fitting
+### Three compartment PK model iv bolus single dose
+fbolus3<- function(PKindex,
+                   Dose=NULL, 
+                   kel=NULL,
+                   k12=NULL,  
+                   k21=NULL,
+                   k13=NULL,
+                   k31=NULL,      
+                   Vd=NULL) 
 {
    options(warn=-1)
    modfun<-NULL
-   
-   ## Input dose and Tinf and initial value for kel, k12, k21 and Vd
-   
-   if (is.null(Dose) || is.null(Tinf) || is.null(kel) || is.null(k12) || is.null(k21) || is.null(Vd) ) {
-        par.init<-data.frame(Parameter=c("Dose","Tinf","kel","k12","k21","Vd"),Initial=c(0,0,0,0,0,0))
+   ## Input dose and initial value for kel, k12, k21 and Vd
+  
+   if (is.null(Dose)||is.null(kel) || is.null(k12) || is.null(k21)|| is.null(k13) || is.null(k31)|| is.null(Vd) ) {
+        par.init<-data.frame(Parameter=c("Dose","kel","k12","k21","k13","k31","Vd"),Initial=c(0,0,0,0,0,0,0))
         par.init<-edit(par.init)
         repeat{
-           if (par.init[1,2]<=0 || par.init[2,2]<=0 || par.init[3,2]<=0 || par.init[4,2]<=0|| par.init[5,2]<=0|| par.init[6,2]<=0){
+           if (par.init[1,2]<=0||par.init[2,2]<=0||par.init[3,2]<=0||par.init[4,2]<=0||par.init[5,2]<=0||par.init[6,2]<=0||par.init[7,2]<=0){
              cat("\n")
              cat("**********************************\n")
              cat(" Parameter initial value can not be zero. \n")
@@ -30,30 +32,25 @@ finfu2<- function(PKindex,
              return(edit(par.init))}
         } 
         cat("\n")
-        Dose<-par.init[1,2]
-        Tinf<-par.init[2,2]       
+        Dose<-par.init[1,2]        
         show(par.init)
    }
    
    cat("\n")
    
    defun<- function(time, y, parms) { 
-   if(time<=Tinf) {
-      dCp1dt<- (Dose/Tinf)/parms["Vd"]+parms["k21"]*y[2]-parms["kel"]*y[1]-parms["k12"]*y[1]
-      dCp2dt<- parms["k12"]*y[1]-parms["k21"]*y[2]
-   }
-   else {       
-      dCp1dt <- -parms["kel"]*y[1]-parms["k12"]*y[1]+parms["k21"]*y[2] 
-      dCp2dt <- parms["k12"]*y[1]-parms["k21"]*y[2]
-   }
-      list(c(dCp1dt,dCp2dt)) 
+     dCp1dt <- -parms["kel"]*y[1]-parms["k12"]*y[1]+parms["k21"]*y[2]-parms["k13"]*y[1]+parms["k31"]*y[3] 
+     dCp2dt <-  parms["k12"]*y[1]-parms["k21"]*y[2]
+     dCp3dt <-  parms["k13"]*y[1]-parms["k31"]*y[3]
+     list(c(dCp1dt,dCp2dt,dCp3dt)) 
    } 
-      
-   modfun <<- function(time,kel,k12,k21,Vd) { 
-      out <- lsoda(c(0,0),c(0,time),defun,parms=c(kel=kel,k12=k12,k21=k21,Vd=Vd),
-                   rtol=1e-6,atol=1e-6) 
-      out[-1,2] 
-   }
+
+   modfun <<- function(time,kel,k12,k21,k13,k31,Vd) { 
+      out <- lsoda(y=c(Dose/Vd,0,0),c(0,time),defun,parms=c(kel=kel,k12=k12,k21=k21,k13=k13,k31=k31,Vd=Vd),
+                  rtol=1e-06,atol=1e-06) 
+     ### plot(out)
+     out[-1,2] 
+   }   
    
    ## Select weighting schemes
    file.menu <- c("equal weight", 
@@ -61,34 +58,39 @@ finfu2<- function(PKindex,
                   "1/Cp^2")           
    pick <- menu(file.menu, title = "<< Weighting Schemes >>")
 
-   with(entertitle(),{
+   with(entertitle(),{        
 ###
 ### windows(record=TRUE)
 dev.new()
 par(mfrow=c(2,2),las=1)
 pdf_activate=FALSE  ### set pdf device activate? as FALSE at beginning
-
+###
+### give warning below
+###
+cat("\n The following steps may go wrong. If so, please check\n")
+cat("  your data, check your model and check initial values.\n\n")
+readline(" Press Enter to continue...")
+cat("\n\n")
 ###
 ### log to outputs.txt here
 ###
 zz <- file("pkfit_fitting_outputs.txt", open="wt")
 sink(zz,split=TRUE)   ### use sink(zz.split=TURE) will output to the txt file, as well as the screen at the same time. YJ
-###
-### give warning below
-###
-cat("\n The following steps may go wrong, if so please check your model,\n")
-cat(" check your data and check your initial values next time.\n\n")
-readline(" Press Enter to continue...")
-cat("\n\n")
-cat("--- input data ---\n")
+cat("\n\n");cat("--- input data ---\n")
 show(PKindex);cat("\n\n")     # show input data    
 cat("--- initial values for parameters ---\n")
-show(par.init)                # show initial values here
+show(par.init);cat("\n")    # show initial values here
+cat("--- weighting scheme: ")
+switch(pick,                  ## show weighting scheme
+  cat("equal weight\n"),
+  cat("1/Cp\n"),
+  cat("1/Cp^2\n"));cat("\n")
+cat("--- model selection: a three-compartment, iv bolus pk model with\n    1st-ordered elim.")
    
    for( i in 1:length(unique(PKindex$Subject)))  {
      cat("\n\n               << Subject",i,">>\n\n" )  
      objfun <- function(par) {
-        out <- modfun(PKindex$time[PKindex$Subject==i], par[1], par[2], par[3], par[4])
+        out <- modfun(PKindex$time[PKindex$Subject==i], par[1], par[2], par[3], par[4], par[5], par[6])
         gift <- which( PKindex$conc[PKindex$Subject==i] != 0 )
         switch(pick,
                sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2),
@@ -96,10 +98,12 @@ show(par.init)                # show initial values here
                sum(((PKindex$conc[PKindex$Subject==i][gift]-out[gift])/PKindex$conc[gift])^2))
      }
      
+###      
+     opt <- optim(c(par.init[2,2],par.init[3,2],par.init[4,2],par.init[5,2],par.init[6,2],par.init[7,2]),
+                 objfun,method="Nelder-Mead")
+     nameopt<-c("kel","k12","k21","k13","k31","Vd")
+     outopt<-c(opt$par[1],opt$par[2],opt$par[3],opt$par[4],opt$par[5],opt$par[6])
      
-     opt <- optim(c(par[3,2],par[4,2],par[5,2],par[6,2]),objfun,method="Nelder-Mead")   
-     nameopt<-c("kel","k12","k21","Vd")
-     outopt<-c(opt$par[1],opt$par[2],opt$par[3],opt$par[4])
      cat("\n<< PK parameters obtained from Nelder-Mead Simplex algorithm >>\n\n")
      print(data.frame(Parameter=nameopt,Value=outopt))
      
@@ -107,12 +111,14 @@ show(par.init)                # show initial values here
               if(opt$par[2]<0) {opt$par[2]<-0.01}
               if(opt$par[3]<0) {opt$par[3]<-0.01}
               if(opt$par[4]<0) {opt$par[4]<-0.01}
+              if(opt$par[5]<0) {opt$par[5]<-0.01}
+              if(opt$par[6]<0) {opt$par[6]<-0.01}
      
-     cat("\n<< Residual sum-of-square (RSS) and final PK parameters with nlsLM >>\n\n")
+     cat("\n<< Residual sum-of-squares and PK parameter values with nlsLM >>\n\n")
      
-     fm<-nlsLM(conc ~ modfun(time,kel,k12,k21,Vd), data=subset(PKindex,Subject==i),
-         start=list(kel=opt$par[1],k12=opt$par[2],k21=opt$par[3],Vd=opt$par[4]),
-         control=nls.lm.control(maxiter=500),lower=c(0,0,0,1e-06)) ### lower of Vd should not be zero due to Dose/Vd. --YJ
+     fm<-nlsLM(conc ~ modfun(time,kel,k12,k21,k13,k31,Vd),data=subset(PKindex,Subject==i),
+         start=list(kel=opt$par[1],k12=opt$par[2],k21=opt$par[3],k13=opt$par[4],k31=opt$par[5],Vd=opt$par[6]),
+         control=nls.lm.control(maxiter=500),lower=c(0,0,0,0,0,1e-06)) ### lower of Vd should not be zero due to Dose/Vd. --YJ
      coef<-data.frame(coef(fm)["kel"])     
      plotting.lin(PKindex, fm, i, pick, coef, xaxis, yaxis)
 ###
@@ -179,10 +185,12 @@ show(par.init)                # show initial values here
      }
   sink()           # reset sink()
   close(zz)        # close outputs.txt
-  readline("Press any key to continue...")
+  cat(" All outputs (pkfit_fitting_outputs.txt & pkfit_plots.pdf)\n can be found at",getwd(),"\n")
+  readline(" Press any key to continue...")
   dev.off()        # close pdf()
   graphics.off()   # close plot windows
+     
   })
-  cat("\n")   
+  cat("\n")
+  run()   
 }
-

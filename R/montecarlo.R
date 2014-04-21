@@ -5,26 +5,23 @@ montecarlo<-function(C1.lsoda,time1,i,re)
   C1.lsoda<-do.call("rbind",C1.lsoda)
   rownames(C1.lsoda)<-seq(nrow(C1.lsoda))
   
-  conc<-ifelse(conc<=0,
-               0,
-               conc)
+  conc<-ifelse(conc<=0,0,conc)
   
   PKindex<-data.frame(i,time1,conc)
-  windows(record=TRUE)
+  ### windows(record=TRUE)
+  dev.new()
   par(mfrow=c(2,2))
   x<-C1.lsoda$time
   #y<-C1.lsoda$concentration
   
-  y<-ifelse(C1.lsoda$concentration<=0,
-            0,
-            C1.lsoda$concentration)
+  y<-ifelse(C1.lsoda$concentration<=0,0,C1.lsoda$concentration)
   
-  main<-paste(c("Subject", i ,"plot"),collapse=" ")
-  plot(C1.lsoda,type="p",main=main,xlab="Time",ylab="Concentration")
+  main<-paste(c("Subject:-", i),collapse=" ")
+  plot(C1.lsoda,type="p",main=main,xlab="Time",ylab="Drug Plasma Concentration")
   lines(PKindex$time1,PKindex$conc,type="l",lty=1,col="firebrick3",lwd="2")
   mtext("Linear",side=3,cex=0.8)
   
-  plot(x,y,log="y",type='p',main=main,xlab="Time",ylab="Concentration")
+  plot(x,y,log="y",type='p',main=main,xlab="Time",ylab="Drug Plasma Concentration")
   lines(PKindex$time1,PKindex$conc,log="y",type="l",lty=1,col="firebrick3",lwd="2")
   mtext("Semi-log",side=3,cex=0.8) 
   
@@ -37,14 +34,14 @@ montecarlo<-function(C1.lsoda,time1,i,re)
   for(i in rev(AA))
       C1.lsoda<-C1.lsoda[append(1:(sub+(length(AA)-1)),NA,after=i),]   
   
-  plot(C1.lsoda,type="l",main=main,xlab="Time",ylab="Concentration")  
+  plot(C1.lsoda,type="l",main=main,xlab="Time",ylab="Drug Plasma Concentration")  
   lines(PKindex$time,PKindex$conc,type="l",lty=1,col="firebrick3",lwd="2")
   mtext("Linear",side=3,cex=0.8)
   
   x<-C1.lsoda$time
   y<-C1.lsoda$conc
   
-  plot(x,y,log="y",type='l',main=main,xlab="Time",ylab="Concentration")
+  plot(x,y,log="y",type='l',main=main,xlab="Time",ylab="Drug Plasma Concentration")
   lines(PKindex$time,PKindex$conc,log="y",type="l",lty=1,col="firebrick3",lwd="2")
   mtext("Semi-log",side=3,cex=0.8) 
   

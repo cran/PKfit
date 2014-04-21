@@ -1,9 +1,8 @@
 ### PKindex is the target Dataset.
-
-
 ### Normal fitting
 ### One compartment PK model iv infusion single dose
 ### optional Michaelis-Menten Elimination
+
 finfu1 <- function(PKindex,
                    Dose=NULL, Tinf=NULL,
                    Vm=NULL,Km=NULL, # MMe=TRUE
@@ -11,77 +10,58 @@ finfu1 <- function(PKindex,
                    kel=NULL,        # MMe=FALSE
                    MMe=FALSE) 
 {
-  #options(warn=-1)
+  options(warn=-1)
+  modfun1<-NULL
+  modfun2<-NULL
         
   ## Input dose and Tinf and initial value for kel and Vd
 
-  if (is.null(Dose)) {
-    cat("Enter Dose\n")
-    Dose <- scan(nlines=1,quiet=TRUE)
-  } 
-  else {
-    cat("Dose from arguments is = ",Dose,"\n")
-  }
-
-  if (is.null(Tinf)) {
-    cat("\nEnter infusion duration\n")
-    Tinf<-scan(nlines=1,quiet=TRUE)
-    cat("\n")
-  } 
-  else {
-    cat("Tinf from arguments is = ",Tinf,"\n")
-  }
-
   if (MMe){
-      if (is.null(Vm) || is.null(Km) || is.null(Vd) ) {
-        par<-data.frame(Parameter=c("Vm","Km","Vd"),Initial=c(0))
-        par<-edit(par)
+      if (is.null(Dose) ||is.null(Tinf) ||is.null(Vm) || is.null(Km) || is.null(Vd) ) {
+        par.init<-data.frame(Parameter=c("Dose","Tinf","Vm","Km","Vd"),Initial=c(0,0,0,0,0))
+        par.init<-edit(par.init)
         repeat{
-           if ( par[1,2] == 0 || par[2,2] ==0 || par[3,2]==0){
+           if (par.init[1,2]<=0 || par.init[2,2]<=0 || par.init[3,2]<=0|| par.init[4,2]<=0|| par.init[5,2]<=0){
              cat("\n")
              cat("**********************************\n")
-             cat(" Parameter value can not be zero. \n")
+             cat(" Parameter initial values can not be zero. \n")
              cat(" Press Enter to continue.         \n")
              cat("**********************************\n\n")
              readline()
              cat("\n")
-             par<-edit(par)}   
+             par.init<-edit(par.init)}   
            else{
              break
-             return(edit(par))}
+             return(edit(par.init))}
         } 
-        cat("\n")       
-        show(par)
-        
-        
       }
   } 
   else {
       ## No MM elimination
-      if (is.null(kel) || is.null(Vd)) {
-        par<-data.frame(Parameter=c("kel","Vd"),Initial=c(0))
-        par<-edit(par)
+      if (is.null(Dose) ||is.null(Tinf) ||is.null(kel) || is.null(Vd)) {
+        par.init<-data.frame(Parameter=c("Dose","Tinf","kel","Vd"),Initial=c(0,0,0,0))
+        par.init<-edit(par.init)
         repeat{
-           if ( par[1,2] == 0 || par[2,2] ==0){
+           if (par.init[1,2]<=0 || par.init[2,2]<=0|| par.init[3,2]<=0|| par.init[4,2]<=0){
              cat("\n")
              cat("**********************************\n")
-             cat(" Parameter value can not be zero. \n")
+             cat(" Parameter initial values can not be zero. \n")
              cat(" Press Enter to continue.         \n")
              cat("**********************************\n\n")
              readline()
              cat("\n")
-             par<-edit(par)}   
+             par.init<-edit(par.init)}   
            else{
              break
-             return(edit(par))}
+             return(edit(par.init))}
         } 
-        cat("\n")       
-        show(par)
 
       }
   }
-
-  cat("\n")
+        cat("\n")   
+        Dose<-par.init[1,2]
+        Tinf<-par.init[2,2]    
+        show(par.init);cat("\n")
 
   if (!MMe) {
       ## User-supplied function w/o Michaelis-Mention elimination
@@ -92,9 +72,8 @@ finfu1 <- function(PKindex,
            dCpdt <- -parms["kel"]*y[1]
         list(dCpdt)
       }
-      modfun1 <- function(time,kel,Vd) { 
-        out<-lsoda(0,c(0,time),defun, parms=c(kel=kel,Vd=Vd),
-                   rtol=1e-3,atol=1e-3)
+      modfun1 <<- function(time,kel,Vd) { 
+        out<-lsoda(0,c(0,time),defun, parms=c(kel=kel,Vd=Vd),rtol=1e-6,atol=1e-6)
         out[-1,2] 
       }
   } 
@@ -102,14 +81,13 @@ finfu1 <- function(PKindex,
      ## User-supplied function with MM elimination
       defun<-function(time, y, parms) { 
         if(time<=Tinf)  
-           dCpdt <- (Dose/Tinf)/parms["Vd"] -
-           (parms["Vm"]/parms["Vd"])*y[1]/(parms["Km"]/parms["Vd"]+y[1]) 
+           dCpdt <- (Dose/Tinf)/parms["Vd"] - parms["Vm"]*y[1]/(parms["Km"]+y[1]) 
          else
-           dCpdt <- -(parms["Vm"]/parms["Vd"])*y[1]/(parms["Km"]/parms["Vd"]+y[1])
+           dCpdt <- -parms["Vm"]*y[1]/(parms["Km"]+y[1])
          list(dCpdt)
       }
-      modfun2<-function(time,Vm,Km,Vd) { 
-        out <- lsoda(0,c(0,time),defun,parms=c(Vm=Vm,Km=Km,Vd=Vd),rtol=1e-3,atol=1e-3)
+      modfun2<<-function(time,Vm,Km,Vd) { 
+        out <- lsoda(0,c(0,time),defun,parms=c(Vm=Vm,Km=Km,Vd=Vd),rtol=1e-6,atol=1e-6)
         out[-1,2] 
       } 
   }
@@ -122,22 +100,35 @@ finfu1 <- function(PKindex,
 
   with(entertitle(),{
 ###
-windows(record=TRUE)
+### windows(record=TRUE)
+dev.new()
 par(mfrow=c(2,2),las=1)
 pdf_activate=FALSE  ### set pdf device activate? as FALSE at beginning
-
+###
+### give warning below
+###
+cat("\n The following steps may go wrong. If so, please check\n")
+cat("  your data, check your model and check initial values.\n\n")
+readline(" Press Enter to continue...")
+cat("\n\n")
 ###
 ### log to outputs.txt here
 ###
 zz <- file("pkfit_fitting_outputs.txt", open="wt")
 sink(zz,split=TRUE)   ### use sink(zz.split=TURE) will output to the txt file, as well as the screen at the same time. YJ
-###
-### give warning below
-###
-cat("\n The following steps may go wrong, if so please check your model,\n")
-cat(" check your data and check your initial values next time.\n\n")
-readline(" Press Enter to continue...")
-cat("\n\n")
+cat("\n\n");cat("--- input data ---\n")
+show(PKindex);cat("\n\n")     # show input data    
+cat("--- initial values for parameters ---\n")
+show(par.init);cat("\n")    # show initial values here
+cat("--- weighting scheme: ")
+switch(pick,                  ## show weighting scheme
+  cat("equal weight\n"),
+  cat("1/Cp\n"),
+  cat("1/Cp^2\n"));cat("\n")
+if(MMe){
+cat("--- model selection: one-compartment iv infusion PK model\n    with M-M elim.")}
+else{
+cat("--- model selection: one-compartment iv infusion PK model\n    with 1st-ordered elim.")}
 
   for( i in 1:length(unique(PKindex$Subject)))  {
      cat("\n\n               << Subject",i,">>\n\n" )  
@@ -155,42 +146,14 @@ cat("\n\n")
              sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2/PKindex$conc[gift]),
              sum(((PKindex$conc[PKindex$Subject==i][gift] - out[gift])/PKindex$conc[gift])^2))
       }
-###       if (MMe) {
-###          gen <- genoud(objfun,nvars=3,max=FALSE,pop.size=30,max.generations=20,
-###                 wait.generations=10,
-###                 starting.value=c(par[1,2],par[2,2],par[3,2]),BFGS=FALSE,
-###                 print.level=0,boundary.enforcement=0,
-###                 Domains=matrix(c(0,0,0,100,100,100),3,2),
-###                 MemoryMatrix=TRUE)
-###       } 
-###       else {
-###          gen <- genoud(objfun,nvars=2,max=FALSE,pop.size=30,max.generations=20,
-###                 wait.generations=10,
-###                 starting.value=c(par[1,2],par[2,2]),BFGS=FALSE,
-###                 print.level=0, boundary.enforcement=0,
-###                 Domains=matrix(c(0.01,0.01,100,100),2,2),
-###                 MemoryMatrix=TRUE)
-###       }
-###      cat("<< PK parameters obtained from genetic algorithm >>\n\n")
-###      if (MMe) {
-###         namegen<-c("Vm","Km","Vd")
-###         outgen<-c(gen$par[1],gen$par[2],gen$par[3])
-###      } 
-###      else {
-###         ## No MM elimination
-###         namegen<-c("kel","Vd")
-###         outgen<-c(gen$par[1],gen$par[2])
-###      }
-###      print(data.frame(Parameter=namegen,Value=outgen))  
-###      F<-objfun(gen$par)         
 ###      
      if (MMe) {
-        opt<-optim(c(par[1,2],par[2,2],par[3,2]),objfun, method="Nelder-Mead")
+        opt<-optim(c(par.init[3,2],par.init[4,2],par.init[5,2]),objfun, method="Nelder-Mead")
         nameopt<-c("Vm","Km","Vd")
         outopt<-c(opt$par[1],opt$par[2],opt$par[3])
      }
      else {
-        opt<-optim(c(par[1,2],par[2,2]),objfun,method="Nelder-Mead")  
+        opt<-optim(c(par.init[3,2],par.init[4,2]),objfun,method="Nelder-Mead")  
         nameopt<-c("kel","Vd")
         outopt<-c(opt$par[1],opt$par[2])
      }
@@ -206,17 +169,17 @@ cat("\n\n")
               if(opt$par[1]<0) {opt$par[1]<-0.01}
               if(opt$par[2]<0) {opt$par[2]<-0.01}
        }           
-     cat("\n<< Residual sum-of-square (RSS) and final PK parameters with nls >>\n\n")
+     cat("\n<< Residual sum-of-square (RSS) and final PK parameters with nlsLM >>\n\n")
 
      if (MMe) {
-        fm<-nls(conc~modfun2(time,Vm,Km,Vd),data=subset(PKindex,Subject==i),
-                start=list(Vm=opt$par[1],Km=opt$par[2],Vd=opt$par[3]),trace=TRUE,
-                nls.control(tol=1)) ### it seems MM should use 'nls.control(tol=1)'; otherwise if use 'port' it can crash...  --YJ
+        fm<-nlsLM(conc~modfun2(time,Vm,Km,Vd),data=subset(PKindex,Subject==i),
+            start=list(Vm=opt$par[1],Km=opt$par[2],Vd=opt$par[3]),
+            control=nls.lm.control(maxiter=500),lower=c(0,0,1e-06)) ### lower of Vd should not be zero due to Dose/Vd. --YJ
         plotting.non(PKindex, fm, i, pick, xaxis, yaxis)
 ###
 ### copied from the original plotting.non() (plot parts are the same as plot.lin())
 ###
-     main<-paste(c("Plots for Subject# ", i),collapse=" ")
+     main<-paste(c("Subject# ", i),collapse=" ")
      j<-1:length(PKindex$time[PKindex$Subject==i])
      xx<-PKindex$time[PKindex$Subject==i]
      yy<-PKindex$conc[PKindex$Subject==i]
@@ -277,16 +240,15 @@ cat("\n\n")
      } 
      else {
         ## No MM elimination
-        fm<-nls(conc ~ modfun1(time, kel, Vd), data=subset(PKindex,Subject==i),
-                start=list(kel=opt$par[1],Vd=opt$par[2]),trace=TRUE,
-                nls.control(maxiter=5000,tol=1e-06,minFactor=1/1024/1024),algorithm = "port",lower=c(0,0,0,0,0))
-        cat("\n")
+        fm<-nlsLM(conc ~ modfun1(time, kel, Vd), data=subset(PKindex,Subject==i),
+                start=list(kel=opt$par[1],Vd=opt$par[2]),
+                control=nls.lm.control(maxiter=500),lower=c(0,1e-06)) ### lower of Vd should not be zero due to Dose/Vd. --YJ
         coef<-data.frame(coef(fm)["kel"])
         plotting.lin(PKindex, fm, i, pick, coef, xaxis, yaxis)
 ###
 ### copied from the original plotting.non() (plot parts are the same as plot.lin())
 ###
-     main<-paste(c("Plots for Subject# ", i),collapse=" ")
+     main<-paste(c("Subject# ", i),collapse=" ")
      j<-1:length(PKindex$time[PKindex$Subject==i])
      xx<-PKindex$time[PKindex$Subject==i]
      yy<-PKindex$conc[PKindex$Subject==i]
@@ -346,10 +308,12 @@ cat("\n\n")
         
      }
   }
-  dev.off()        # close pdf()
-  graphics.off()   # close plot windows
   sink()           # reset sink()
   close(zz)        # close outputs.txt
+  cat(" All outputs (pkfit_fitting_outputs.txt & pkfit_plots.pdf)\n can be found at",getwd(),"\n")
+  readline(" Press any key to continue...")
+  dev.off()        # close pdf()
+  graphics.off()   # close plot windows
   })
   cat("\n")
   run()

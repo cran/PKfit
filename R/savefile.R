@@ -4,7 +4,7 @@ savefile<-function(PKindex)
   ans<-readline()
   cat("\n")
   if (ans == "n" | ans == "N"){
-     run()
+     ### run()  ### do nothing here
      }
   else {
      cat("Enter the data file name (no file extension!):\n")
@@ -20,7 +20,7 @@ savefile<-function(PKindex)
            ans<-readline()
              if (ans == "y" | ans == "Y"){
                 saveRDS(PKindex,file=PKname)
-                write.csv(PKindex,file=PKnameCSV,row.names=FALSE)  ### now save as .csv too!  -YJ
+                write.csv(PKindex,file=PKnameCSV,row.names=FALSE)  ### now save as .csv with Header too!  -YJ
               }
               else{
                 cat("Enter the data file name (no file extension!):\n")

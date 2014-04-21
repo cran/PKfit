@@ -1,21 +1,50 @@
-PKfit v1.2.0
+PKfit v1.2.1
  A Data Analysis Tool for Pharmacokinetics
  
-Update logs
----
+Update logs (v1.2.1)
+--------------------
 
-04/04/2013
+04/20/2014
+---
+ 1. fixed all Machalis-Menton models; e.g., 
+    dCp(t)/dt = - Vmax*Cp(t)/(Km + Cp(t)), C(0) = Dose/Vd
+    for all fitting and simulation codes.
+ 2. fixed demo(mmpk);
+ 3. fixed read.csv(...,Header=TRUE,...) in data.manipulate() 
+    to correctly import simulated dataset (savefile()); after
+    read.csv() re-assign col.names = cname = 
+    c("Subject", "time", "conc");
+ 4. added the list of input data & initial values for 
+    pk parameters;
+ 5. fixed fzero.nolag();
+ 6. included 'Dose' input in parameter initial values;
+ 7. rearranged output formats;
+ 8. added display the output file directory at final step;
+ 9. added a 3-compartment, iv bolus pk model with 1st-ordered elim.
+10. added "Variance-Covariance Matrix" in the output
+11. decided to switch to nlsLM() from package minpack.lm from this
+    release; the default method 'LM' (the Levenberg-Marquardt 
+    algorithm) is used in PKfit; nlsLM(...,"weight=NULL",...) as 
+    default; we used external setup for weighting scheme to make 
+    the minimum code change;
+12. fixed simulation for iv bolus with 2-compartment, 1st-ordered
+    pk model;
+13. fixed smacro.one(), smacro.two() and smacro.three(); removed
+    'Dose' from the arguments of smacro.one.out(...), etc.; no 
+    Dose is req.;
+14. fixed szero.nolag() with Monte-Carlo sim.;
+15. added the function of input data file could be saved as a .csv
+    format too (with write.csv(...,col.names=TRUE,,,).
+
+04/04/2013 (v1.2.0)
 ---
 1. Remove genetic algorithm from PKfit; it still keep
    Nelder-Mead Simplex (optim) and nls() for Guass_newton.
-   
 2. fixed some settings for methods used in model-fitting.
    most difficult in this part.
-   
 3. If you get error message something like 'minFactors...',
    please check your model, check your data and check your
    initial values.
- 
 4. A .txt output and a .pdf file generated for fitting
    results and plots, respectively.
 

@@ -6,10 +6,10 @@ iv.route <- function(PKindex)
   cat("***************************************\n\n")
   cat("\n")
   
-  file.menu <- c("IV-Bolus, & SD", 
-                 "IV-Bolus, SD, & MM Elim", 
-                 "IV-Infusion, & SD",
-                 "IV-Infusion, SD, & MM Elim",
+  file.menu <- c("IV-Bolus & SD", 
+                 "IV-Bolus, SD & MM Elim", 
+                 "IV-Infusion & SD",
+                 "IV-Infusion, SD & MM Elim",
                  "Go Back One Upper Level")
   pick <- menu(file.menu, title = "<< IV Route >>")
   if (pick ==1){

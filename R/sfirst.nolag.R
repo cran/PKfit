@@ -5,6 +5,7 @@
 sfirst.nolag <- function(Subject=NULL,  # N Subj's 
                          PKtime=NULL,   # times for sampling
                          Dose=NULL,     # single dose
+                         Tlag_time=NULL,
                          ka=NULL,     
                          Vd=NULL,
                          kel=NULL, ## If not MM elimination
@@ -12,111 +13,146 @@ sfirst.nolag <- function(Subject=NULL,  # N Subj's
                          Vm=NULL,Km=NULL,
                          Tlag=FALSE)
 {
-   #options(warn=-1)
-   
-   if (is.null(Subject) || !is.integer(Subject)) {
-     cat("How many subjects do you want?\n")
-     Subject<-scan(nlines=1,quiet=TRUE)
+   options(warn=-1)
+    
+   cat("\n First enter all paramaters used for simulation profile.\n");readline(" Press Enter to continue...\n\n")
+   if (MMe) {
+      if(Tlag){
+        par<-data.frame(Parameter=c("Total_subject#","Dose","Tlag","ka","Vm","Km","Vd"),
+                          Initial=c(24,300,0.25,0.36,0.13,0.31,11.7))
+        par<-edit(par)                                                       
+        repeat{
+            if (par[1,2] <= 0 || par[2,2] <=0 || par[3,2]<=0 || par[4,2]<=0 || par[5,2]<=0|| par[6,2]<=0|| par[7,2]<=0){
+              cat("\n")
+              cat("**********************************\n")
+              cat(" Any parameter value can not be equal to or less than zero.\n")
+              cat(" Press Enter to continue.         \n")
+              cat("**********************************\n\n")
+              readline()
+              cat("\n")
+              par<-edit(par)}   
+            else{
+              break
+              return(edit(par))}
+         } 
+         cat("\n")       
+         show(par)
+        
+        cat("\n")
+        Subject<-par[1,2]
+        Dose<-par[2,2]
+        Tlag_time<-par[3,2]
+        par1<-par[4,2]
+        par2<-par[5,2]
+        par3<-par[6,2]
+        par4<-par[7,2]
+        }
+       else{
+        par<-data.frame(Parameter=c("Total_subject#","Dose","ka","Vm","Km","Vd"),Initial=c(24,300,0.36,0.13,0.31,11.7))
+        par<-edit(par)                                                       
+        repeat{
+            if (par[1,2] <= 0 || par[2,2] <=0 || par[3,2]<=0 || par[4,2]<=0 || par[5,2]<=0|| par[6,2]<=0){
+              cat("\n")
+              cat("**********************************\n")
+              cat(" Any parameter value can not be equal to or less than zero.\n")
+              cat(" Press Enter to continue.         \n")
+              cat("**********************************\n\n")
+              readline()
+              cat("\n")
+              par<-edit(par)}   
+            else{
+              break
+              return(edit(par))}
+         } 
+         cat("\n")       
+         show(par)
+        
+        cat("\n")
+        Subject<-par[1,2]
+        Dose<-par[2,2]
+        par1<-par[3,2]
+        par2<-par[4,2]
+        par3<-par[5,2]
+        par4<-par[6,2]       
+       }
    }
 
-   if (is.null(PKtime)) { 
-     ## need to verify is a numeric ordered vector.
-     PKtime<-data.frame(time=c(0))
-     PKtime<-edit(PKtime)
-   }
-  
-   cat("\n")
-   show(PKtime)
-
-   if (is.null(Dose)) {
-     cat("\nEnter dose\n")
-     Dose<-scan(nlines=1,quiet=TRUE)
-   }
-  
-   if ( Tlag ){
-     cat("\nEnter value for lag time\n")
-     Tlag<-scan(nlines=1,quiet=TRUE)
-   }
-  
-   if ( MMe ) { 
-      if (is.null(ka) || is.null(Vm) || is.null(Km)|| is.null(Vd)) {
-         par<-data.frame(Parameter=c("ka","Vm","Km","Vd"),Initial=c(0))
-         par<-edit(par)
-         repeat{
-           if ( par[1,2] == 0 || par[2,2] ==0 || par[3,2]==0 || par[4,2]==0){
-             cat("\n")
-             cat("**********************************\n")
-             cat(" Parameter value can not be zero. \n")
-             cat(" Press Enter to continue.         \n")
-             cat("**********************************\n\n")
-             readline()
-             cat("\n")
-             par<-edit(par)}   
-           else{
-             break
-             return(edit(par))}
-        } 
-        cat("\n")       
-        show(par)
-         
-         cat("\n")
-         par1<-par[1,2]
-         par2<-par[2,2]
-         par3<-par[3,2]
-         par4<-par[4,2]
-      } 
-      else {
-         par1 <- ka
-         par2 <- Vm
-         par3 <- Km
-         par4 <- Vd 
-      } 
-   }
    else{
-      if ( is.null(ka) || is.null(kel) || is.null(Vd)){
-         par<-data.frame(Parameter=c("ka","kel","Vd"),Initial=c(0))
-         par<-edit(par)
-         repeat{
-           if ( par[1,2] == 0 || par[2,2] ==0 || par[3,2]==0){
-             cat("\n")
-             cat("**********************************\n")
-             cat(" Parameter value can not be zero. \n")
-             cat(" Press Enter to continue.         \n")
-             cat("**********************************\n\n")
-             readline()
-             cat("\n")
-             par<-edit(par)}   
-           else{
-             break
-             return(edit(par))}
-        } 
-        cat("\n")       
-        show(par)
-         
-         
-         cat("\n")
-         par1<-par[1,2]
-         par2<-par[2,2]
-         par3<-par[3,2]
-      } 
-      else {
-         par1 <- ka
-         par2 <- kel
-         par3 <- Vd
+      if(Tlag){
+        par<-data.frame(Parameter=c("Total_subject#","Dose","Tlag","ka","kel","Vd"),Initial=c(24,300,0.25,0.36,0.13,11.7))
+        par<-edit(par)                                                       
+        repeat{
+            if (par[1,2] <= 0 || par[2,2] <=0 || par[3,2]<=0 || par[4,2]<=0 || par[5,2]<=0|| par[6,2]<=0){
+              cat("\n")
+              cat("**********************************\n")
+              cat(" Any parameter value can not be equal to or less than zero.\n")
+              cat(" Press Enter to continue.         \n")
+              cat("**********************************\n\n")
+              readline()
+              cat("\n")
+              par<-edit(par)}   
+            else{
+              break
+              return(edit(par))}
+         } 
+         cat("\n")       
+         show(par)
+        
+        cat("\n")
+        Subject<-par[1,2]
+        Dose<-par[2,2]
+        Tlag_time<-par[3,2]
+        par1<-par[4,2]
+        par2<-par[5,2]
+        par3<-par[6,2]
       }
-   }   
+      else{
+        par<-data.frame(Parameter=c("Total_subject#","Dose","ka","kel","Vd"),Initial=c(24,300,0.36,0.13,11.7))
+        par<-edit(par)                                                       
+        repeat{
+            if (par[1,2] <= 0 || par[2,2] <=0 || par[3,2]<=0 || par[4,2]<=0 || par[5,2]<=0){
+              cat("\n")
+              cat("**********************************\n")
+              cat(" Any parameter value can not be equal to or less than zero.\n")
+              cat(" Press Enter to continue.         \n")
+              cat("**********************************\n\n")
+              readline()
+              cat("\n")
+              par<-edit(par)}   
+            else{
+              break
+              return(edit(par))}
+         } 
+         cat("\n")       
+         show(par)
+        
+        cat("\n")
+        Subject<-par[1,2]
+        Dose<-par[2,2]
+        par1<-par[3,2]
+        par2<-par[4,2]
+        par3<-par[5,2]      
+      }
+     }
+     
+   readline("\n Next enter time points. Press Enter to continue.\n\n")
+   PKtime<-data.frame(time=c(0))
+   ### PKtime<-data.frame(time=c(0,.1,.2,.3,.4,.6,.8,1,2,4,6,8,12,14,16,18,24))
+   PKtime<-edit(PKtime)
+   cat("\n")
+   show(PKtime);cat("\n\n")
   
-   if (MMe ) {
+   if (MMe) {
       if (Tlag){
         ## User-supplied function w Michaelis-Mention elimination & w lag time
         defun<- function(time, y, parms) { 
-           if(time <= Tlag) {
+           if(time <= Tlag_time) {
               dy1dt<-0
               dy2dt<-0
            }
            else {
               dy1dt <- -parms["ka"] * y[1]
-              dy2dt <-  parms["ka"] * y[1]/parms["Vd"] - (parms["Vm"]/parms["Vd"])*y[2]/(parms["Km"]/parms["Vd"]+y[2])
+              dy2dt <-  parms["ka"] * y[1]/parms["Vd"] - parms["Vm"]*y[2]/(parms["Km"]+y[2])
            }
            list(c(dy1dt,dy2dt)) 
          } 
@@ -125,7 +161,7 @@ sfirst.nolag <- function(Subject=NULL,  # N Subj's
         ## User-supplied function with MM elimination w/o lag time
         defun<- function(time, y, parms) { 
           dy1dt <- -parms["ka"] * y[1]
-          dy2dt <-  parms["ka"] * y[1]/parms["Vd"] - (parms["Vm"]/parms["Vd"])*y[2]/(parms["Km"]/parms["Vd"]+y[2])
+          dy2dt <-  parms["ka"] * y[1]/parms["Vd"] - parms["Vm"]*y[2]/(parms["Km"]+y[2])
           list(c(dy1dt,dy2dt)) 
         } 
       }  
@@ -134,7 +170,7 @@ sfirst.nolag <- function(Subject=NULL,  # N Subj's
       if (Tlag){
         ## User-supplied function w/o MM elimination w lag time
         defun<- function(time, y, parms) { 
-           if(time<=Tlag) {
+           if(time<=Tlag_time) {
               dy1dt<-0
               dy2dt<-0
            }
@@ -158,7 +194,7 @@ sfirst.nolag <- function(Subject=NULL,  # N Subj's
    file.menu <- c("Simulation with Error",
                   "Monte Carlo Simulation")
    pick <- menu(file.menu, title = "<< Simulation Types >>")
-   if (pick ==1){
+   if (pick ==1){    ### normal simulation starting here
       cat("\n\n")
       file.menu <- c("No Error",
                      "Error = Normal Error", 
@@ -175,9 +211,9 @@ sfirst.nolag <- function(Subject=NULL,  # N Subj's
                   "Error = Uniform Error*True Value")
       
       if (pick ==1){
-          PKindex<-vector(Subject,mode="list")
-          for( i in 1:Subject)  {
-             cat("\n\n             << Subject",i,">>\n\n" )   
+          PKindex<-vector(Subject,mode="list");cat("\n")
+          for(i in 1:Subject)  {
+             cat("\n     << Subject:- #",i,">>\n\n" )
            
              if ( MMe ){
                 ka<-par1
@@ -187,9 +223,9 @@ sfirst.nolag <- function(Subject=NULL,  # N Subj's
                 PKindex[[i]]<-sfirst.mm.out(PKtime,ka,Vm,Km,Vd,defun,par1,par2,par3,par4,Dose,i,type,Tlag)      
              } 
              else{
-                ka<-par1
+                ka <-par1
                 kel<-par2
-                Vd<-par3       
+                Vd <-par3       
                 PKindex[[i]]<-sfirst1.out(PKtime,ka,kel,Vd,defun,par1,par2,par3,Dose,i,type,Tlag)   
              }
           }       
@@ -198,61 +234,30 @@ sfirst.nolag <- function(Subject=NULL,  # N Subj's
           savefile(PKindex)
        }   
       else {
-          if ( !MMe ){
-             cat("\n\nEnter error factor for ka\n")
-             factor1<-scan(nlines=1,quiet=TRUE)
-             repeat{
-              if ( factor1 == 0 ){
-                cat("\n")
-                cat("**********************************\n")
-                cat(" Parameter value can not be zero. \n")
-                cat(" Press Enter to continue.         \n")
-                cat("**********************************\n\n")
-                readline()
-                cat("\n")
-                factor1<-scan(nlines=1,quiet=TRUE)}   
+         if (!MMe){
+         par.err<-data.frame(Parameter=c("ka","kel","Vd"),error_factor=c(.15,.15,.15))
+         par.err<-edit(par.err)
+         repeat{
+         if (par.err[1,2] <= 0 || par.err[2,2] <=0 || par.err[3,2]<=0){
+             cat("\n")
+             cat("**********************************\n")
+             cat(" Parameter values can be equal or less than zero. \n")
+             cat(" Press Enter to continue.         \n")
+             cat("**********************************\n\n")
+             readline()
+             cat("\n")
+             par.err<-edit(par.err)}   
            else{
-                break
-                return(factor1)}
-           } 
-             
-             cat("\nEnter error factor for kel\n")
-             factor2<-scan(nlines=1,quiet=TRUE)
-             repeat{
-              if ( factor2 == 0 ){
-                cat("\n")
-                cat("**********************************\n")
-                cat(" Parameter value can not be zero. \n")
-                cat(" Press Enter to continue.         \n")
-                cat("**********************************\n\n")
-                readline()
-                cat("\n")
-                factor2<-scan(nlines=1,quiet=TRUE)}   
-           else{
-                break
-                return(factor2)}
-           } 
-             
-             cat("\nEnter error factor for Vd\n")
-             factor3<-scan(nlines=1,quiet=TRUE)
-             repeat{
-              if ( factor3 == 0 ){
-                cat("\n")
-                cat("**********************************\n")
-                cat(" Parameter value can not be zero. \n")
-                cat(" Press Enter to continue.         \n")
-                cat("**********************************\n\n")
-                readline()
-                cat("\n")
-                factor3<-scan(nlines=1,quiet=TRUE)}   
-           else{
-                break
-                return(factor3)}
-           } 
+             break
+             return(edit(par.err))}
+         }
+         factor1<-par.err[1,2]
+         factor2<-par.err[2,2]
+         factor3<-par.err[3,2]
            
-             PKindex<-vector(Subject,mode="list")
-             for( i in 1:Subject)  {
-                cat("\n\n             << Subject",i,">>\n\n" )  
+             PKindex<-vector(Subject,mode="list");cat("\n")
+             for(i in 1:Subject)  {
+                cat("\n     << Subject:- #",i,">>\n\n" )
                 switch(pick-1,
                       {ka<-par1+rnorm(1,mean=0,sd=factor1)
                        while(ka<=0){
@@ -297,78 +302,32 @@ sfirst.nolag <- function(Subject=NULL,  # N Subj's
              PKindex[[i]]<-sfirst1.out(PKtime,ka,kel,Vd,defun,par1,par2,par3,Dose,i,type,Tlag)      
              }
           }
-          else{
-             cat("\n\nEnter error factor for ka\n")
-             factor1<-scan(nlines=1,quiet=TRUE)
-             repeat{
-              if ( factor1 == 0 ){
-                cat("\n")
-                cat("**********************************\n")
-                cat(" Parameter value can not be zero. \n")
-                cat(" Press Enter to continue.         \n")
-                cat("**********************************\n\n")
-                readline()
-                cat("\n")
-                factor1<-scan(nlines=1,quiet=TRUE)}   
+      else{   ### if(MMe) here
+         par.err<-data.frame(Parameter=c("ka","Vm","Km","Vd"),error_factor=c(.15,.15,.15,.15))
+         par.err<-edit(par.err)
+         repeat{
+         if (par.err[1,2] <= 0 || par.err[2,2] <=0 || par.err[3,2]<=0 || par.err[4,2]<=0){
+             cat("\n")
+             cat("**********************************\n")
+             cat(" Parameter values can be equal or less than zero. \n")
+             cat(" Press Enter to continue.         \n")
+             cat("**********************************\n\n")
+             readline()
+             cat("\n")
+             par.err<-edit(par.err)}   
            else{
-                break
-                return(factor1)}
-           } 
+             break
+             return(edit(par.err))}
+         }
+         
+         factor1<-par.err[1,2]
+         factor2<-par.err[2,2]
+         factor3<-par.err[3,2]
+         factor4<-par.err[4,2]
              
-             cat("\nEnter error factor for Vm\n")
-             factor2<-scan(nlines=1,quiet=TRUE)
-             repeat{
-              if ( factor2 == 0 ){
-                cat("\n")
-                cat("**********************************\n")
-                cat(" Parameter value can not be zero. \n")
-                cat(" Press Enter to continue.         \n")
-                cat("**********************************\n\n")
-                readline()
-                cat("\n")
-                factor2<-scan(nlines=1,quiet=TRUE)}   
-           else{
-                break
-                return(factor2)}
-           } 
-             
-             cat("\nEnter error factor for Km\n")
-             factor3<-scan(nlines=1,quiet=TRUE)
-             repeat{
-              if ( factor3 == 0 ){
-                cat("\n")
-                cat("**********************************\n")
-                cat(" Parameter value can not be zero. \n")
-                cat(" Press Enter to continue.         \n")
-                cat("**********************************\n\n")
-                readline()
-                cat("\n")
-                factor3<-scan(nlines=1,quiet=TRUE)}   
-           else{
-                break
-                return(factor3)}
-           } 
-             
-             cat("\nEnter error factor for Vd\n")
-             factor4<-scan(nlines=1,quiet=TRUE)
-             repeat{
-              if ( factor4 == 0 ){
-                cat("\n")
-                cat("**********************************\n")
-                cat(" Parameter value can not be zero. \n")
-                cat(" Press Enter to continue.         \n")
-                cat("**********************************\n\n")
-                readline()
-                cat("\n")
-                factor4<-scan(nlines=1,quiet=TRUE)}   
-           else{
-                break
-                return(factor4)}
-           } 
-             
-             PKindex<-vector(Subject,mode="list")
-             for( i in 1:Subject)  {
-               cat("\n\n             << Subject",i,">>\n\n" )  
+             PKindex<-vector(Subject,mode="list");cat("\n")
+             for(i in 1:Subject)  {
+               cat("\n     << Subject:- #",i,">>\n\n" )
                switch(pick-1,
                      {ka<-par1+rnorm(1,mean=0,sd=factor1)
                       while(ka<=0){
@@ -430,7 +389,7 @@ sfirst.nolag <- function(Subject=NULL,  # N Subj's
          savefile(PKindex)
      } 
   } 
-  else if (pick ==2){ 
+  else if (pick ==2){    ### starting monte-carlo simulation here 
      cat("\n\n")
      file.menu <- c("Error = Normal Error", 
                     "Error = Uniform Error",
@@ -444,78 +403,31 @@ sfirst.nolag <- function(Subject=NULL,  # N Subj's
                   "Error = Normal Error*True Value",
                   "Error = Uniform Error*True Value")
      
-     cat("\n\nHow many interations do you want to run?\n")
+     cat("\n\nHow many iterations to run for each subject?\n")
      re<-scan(nlines=1,quiet=TRUE)
      
-       if (MMe ){
-         if (Tlag){
-          cat("\nEnter error factor for ka\n")
-          factor1<-scan(nlines=1,quiet=TRUE)
-          repeat{
-              if ( factor1 == 0 ){
-                cat("\n")
-                cat("**********************************\n")
-                cat(" Parameter value can not be zero. \n")
-                cat(" Press Enter to continue.         \n")
-                cat("**********************************\n\n")
-                readline()
-                cat("\n")
-                factor1<-scan(nlines=1,quiet=TRUE)}   
+       if (MMe){
+         par.err<-data.frame(Parameter=c("ka","Vm","Km","Vd"),error_factor=c(.15,.15,.15,.15))
+         par.err<-edit(par.err)
+         repeat{
+         if (par.err[1,2] <= 0 || par.err[2,2] <=0 || par.err[3,2]<=0 || par.err[4,2]<=0){
+             cat("\n")
+             cat("**********************************\n")
+             cat(" Parameter values can be equal or less than zero. \n")
+             cat(" Press Enter to continue.         \n")
+             cat("**********************************\n\n")
+             readline()
+             cat("\n")
+             par.err<-edit(par.err)}   
            else{
-                break
-                return(factor1)}
-           } 
-          
-          cat("\nEnter error factor for Vm\n")
-          factor2<-scan(nlines=1,quiet=TRUE)
-          repeat{
-              if ( factor2 == 0 ){
-                cat("\n")
-                cat("**********************************\n")
-                cat(" Parameter value can not be zero. \n")
-                cat(" Press Enter to continue.         \n")
-                cat("**********************************\n\n")
-                readline()
-                cat("\n")
-                factor2<-scan(nlines=1,quiet=TRUE)}   
-           else{
-                break
-                return(factor2)}
-           } 
-          
-          cat("\nEnter error factor for Km\n")
-          factor3<-scan(nlines=1,quiet=TRUE)
-          repeat{
-              if ( factor3 == 0 ){
-                cat("\n")
-                cat("**********************************\n")
-                cat(" Parameter value can not be zero. \n")
-                cat(" Press Enter to continue.         \n")
-                cat("**********************************\n\n")
-                readline()
-                cat("\n")
-                factor3<-scan(nlines=1,quiet=TRUE)}   
-           else{
-                break
-                return(factor3)}
-           } 
-          
-          cat("\nEnter error factor for Vd\n")
-          factor4<-scan(nlines=1,quiet=TRUE)
-          repeat{
-              if ( factor4 == 0 ){
-                cat("\n")
-                cat("**********************************\n")
-                cat(" Parameter value can not be zero. \n")
-                cat(" Press Enter to continue.         \n")
-                cat("**********************************\n\n")
-                readline()
-                cat("\n")
-                factor4<-scan(nlines=1,quiet=TRUE)}   
-           else{
-                break
-                return(factor4)}
-           } 
+             break
+             return(edit(par.err))}
+         }
+         
+         factor1<-par.err[1,2]
+         factor2<-par.err[2,2]
+         factor3<-par.err[3,2]
+         factor4<-par.err[4,2]       
           
           cat("\n")
           cat("************************************************************************\n")
@@ -529,38 +441,28 @@ sfirst.nolag <- function(Subject=NULL,  # N Subj's
           dimnames(sim)<-list(c("ka","Vm","Km","Vd"),c("Selected","Error factor"))
           show(sim)   
           cat("************************************************************************\n\n")
-         }
-         else{
-          cat("\nEnter error factor for ka\n")
-          factor1<-scan(nlines=1,quiet=TRUE)
-          cat("\nEnter error factor for Vm\n")
-          factor2<-scan(nlines=1,quiet=TRUE)
-          cat("\nEnter error factor for Km\n")
-          factor3<-scan(nlines=1,quiet=TRUE)
-          cat("\nEnter error factor for Vd\n")
-          factor4<-scan(nlines=1,quiet=TRUE)
-          cat("\n")
-          cat("*************************************************************************\n")
-          cat("Summary Table                                                            \n")
-          cat("Model: 1-Compartment, Extravascular, Single-Dose, 1t-Ordered Absorption, \n")
-          cat("       and Michaelis-Menten Elimination without Lag Time Model           \n")
-          cat("Subject #:", Subject,"                                                   \n")
-          cat("Error Type:", type,"                                                     \n")
-          cat("Simulation #:", re,"                                                     \n\n")
-          sim<-matrix(c(par1,par2,par3,par4,factor1,factor2,factor3,factor4),4,2)
-          dimnames(sim)<-list(c("ka","Vm","Km","Vd"),c("Selected","Error factor"))
-          show(sim)   
-          cat("*************************************************************************\n\n")
-         }
        }
        else{
-         if (Tlag){
-         cat("\nEnter error factor for ka\n")
-         factor1<-scan(nlines=1,quiet=TRUE)
-         cat("\nEnter error factor for kel\n")
-         factor2<-scan(nlines=1,quiet=TRUE)
-         cat("\nEnter error factor for Vd\n")
-         factor3<-scan(nlines=1,quiet=TRUE)
+         par.err<-data.frame(Parameter=c("ka","kel","Vd"),error_factor=c(.15,.15,.15))
+         par.err<-edit(par.err)
+         repeat{
+         if (par.err[1,2] <= 0 || par.err[2,2] <=0 || par.err[3,2]<=0){
+             cat("\n")
+             cat("**********************************\n")
+             cat(" Parameter values can be equal or less than zero. \n")
+             cat(" Press Enter to continue.         \n")
+             cat("**********************************\n\n")
+             readline()
+             cat("\n")
+             par.err<-edit(par.err)}   
+           else{
+             break
+             return(edit(par.err))}
+         }
+         factor1<-par.err[1,2]
+         factor2<-par.err[2,2]
+         factor3<-par.err[3,2]         
+
          cat("\n")
          cat("****************************************************\n")
          cat("Summary Table                                       \n")
@@ -574,37 +476,15 @@ sfirst.nolag <- function(Subject=NULL,  # N Subj's
          show(sim)   
          cat("****************************************************\n\n")
          }
-         else{
-         cat("\nEnter error factor for ka\n")
-         factor1<-scan(nlines=1,quiet=TRUE)
-         cat("\nEnter error factor for kel\n")
-         factor2<-scan(nlines=1,quiet=TRUE)
-         cat("\nEnter error factor for Vd\n")
-         factor3<-scan(nlines=1,quiet=TRUE)
-         cat("\n")
-         cat("*******************************************************\n")
-         cat("Summary Table                                          \n")
-         cat("Model: 1-Compartment, Extravascular, Single-Dose,      \n")
-         cat("       and 1-Ordered Absorption without Lag Time Model \n")
-         cat("Subject #:", Subject,"                                 \n")
-         cat("Error Type:", type,"                                   \n")
-         cat("Simulation #:", re,"                                   \n\n")
-         sim<-matrix(c(par1,par2,par3,factor1,factor2,factor3),3,2)
-         dimnames(sim)<-list(c("ka","kel","Vd"),c("Selected","Error factor"))
-         show(sim)   
-         cat("*******************************************************\n\n")
-         }
-       }
-
-     
-     PKindex<-vector(Subject,mode="list")
-     for( i in 1:Subject)  {
-       cat("\n\n             << Subject",i,">>\n\n" ) 
+     cat("\n")
+     PKindex<-vector(Subject,mode="list");cat("\n")
+     for(i in 1:Subject)  {
+       cat("\n     << Subject:- #",i,">>\n\n" )
        C1.lsoda<-list()
 
          for (j in 1:re){
      
-           if ( !MMe ){
+           if (!MMe ){
               switch(pick, 
                     {ka<-par1+rnorm(1,mean=0,sd=factor1)
                     while(ka<=0){
@@ -655,7 +535,7 @@ sfirst.nolag <- function(Subject=NULL,  # N Subj's
               C1.lsoda[[j]]<-data.frame(XX[2:(length(time1)+1),1],good)
               colnames(C1.lsoda[[j]])<-list("time","concentration") 
            }
-           else{
+           else{   ### if(MMe) here
               switch(pick, 
                     {ka<-par1+rnorm(1,mean=0,sd=factor1)
                     while(ka<=0){
@@ -725,4 +605,4 @@ sfirst.nolag <- function(Subject=NULL,  # N Subj's
      rownames(PKindex)<-seq(nrow(PKindex)) 
      savefile(PKindex) 
   }
-} 
+}

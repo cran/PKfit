@@ -1,16 +1,16 @@
 #for one exponential term
-smacro.one.out<-function(PKtime,A,a,defun,par1,par2,Dose,i,type) 
+smacro.one.out<-function(PKtime,A,alpha,defun,par1,par2,i,type) 
 {
   time<-PKtime$time
-  defun<- A*exp(-a*time)
+  defun<- A*exp(-alpha*time)
   output<-data.frame(time,defun) 
   cat("\n\n")
   cat("*******************************************\n")
-  cat("Summary Table                              \n")
-  cat("Model: One-exponential Term Model          \n") 
-  cat("Error Type:", type,"                       \n\n")
-  sim<-matrix(c(A,a,par1,par2),2,2)
-  dimnames(sim)<-list(c("A","a"),c("Value","Selected"))
+  cat(" Summary Table                              \n")
+  cat(" Model: one-exponential term model          \n") 
+  cat(" Error Type:", type,"                       \n\n")
+  sim<-matrix(c(A,alpha,par1,par2),2,2)
+  dimnames(sim)<-list(c("A","alpha"),c("Value","Selected"))
   show(sim)
   cat("******************************************\n\n")
   

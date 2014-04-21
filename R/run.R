@@ -4,10 +4,6 @@ run <- function()
   
   ## Need to clean up the requirements.
   options(warn=-1) 
-  if (noquote(unlist(format(.Platform)))[1] == "unix") {
-        windows <<- function(record) {
-        }
-     } 
   graphics.off()
   cat("\n")
   file.menu <- c("Normal Fitting", 

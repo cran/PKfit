@@ -37,7 +37,7 @@ plotting.non <- function (PKindex, fm, i, pick, xaxis, yaxis,
   cat("<< Output >>\n\n")      
   output <- data.frame(x,y,cal,wei,AUC,AUMC)
   colnames(output) <- list("Time","Observed","Calculated","Wt. Residuals","AUC","AUMC")
-  show(output)
+  show(fm);cat("\n\n");show(output)
   cat("\n") 
         
   aicllsbc(fm)

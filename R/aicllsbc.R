@@ -2,7 +2,12 @@
 aicllsbc <- function(fm)
 {   
   cat("\n") 
-  cat("<< Akaike's Information Criterion (AIC) >>\n")
+  #Summary the results of nls
+  print(summary(fm));cat("\n")
+  cat("<< Variance-Covariance Matrix >>\n")
+  print(vcov(fm))
+    
+  cat("\n<< Akaike's Information Criterion (AIC) >>\n")
   show(AIC(fm))
     
   cat("\n<< Log likelihood >>\n")
@@ -11,9 +16,5 @@ aicllsbc <- function(fm)
   cat("\n<< Schwarz's Bayesian Criterion (SBC/BIC) >>\n")
   show(BIC(fm))
   cat("\n")     
-    
- #Summary the results of nls
-  print(summary(fm))
-  cat("\n")   
   cat(date(),"\n")     
 }  

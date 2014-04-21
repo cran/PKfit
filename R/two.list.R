@@ -9,9 +9,9 @@ two.list <- function(PKindex)
   cat("************************\n\n")
   cat("\n")
   
-  file.menu <- c("IV-Bolus, & SD", 
-                 "IV-Infusion, & SD",
-                 "Extravascular, SD, & 1st-Ord Abs w/o Tlag",
+  file.menu <- c("IV-Bolus & SD", 
+                 "IV-Infusion & SD",
+                 "Extravascular, SD & 1st-Ord Abs w/o Tlag",
                  "Go Back One Upper Level")
   pick <- menu(file.menu, title = "<< 2-Compartment PK Model >>")
   if (pick == 1){

@@ -16,7 +16,7 @@ data.manipulate <- function()
      ### PK.file <-readline()
      ### PK.file<-paste(PK.file,".csv",sep="")
      cnames<-c("Subject", "time", "conc")
-     PKindex<-read.csv(file.choose(),header=FALSE,sep=",",row.names=NULL,col.names=cnames)
+     PKindex<-read.csv(file.choose(),header=TRUE,sep=",",row.names=NULL,col.names=cnames)
      PKindex<-edit(PKindex)
      cat("\n\n")
      show(PKindex)
@@ -34,6 +34,7 @@ data.manipulate <- function()
      PKindex<-readRDS(file.choose())
      PKindex<-edit(PKindex)
      colnames(PKindex)<-list("Subject", "time", "conc")
+     write.csv(PKindex,file=PKname,row.names=FALSE)    ###
      cat("\n\n")
      show(PKindex)
      cat("\n\n")
@@ -44,15 +45,16 @@ data.manipulate <- function()
      PKindex<-data.frame(Subject=c(1),time=c(0),conc=c(0))
      PKindex<-edit(PKindex)
      show(PKindex)
-     ans<-readline("\nSave data (y/n)?\n")
+     ans<-readline("\nSave the data (y/n)?\n")
      cat("\n")
      if (ans == "n" | ans == "N"){
         return(nor.fit(PKindex))
         }
      else {
         PKname <-readline("Enter the file name for input data (no file extension!):\n") 
-        PKname<-paste(PKname,".RData",sep="")      
-        if(file.exists(PKname)){
+        PKnameRData<-paste(PKname,".RData",sep="")
+        PKnameCSV<-paste(PKname,".csv",sep="")
+        if(file.exists(PKnameRData)||file.exists(PKnameCSV)){
            cat("\n")
            cat("****************************************\n")
            cat(" The file has been existed.       \n")
@@ -60,37 +62,40 @@ data.manipulate <- function()
            cat("****************************************\n")
            ans<-readline()
              if (ans == "y" | ans == "Y"){
-                saveRDS(PKindex,file=PKname)
+                saveRDS(PKindex,file=PKnameRData)
+                write.csv(PKindex,file=PKnameCSV,row.names=FALSE)
                 cat("\n")
               }
               else{
                 PKname <-readline("Enter the file name for input data (no file extension!):\n") 
-                PKname<-paste(PKname,".RData",sep="") 
+                PKnameRData<-paste(PKname,".RData",sep="")
+                PKnameCSV<-paste(PKname,".csv",sep="") 
                 repeat{
-                    if(file.exists(PKname)){
+                    if(file.exists(PKnameRData)||file.exists(PKnameCSV)){
                       cat("\n")
                       cat("***********************************\n")
                       cat(" The file has been existed. \n")
                       cat(" Please enter the file name again.\n")
                       cat("***********************************\n")
                       PKname<-readline()
-                      PKname<-paste(PKname,".RData",sep="") 
+                      PKnameRData<-paste(PKname,".RData",sep="")
+                      PKnameCSV<-paste(PKname,".csv",sep="") 
                       }
                      else{
                       break                       
                       }
                   }        
               }   
-              saveRDS(PKindex,file=PKname)   
            }
-        else{
-           saveRDS(PKindex,file=PKname)
-          }                            
+           else{
+              saveRDS(PKindex,file=PKnameRData)
+              write.csv(PKindex,file=PKnameCSV,row.names=FALSE)  
+           }
+          }
         cat("\n")  
         return(nor.fit(PKindex))
-      }      
-  } 
-  else if (pick == 5){
+      }
+  else if (pick == 4){
      cat("\n\n") 
      return(nor.fit(PKindex))
   } 

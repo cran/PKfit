@@ -45,7 +45,7 @@ plotting.lin <- function (PKindex, fm, i, pick, coef, xaxis, yaxis,
   cat("<< Output >>\n\n")  
   output<-data.frame(x,y,cal,wei,AUC,AUMC)
   colnames(output)<-list("Time","Observed","Calculated","Wt. Residuals","AUC","AUMC")
-  show(output)  
+  show(fm);cat("\n\n");show(output)  
   
  #AUC (0 to infinity)              
   cat("\n<< AUC (0 to infinity) computed by trapezoidal rule >>\n\n")
@@ -57,11 +57,10 @@ plotting.lin <- function (PKindex, fm, i, pick, coef, xaxis, yaxis,
   cat("\n<< AUMC (0 to infinity) computed by trapezoidal rule >>\n\n")
   aumc.infinity<-(x[length(x)]*y[length(y)])/coef[1,1]+y[length(y)]/((coef[1,1])^2)
   aumc<-AUMC[length(y)]+aumc.infinity
-  show(aumc)   
-  cat("\n")
+  show(aumc)
          
   aicllsbc(fm)
-  cat("\n\n")
+  cat("\n")
     
  #Divide plot console into four parts
 ###   if (separateWindows) {

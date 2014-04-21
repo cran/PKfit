@@ -1,7 +1,7 @@
 ### menu for entering PK model selection for normal fitting (nor.fit?)  --YJ
 nor.fit <- function(PKindex)
 {
-  file.menu <- c("Data Manipulation",
+  file.menu <- c("Data Input/Load",
                  "Selection of PK Model",
                  "Go Back One Upper Level")
   pick <- menu(file.menu, title = "<< Normal Fitting >>")

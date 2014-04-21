@@ -47,7 +47,8 @@ C1.lsoda<-do.call("rbind",C1.lsoda)
 rownames(C1.lsoda)<-seq(nrow(C1.lsoda))
 conc<-ifelse(conc<=0, 0, conc)
 PKindex<-data.frame(i,time,conc)
-windows(record=TRUE)
+### windows(record=TRUE)   ### not working at all in linux... -YJ
+dev.new()                  ### works great in linux and windowsOS -YJ
 par(mfrow=c(2,2), ask = FALSE)
 x<-C1.lsoda$time
 y<-ifelse(C1.lsoda$concentration<=0, 0, C1.lsoda$concentration)

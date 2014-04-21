@@ -7,49 +7,42 @@ ffirst2<- function(PKindex,
                   k21=NULL,      
                   Vd=NULL) 
 {
-   #options(warn=-1)
-   
+   options(warn=-1)
+   modfun<-NULL
    ## Input dose and initial value for ka, kel, k12, k21 and Vd
-
-   if (is.null(Dose)) {
-     cat("Enter Dose\n")
-     Dose <- scan(nlines=1,quiet=TRUE)
-   } 
-   else {
-     cat("Dose from arguments is = ",Dose,"\n")
-   }
    
-   if (is.null(ka) || is.null(kel) || is.null(k12) || is.null(k21) || is.null(Vd) ) {
-        par<-data.frame(Parameter=c("ka","kel","k12","k21","Vd"),Initial=c(0))
-        par<-edit(par)
+   if (is.null(Dose) ||is.null(ka) || is.null(kel) || is.null(k12) || is.null(k21) || is.null(Vd) ) {
+        par.init<-data.frame(Parameter=c("Dose","ka","kel","k12","k21","Vd"),Initial=c(0,0,0,0,0,0))
+        par.init<-edit(par.init)
         repeat{
-           if ( par[1,2] == 0 || par[2,2] ==0 || par[3,2]==0 || par[4,2]==0 || par[5,2]==0){
+           if (par.init[1,2]<=0 || par.init[2,2]<=0 || par.init[3,2]<=0 || par.init[4,2]<=0 || par.init[5,2]<=0 || par.init[6,2]<=0){
              cat("\n")
              cat("**********************************\n")
-             cat(" Parameter value can not be zero. \n")
+             cat(" Parameter initial value can not be zero. \n")
              cat(" Press Enter to continue.         \n")
              cat("**********************************\n\n")
              readline()
              cat("\n")
-             par<-edit(par)}   
+             par.init<-edit(par.init)}   
            else{
              break
-             return(edit(par))}
+             return(edit(par.init))}
         } 
-        cat("\n")       
-        show(par)
+        cat("\n")
+        Dose<-par.init[1,2]       
+        show(par.init)
    }
    
    cat("\n")
    
    defun<- function(time, y, parms) { 
      dCp1dt <- -parms["ka"]*y[1]
-     dCp2dt <- parms["ka"]*y[1]/parms["Vd"]-parms["kel"]*y[2]+parms["k21"]*y[3]-parms["k12"]*y[2]
-     dCp3dt <- parms["k12"]*y[2]-parms["k21"]*y[3]
+     dCp2dt <-  parms["ka"]*y[1]/parms["Vd"]-parms["kel"]*y[2]+parms["k21"]*y[3]-parms["k12"]*y[2]
+     dCp3dt <-  parms["k12"]*y[2]-parms["k21"]*y[3]
      list(c(dCp1dt,dCp2dt,dCp3dt)) 
    } 
     
-   modfun3 <- function(time,ka,kel,k12,k21,Vd) { 
+   modfun <<- function(time,ka,kel,k12,k21,Vd) { 
      out <- lsoda(c(Dose,0,0),c(0,time),defun,parms=c(ka=ka,kel=kel,k12=k12,k21=k21,Vd=Vd),
                   rtol=1e-6,atol=1e-6) 
      out[-1,3] 
@@ -63,27 +56,37 @@ ffirst2<- function(PKindex,
 
    with(entertitle(),{
 ###
-windows(record=TRUE)
+### windows(record=TRUE)
+dev.new()
 par(mfrow=c(2,2),las=1)
 pdf_activate=FALSE  ### set pdf device activate? as FALSE at beginning
-
+###
+### give warning below
+###
+cat("\n The following steps may go wrong. If so, please check\n")
+cat("  your data, check your model and check initial values.\n\n")
+readline(" Press Enter to continue...")
+cat("\n\n")
 ###
 ### log to outputs.txt here
 ###
 zz <- file("pkfit_fitting_outputs.txt", open="wt")
 sink(zz,split=TRUE)   ### use sink(zz.split=TURE) will output to the txt file, as well as the screen at the same time. YJ
-###
-### give warning below
-###
-cat("\n The following steps may go wrong, if so please check your model,\n")
-cat(" check your data and check your initial values next time.\n\n")
-readline(" Press Enter to continue...")
-cat("\n\n")
+cat("\n\n");cat("--- input data ---\n")
+show(PKindex);cat("\n\n")     # show input data    
+cat("--- initial values for parameters ---\n")
+show(par.init);cat("\n")      # show initial values here
+cat("--- weighting scheme: ")
+switch(pick,                  ## show weighting scheme
+  cat("equal weight\n"),
+  cat("1/Cp\n"),
+  cat("1/Cp^2\n"));cat("\n\n")
+cat("--- model selection: a two-compartment, extravascular pk model with\n    1st-ordered abs./elim.")
 
    for( i in 1:length(unique(PKindex$Subject)))  {
-     cat("\n\n               << Subject",i,">>\n\n" )  
+     cat("   << --- Subject",i,">>---\n" )  
      objfun <- function(par) {
-        out <- modfun3(PKindex$time[PKindex$Subject==i],par[1],par[2],par[3],par[4],par[5])
+        out <- modfun(PKindex$time[PKindex$Subject==i],par[1],par[2],par[3],par[4],par[5])
         gift <- which( PKindex$conc[PKindex$Subject==i] != 0 )
         switch(pick,
                sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2),
@@ -91,53 +94,30 @@ cat("\n\n")
                sum(((PKindex$conc[PKindex$Subject==i][gift] - out[gift])/PKindex$conc[gift])^2))
      }
      
-###      gen<-genoud(objfun,nvars=5,max=FALSE,pop.size=15,max.generations=10,    ### seems OK to abandon genetic algorithm here (waste a lot of time to do it) YJ
-###           wait.generations=5,
-###           starting.value=c(par[1,2],par[2,2],par[3,2],par[4,2],par[5,2]),
-###           BFGS=FALSE,print.level=0,boundary.enforcement=2,
-###           Domains=matrix(c(0.01,0.01,0.01,0.01,1,10,1,10,1,100),5,2),
-###           MemoryMatrix=TRUE)     
-###           
-###      cat("<< PK parameters obtained from genetic algorithm >>\n\n")
-###      
-###      namegen<-c("ka","kel","k12","k21","Vd")
-###      outgen<-c(gen$par[1],gen$par[2],gen$par[3],gen$par[4],gen$par[5])
-###      print(data.frame(Parameter=namegen,Value=outgen)) 
-###      F<-objfun(gen$par)
-###      if(gen$par[1]<0) {gen$par[1]<-0.01}
-###      if(gen$par[2]<0) {gen$par[2]<-0.01}
-###      if(gen$par[3]<0) {gen$par[3]<-0.01}
-###      if(gen$par[4]<0) {gen$par[4]<-0.01}
-###      if(gen$par[5]<0) {gen$par[5]<-0.01}
-###      
-###      opt<-optim(c(gen$par[1],gen$par[2],gen$par[3],gen$par[4],gen$par[5]),objfun, method="Nelder-Mead")
-     opt<-optim(c(par[1,2],par[2,2],par[3,2],par[4,2],par[5,2]),objfun, method="Nelder-Mead")
+
+     opt<-optim(c(par.init[2,2],par.init[3,2],par.init[4,2],par.init[5,2],par.init[6,2]),objfun, method="Nelder-Mead")
      nameopt<-c("ka","kel","k12","k21","Vd")
      outopt<-c(opt$par[1],opt$par[2],opt$par[3],opt$par[4],opt$par[5])
      
      cat("\n<< PK parameter obtained from Nelder-Mead Simplex algorithm >>\n\n")
      print(data.frame(Parameter=nameopt,Value=outopt))
-     ### to avoid negative values from Nelder-Mead Simplex; otherwise, it will crash before nls().  -YJ
+     
      if(opt$par[1]<0) {opt$par[1]<-0.01}
      if(opt$par[2]<0) {opt$par[2]<-0.01}
      if(opt$par[3]<0) {opt$par[3]<-0.01}
      if(opt$par[4]<0) {opt$par[4]<-0.01}
      if(opt$par[5]<0) {opt$par[5]<-0.01}
      
-     cat("\n<< Residual sum-of-squares and final PK parameters values with nls >>\n\n")
-     fm<-nls(conc ~ modfun3(time,ka,kel,k12,k21,Vd),data=subset(PKindex,Subject==i),  ### for nls(); nlsLM() cannot work out. -YJ
-         start=list(ka=opt$par[1],kel=opt$par[2],k12=opt$par[3],k21=opt$par[4],Vd=opt$par[5]),trace=TRUE,
-         nls.control(maxiter=5000,tol=1e-06,minFactor=1/1024/1024),algorithm = "port",lower=c(0,0,0,0,0))  ### I added nls(...,algorithm = "port", lower=c(0,0,0,0,0)) seems stable now.
-                                                                                                           ### only 'port' can set up lower limits in nls().
-     cat("\n")
-     coef<-data.frame(coef(fm)["kel"])     ### for nls() only? is the same for nlsLM()? try it... YJ
-     
-     
+     cat("\n<< Residual sum-of-squares and final PK parameters values with nlsLM >>\n\n")
+     fm<-nlsLM(conc ~ modfun(time,ka,kel,k12,k21,Vd),data=subset(PKindex,Subject==i),
+         start=list(ka=opt$par[1],kel=opt$par[2],k12=opt$par[3],k21=opt$par[4],Vd=opt$par[5]),
+         control=nls.lm.control(maxiter=500),lower=c(0,0,0,0,1e-06)) ### lower of Vd should not be zero due to Dose/Vd. --YJ
+     coef<-data.frame(coef(fm)["kel"])
      plotting.lin(PKindex, fm, i, pick, coef, xaxis, yaxis)
 ###
 ### copied from the original plotting.lin()
 ###
-     main<-paste(c("Plots for Subject# ", i),collapse=" ")
+     main<-paste(c("Subject# ", i),collapse=" ")
      j<-1:length(PKindex$time[PKindex$Subject==i])
      xx<-PKindex$time[PKindex$Subject==i]
      yy<-PKindex$conc[PKindex$Subject==i]
@@ -195,10 +175,12 @@ cat("\n\n")
 ###  end plotting here...
 ###
      }
-  dev.off()        # close pdf()
-  graphics.off()   # close plot windows
   sink()           # reset sink()
   close(zz)        # close outputs.txt
+  cat(" All outputs (pkfit_fitting_outputs.txt & pkfit_plots.pdf)\n can be found at",getwd(),"\n")
+  readline(" Press any key to continue...")
+  dev.off()        # close pdf()
+  graphics.off()   # close plot windows
   })
   cat("\n")
   run()

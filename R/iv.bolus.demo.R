@@ -1,6 +1,7 @@
 iv.bolus.demo<-function(){
 cat("\n\n")
 options(warn=-1)
+modfun<-NULL
 PKindex<-data.frame(Subject=c(1),time=c(1,2,3,4,6,10,12),
                     conc=c(14.94,13.73,10.55,8.16,5.21,3.19,2.62))
 Dose<-500
@@ -9,9 +10,9 @@ defun<- function(time, y, parms) {
       list(dCpdt) 
 } 
     
-modfun <- function(time,kel, Vd) {  
+modfun <<- function(time,kel, Vd) {  
       out <- lsoda(Dose/Vd,c(0,time),defun,parms=c(kel=kel,Vd=Vd),
-                   rtol=1e-3,atol=1e-3) 
+                   rtol=1e-6,atol=1e-6) 
       out[-1,2] 
 }
 
@@ -20,7 +21,8 @@ objfun <- function(par) {
         gift <- which( PKindex$conc != 0 )
         sum((PKindex$conc[gift]-out[gift])^2)
 }        
-
+cat("- weighting scheme: equal weight\n")
+cat("- model selection: a one-compartment, iv bolus pk model with\n  1st-ordered elim.\n\n")
 ### gen<-genoud(objfun,nvars=2,max=FALSE,pop.size=30,
 ###             max.generations=20,wait.generations=10,
 ###             starting.values=c(0.13,20),
@@ -33,13 +35,17 @@ objfun <- function(par) {
 opt<-optim(c(0.13,20),objfun,method="Nelder-Mead")  
 nameopt<-c("kel","Vd")
 outopt<-c(opt$par[1],opt$par[2])
+cat("<< PK parameters obtained from Nelder-Mead Simplex algorithm >>\n")
+print(data.frame(Parameter=nameopt,Value=outopt))
+cat("\n\n")
 
   if(opt$par[1]<0) {opt$par[1]<-0.01}
   if(opt$par[2]<0) {opt$par[2]<-0.01}
-    
-fm<-nls(conc ~ modfun(time, kel, Vd), data=PKindex,
-        start=list(kel=opt$par[1],Vd=opt$par[2]),trace=TRUE,
-        nls.control(maxiter=5000,tol=1e-06,minFactor=1/1024/1024),algorithm = "port",lower=c(0,0,0,0))
+
+cat("<< Residual sum-of-squares and PK parameter values with nlsLM >>\n\n")    
+fm<-nlsLM(conc ~ modfun(time, kel, Vd),data=PKindex,start=list(kel=opt$par[1],Vd=opt$par[2]),
+         control=nls.lm.control(maxiter=500),lower=c(0,1e-06)) ### lower of Vd should not be zero due to Dose/Vd. --YJ
+        
 coef<-data.frame(coef(fm)["kel"])
 x<-PKindex$time
 y<-PKindex$conc
@@ -67,7 +73,8 @@ auc<-AUC[length(y)]+auc.infinity
 aumc.infinity<-(x[length(x)]*y[length(y)])/coef[1,1]+y[length(y)]/((coef[1,1])^2)
 aumc<-AUMC[length(y)]+aumc.infinity
 
-windows(record=TRUE)
+### windows(record=TRUE)
+dev.new()
 
 par(mfrow=c(2,2), ask = FALSE)
 
@@ -94,7 +101,6 @@ plot(cal,wei,pch=15,col="blue",bty="l",xlab="Calc Cp(i)",
      ylab="Weighted Residual",main="Residual Plots",cex.lab=1,
      cex.axis=1,cex.main=1,font.lab=2)
 abline(h=0,lwd=2,col="black",lty=2)
-cat("\n\n")
 cat("--- Output --- \n\n")
 show(output)
 aicllsbc(fm)

@@ -5,7 +5,7 @@
 # echo output to screen
 packageStartupMessage("
 
-....................... PKfit v1.2.0 .....................
+....................... PKfit v1.2.1 .....................
 
    Please type 'run()' to get started.                
                                                          
@@ -13,7 +13,7 @@ packageStartupMessage("
                                                          
    'demo(iv.bolus)' for Normal Fitting,                 
                                                          
-   'demo(mcsim)' for Monte-Carlo Simulation (1600 runs), or
+   'demo(mcsim)' for Monte-Carlo Simulation, or
                                                          
    'demo(mmpk)' for Michaelis-Menten Model.              
 
