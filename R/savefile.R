@@ -52,6 +52,5 @@ savefile<-function(PKindex)
            }
     }
   cat("\n")  
-  cat(date(),"\n")
-  run()   ### added by YJ 
+  cat(date(),"\n\n")
 }

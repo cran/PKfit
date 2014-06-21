@@ -30,18 +30,71 @@ plotting.non <- function (PKindex, fm, i, pick, xaxis, yaxis,
     return(list(auc=auc,aumc=aumc))
   }
   
-  add1 <- add(x,y)
+  add1<-add(x,y)
+  if (x[1]==0){
+    AUC<-add1$auc
+    AUMC<-add1$aumc
+    }
+  else {
   AUC<-c(NA,add1$auc[-1])
   AUMC<-c(NA,add1$aumc[-1])
-              
-  cat("<< Output >>\n\n")      
+  }
+  
+  cat("<< Residual sum-of-squares and final PK parameters values with nlsLM >>\n\n")            
   output <- data.frame(x,y,cal,wei,AUC,AUMC)
   colnames(output) <- list("Time","Observed","Calculated","Wt. Residuals","AUC","AUMC")
-  show(fm);cat("\n\n");show(output)
-  cat("\n") 
-        
+  show(fm);cat("\n");show(output)
+  cat("\n")
+  
+  auc<-AUC[length(y)]
+  aumc<-AUMC[length(y)]
+  
+  sumNCA<-data.frame(Parameters=c("Cmax","Cmin","AUC0-t","AUMC0-t"),  ### cannot calc AUCt-inf or AUMCt-inf for MM model.
+                     values=c(max(y),min(y),auc,aumc))                ### since there is no 'kel' in MM model.
+  show(sumNCA);cat("\n")
+  
   aicllsbc(fm)
-  cat("\n\n")
+  cat("\n")
+
+par(mfrow=c(2,2))
+main<-paste(c("Subject# ", i),collapse=" ")
+j<-1:length(PKindex$time[PKindex$Subject==i])
+xxstep<-seq(from=min(PKindex$time[PKindex$Subject==i]),to=max(PKindex$time[PKindex$Subject==i]),by=0.01)
+xx<-PKindex$time[PKindex$Subject==i]
+yy<-PKindex$conc[PKindex$Subject==i]
+cal<-predict(fm,list(time=xx))
+wei <- switch(pick,
+          ifelse(yy[j]==0.0, 0, yy[j]-cal[j]),
+          ifelse(yy[j]==0.0, 0, sqrt(1/(yy[j]))*(yy[j]-cal[j])),
+          ifelse(yy[j]==0.0, 0, sqrt(1/((yy[j])^2))*(yy[j]-cal[j])))
+
+#Linear plot
+plot(yy~xx,data=PKindex,type='p',main=main, 
+     xlab=xaxis, ylab=yaxis,pch=15,col="black",bty="l",
+     font.lab=2,cex.lab=1,cex.axis=1,cex.main=1) 
+lines(xxstep,predict(fm,list(time=xxstep)),type="l",lty=1,
+      col="firebrick3",lwd="2")
+mtext("Linear",side=3,cex=0.88)
+  
+#Semi-log plot
+plot(xx,yy,log="y",type='p',main=main,
+     xlab=xaxis, ylab=yaxis,pch=15,col="black",bty="l",
+     font.lab=2,cex.lab=1,cex.axis=1,cex.main=1) 
+lines(xxstep,predict(fm,list(time=xxstep)),type="l",lty=1,
+      col="firebrick3",lwd="2")
+mtext("Semi-log",side=3,cex=0.88)
+   
+#Residual plot, time vs weighted residual
+plot(xx,wei,pch=15,col="blue",bty="l",xlab=xaxis,
+     ylab="Weighted Residual",main="Residual Plots",cex.lab=1,
+     cex.axis=1,cex.main=1,font.lab=2)
+abline(h=0,lwd=2,col="black",lty=2)
+  
+#Residual plot, calculated concentration vs weigthed residual
+plot(cal,wei,pch=15,col="blue",bty="l",xlab="Calc Cp(i)",
+     ylab="Weighted Residual",main="Weighted Residual Plots",cex.lab=1,
+     cex.axis=1,cex.main=1,font.lab=2)
+abline(h=0,lwd=2,col="black",lty=2)
     
 ###   ## Divide plot console into four parts
 ###   if (separateWindows) {

@@ -2,6 +2,8 @@ iv.bolus.demo<-function(){
 cat("\n\n")
 options(warn=-1)
 modfun<-NULL
+conc<-NULL
+
 PKindex<-data.frame(Subject=c(1),time=c(1,2,3,4,6,10,12),
                     conc=c(14.94,13.73,10.55,8.16,5.21,3.19,2.62))
 Dose<-500
@@ -19,9 +21,10 @@ modfun <<- function(time,kel, Vd) {
 objfun <- function(par) {
         out <- modfun(PKindex$time, par[1], par[2])
         gift <- which( PKindex$conc != 0 )
-        sum((PKindex$conc[gift]-out[gift])^2)
+        ### sum((PKindex$conc[gift]-out[gift])^2)
+        sum(((PKindex$conc[gift]-out[gift])/PKindex$conc[gift])^2)
 }        
-cat("- weighting scheme: equal weight\n")
+cat("- weighting scheme: 1/Cp^2\n")
 cat("- model selection: a one-compartment, iv bolus pk model with\n  1st-ordered elim.\n\n")
 ### gen<-genoud(objfun,nvars=2,max=FALSE,pop.size=30,
 ###             max.generations=20,wait.generations=10,
@@ -32,7 +35,7 @@ cat("- model selection: a one-compartment, iv bolus pk model with\n  1st-ordered
 ### namegen<-c("kel","Vd")
 ### outgen<-c(gen$par[1],gen$par[2]) 
      
-opt<-optim(c(0.13,20),objfun,method="Nelder-Mead")  
+opt<-optim(c(0.13,20),objfun,method="Nelder-Mead",control=list(maxit=5000))  
 nameopt<-c("kel","Vd")
 outopt<-c(opt$par[1],opt$par[2])
 cat("<< PK parameters obtained from Nelder-Mead Simplex algorithm >>\n")
@@ -42,9 +45,8 @@ cat("\n\n")
   if(opt$par[1]<0) {opt$par[1]<-0.01}
   if(opt$par[2]<0) {opt$par[2]<-0.01}
 
-cat("<< Residual sum-of-squares and PK parameter values with nlsLM >>\n\n")    
 fm<-nlsLM(conc ~ modfun(time, kel, Vd),data=PKindex,start=list(kel=opt$par[1],Vd=opt$par[2]),
-         control=nls.lm.control(maxiter=500),lower=c(0,1e-06)) ### lower of Vd should not be zero due to Dose/Vd. --YJ
+         control=nls.lm.control(maxiter=500),weights=(1/conc^2)) ### lower of Vd should not be zero due to Dose/Vd. --YJ
         
 coef<-data.frame(coef(fm)["kel"])
 x<-PKindex$time
@@ -101,7 +103,7 @@ plot(cal,wei,pch=15,col="blue",bty="l",xlab="Calc Cp(i)",
      ylab="Weighted Residual",main="Residual Plots",cex.lab=1,
      cex.axis=1,cex.main=1,font.lab=2)
 abline(h=0,lwd=2,col="black",lty=2)
-cat("--- Output --- \n\n")
+cat("<< Residual sum-of-squares and PK parameter values with nlsLM >>\n\n")
 show(output)
 aicllsbc(fm)
 cat("\n\n")

@@ -1,6 +1,8 @@
 mmpk.demo<-function(){
 cat("\n\n")
 modfun<-NULL
+conc<-NULL
+
 options(warn=-1)
 PKindex<-data.frame(Subject=c(1),time=c(0,6,12,24,36,48,72,96,144),
 conc=c(7.88,7.10,6.79,5.27,4.52,3.43,1.97,1.01,0.23))
@@ -31,9 +33,10 @@ modfun<<-function(time,Vm,Km,Vd) {
 objfun <- function(par) {
         out <- modfun(PKindex$time, par[1], par[2], par[3])
         gift <- which( PKindex$conc != 0 )
-        sum((PKindex$conc[gift]-out[gift])^2)
+        ### sum((PKindex$conc[gift]-out[gift])^2)
+        sum(((PKindex$conc[gift]-out[gift])/PKindex$conc[gift])^2)
 }        
-cat("- weighting scheme: equal weight\n")
+cat("- weighting scheme: equal weight\n\n")
 cat("- model selection: a one-compartment, iv bolus pk model with\n  M-M elim.\n\n")
 ### gen <- genoud(objfun,nvars=3,max=FALSE,pop.size=30,max.generations=20,
 ###               wait.generations=10,
@@ -47,7 +50,7 @@ cat("- model selection: a one-compartment, iv bolus pk model with\n  M-M elim.\n
 ### print(data.frame(Parameter=namegen,Value=outgen))  
 ### F<-objfun(gen$par)
       
-opt<-optim(c(par[1,2],par[2,2],par[3,2]),objfun,method="Nelder-Mead")  
+opt<-optim(c(par[1,2],par[2,2],par[3,2]),objfun,method="Nelder-Mead",control=list(maxit=5000))  
 nameopt<-c("Vm","Km","Vd")
 outopt<-c(opt$par[1],opt$par[2],opt$par[3]) 
 cat("<< PK parameters obtained from Nelder-Mead Simplex algorithm >>\n\n")
@@ -57,9 +60,8 @@ if(opt$par[1]<0) {opt$par[1]<-0.01}
 if(opt$par[2]<0) {opt$par[2]<-0.01}
 if(opt$par[3]<0) {opt$par[3]<-0.01}
 
-cat("<< Residual sum-of-squares and PK parameter values with nlsLM >>\n\n")
 fm<-nlsLM(conc ~ modfun(time,Vm,Km,Vd), data=PKindex,start=list(Vm=opt$par[1],Km=opt$par[2],Vd=opt$par[3]),
-         control=nls.lm.control(maxiter=500),lower=c(0,0,1e-06)) ### lower of Vd should not be zero due to Dose/Vd. --YJ
+         control=nls.lm.control(maxiter=500),weights=(1/conc^0))  ### set 'lower=c(...)' may cause crashed.  --YJ
 
 ### tried to use self-starter function for nls()
 ### fm<-nls(conc~SSmicmen(time,Vm,Km),data=PKindex)  ### no Vd?  so SSmicmen() is not useful for this.
@@ -113,8 +115,7 @@ plot(cal,wei,pch=15,col="blue",bty="l",xlab="Calc Cp(i)",
      ylab="Weighted Residual",main="Residual Plots",cex.lab=1,
      cex.axis=1,cex.main=1,font.lab=2)
 abline(h=0,lwd=2,col="black",lty=2)
-cat("\n\n")
-cat("--- Output --- \n\n")
+cat("<< Residual sum-of-squares and PK parameter values with nlsLM >>\n\n")
 show(output)
 aicllsbc(fm)
 cat("\n\n")

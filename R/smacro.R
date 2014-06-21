@@ -1,8 +1,8 @@
 smacro <- function()
 {
-  file.menu <- c("1-Exponential Term (iv bolus data)", 
-                 "2-Exponential Term (iv bolus data)", 
-                 "3-Exponential Term (iv bolus data)",
+  file.menu <- c("1-Exponential Term", 
+                 "2-Exponential Term", 
+                 "3-Exponential Term",
                  "Go Back One Upper Level")
   pick <- menu(file.menu, title = "<< Macroconstant Exponential Functions >>")
   if (pick ==1){

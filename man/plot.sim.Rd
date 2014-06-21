@@ -4,10 +4,10 @@
 
 \alias{plotting.sim}
 
-\title{Plot for Simulation Model}
+\title{Plot for Simulation Model for single-dosing}
 
 \description{
-  Plot for simulation model.
+  Plot for simulation model for single-dosing.
 }
 
 \keyword{misc}

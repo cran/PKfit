@@ -24,7 +24,7 @@ data.manipulate <- function()
      cat("**********************************\n")
      cat(" Now you can select a PK model.   \n")
      cat("**********************************\n\n")   
-     return(nor.fit(PKindex))
+     return(PK.fit(PKindex))
   }
      
   else if (pick == 2){
@@ -38,7 +38,7 @@ data.manipulate <- function()
      cat("\n\n")
      show(PKindex)
      cat("\n\n")
-     nor.fit(PKindex)
+     PK.fit(PKindex)
   }   
   else if (pick == 3){
      cat("\n\n") 
@@ -93,7 +93,7 @@ data.manipulate <- function()
            }
           }
         cat("\n")  
-        return(nor.fit(PKindex))
+        return(PK.fit(PKindex))
       }
   else if (pick == 4){
      cat("\n\n") 

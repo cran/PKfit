@@ -12,9 +12,16 @@ fbolus3<- function(PKindex,
 {
    options(warn=-1)
    modfun<-NULL
+   
+   fit.outputs_to_txt<-fit.outputs_to_txt
+   fit.plots_to_pdf<-fit.plots_to_pdf
+      
    ## Input dose and initial value for kel, k12, k21 and Vd
   
-   if (is.null(Dose)||is.null(kel) || is.null(k12) || is.null(k21)|| is.null(k13) || is.null(k31)|| is.null(Vd) ) {
+   if(file.exists("fbolus3.csv")){
+        par.init<-read.csv(file="fbolus3.csv",row.names=NULL,header=TRUE)
+        par.init<-edit(par.init)}
+   else{
         par.init<-data.frame(Parameter=c("Dose","kel","k12","k21","k13","k31","Vd"),Initial=c(0,0,0,0,0,0,0))
         par.init<-edit(par.init)
         repeat{
@@ -31,10 +38,11 @@ fbolus3<- function(PKindex,
              break
              return(edit(par.init))}
         } 
+    }
+        write.csv(par.init,file="fbolus3.csv",row.names=FALSE,col.names=TRUE)
         cat("\n")
         Dose<-par.init[1,2]        
         show(par.init)
-   }
    
    cat("\n")
    
@@ -47,7 +55,7 @@ fbolus3<- function(PKindex,
 
    modfun <<- function(time,kel,k12,k21,k13,k31,Vd) { 
       out <- lsoda(y=c(Dose/Vd,0,0),c(0,time),defun,parms=c(kel=kel,k12=k12,k21=k21,k13=k13,k31=k31,Vd=Vd),
-                  rtol=1e-06,atol=1e-06) 
+                  rtol=1e-06,atol=1e-10) 
      ### plot(out)
      out[-1,2] 
    }   
@@ -59,53 +67,42 @@ fbolus3<- function(PKindex,
    pick <- menu(file.menu, title = "<< Weighting Schemes >>")
 
    with(entertitle(),{        
+### give warning below
 ###
-### windows(record=TRUE)
+cat("\n The following steps may go wrong. If so, please check\n")
+cat(" your data, your model, initial values and/or weightings.\n\n")
+readline(" Press Enter to continue...");cat("\n\n")
+cat(" Please wait...\n\n")
+###
 dev.new()
 par(mfrow=c(2,2),las=1)
 pdf_activate=FALSE  ### set pdf device activate? as FALSE at beginning
 ###
-### give warning below
-###
-cat("\n The following steps may go wrong. If so, please check\n")
-cat("  your data, check your model and check initial values.\n\n")
-readline(" Press Enter to continue...")
-cat("\n\n")
 ###
 ### log to outputs.txt here
 ###
-zz <- file("pkfit_fitting_outputs.txt", open="wt")
+zz <- file(fit.outputs_to_txt, open="wt")
 sink(zz,split=TRUE)   ### use sink(zz.split=TURE) will output to the txt file, as well as the screen at the same time. YJ
-cat("\n\n");cat("--- input data ---\n")
-show(PKindex);cat("\n\n")     # show input data    
-cat("--- initial values for parameters ---\n")
-show(par.init);cat("\n")    # show initial values here
-cat("--- weighting scheme: ")
-switch(pick,                  ## show weighting scheme
-  cat("equal weight\n"),
-  cat("1/Cp\n"),
-  cat("1/Cp^2\n"));cat("\n")
-cat("--- model selection: a three-compartment, iv bolus pk model with\n    1st-ordered elim.")
+description_version()
+cat("\n\n")
+sink()  ### turn off temporarily to avoid logging too many warnings... -YJ
    
    for( i in 1:length(unique(PKindex$Subject)))  {
-     cat("\n\n               << Subject",i,">>\n\n" )  
      objfun <- function(par) {
         out <- modfun(PKindex$time[PKindex$Subject==i], par[1], par[2], par[3], par[4], par[5], par[6])
         gift <- which( PKindex$conc[PKindex$Subject==i] != 0 )
-        switch(pick,
-               sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2),
-               sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2/PKindex$conc[gift]),
-               sum(((PKindex$conc[PKindex$Subject==i][gift]-out[gift])/PKindex$conc[gift])^2))
+        sum(((PKindex$conc[PKindex$Subject==i][gift]-out[gift])/PKindex$conc[gift])^2)
+        ### switch(pick,
+        ###        sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2),
+        ###        sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2/PKindex$conc[gift]),
+        ###        sum(((PKindex$conc[PKindex$Subject==i][gift]-out[gift])/PKindex$conc[gift])^2))
      }
      
 ###      
      opt <- optim(c(par.init[2,2],par.init[3,2],par.init[4,2],par.init[5,2],par.init[6,2],par.init[7,2]),
-                 objfun,method="Nelder-Mead")
+                 objfun,method="Nelder-Mead",control=list(maxit=5000))
      nameopt<-c("kel","k12","k21","k13","k31","Vd")
      outopt<-c(opt$par[1],opt$par[2],opt$par[3],opt$par[4],opt$par[5],opt$par[6])
-     
-     cat("\n<< PK parameters obtained from Nelder-Mead Simplex algorithm >>\n\n")
-     print(data.frame(Parameter=nameopt,Value=outopt))
      
               if(opt$par[1]<0) {opt$par[1]<-0.01}
               if(opt$par[2]<0) {opt$par[2]<-0.01}
@@ -114,53 +111,37 @@ cat("--- model selection: a three-compartment, iv bolus pk model with\n    1st-o
               if(opt$par[5]<0) {opt$par[5]<-0.01}
               if(opt$par[6]<0) {opt$par[6]<-0.01}
      
-     cat("\n<< Residual sum-of-squares and PK parameter values with nlsLM >>\n\n")
+     conc<-PKindex$conc[PKindex$Subject==i]
      
-     fm<-nlsLM(conc ~ modfun(time,kel,k12,k21,k13,k31,Vd),data=subset(PKindex,Subject==i),
+     if(pick==1) weights=(1/conc^0)  ### equal weight
+     if(pick==2) weights=(1/conc^1)  ### 1/Cp
+     if(pick==3) weights=(1/conc^2)  ### 1/Cp^2
+          
+     fm<-nlsLM(conc ~ modfun(time,kel,k12,k21,k13,k31,Vd),data=subset(PKindex,Subject==i),weights=weights,
          start=list(kel=opt$par[1],k12=opt$par[2],k21=opt$par[3],k13=opt$par[4],k31=opt$par[5],Vd=opt$par[6]),
-         control=nls.lm.control(maxiter=500),lower=c(0,0,0,0,0,1e-06)) ### lower of Vd should not be zero due to Dose/Vd. --YJ
-     coef<-data.frame(coef(fm)["kel"])     
+         control=nls.lm.control(maxiter=500),lower=c(1e-06,1e-06,1e-06,1e-06,1e-06,1e-06))  ### set 'lower=c(...)' may cause crashed.  --YJ
+     coef<-data.frame(coef(fm)["kel"])
+     sink(zz,split=TRUE)
+     cat(" ********************************\n\n")
+     cat("      --- Subject:- #",i,"---    \n\n")
+     cat(" ********************************\n\n")
+     cat("--- input data ---\n")
+     conc<-PKindex$conc[PKindex$Subject==i]
+     time<-PKindex$time[PKindex$Subject==i]
+     this_subj<-data.frame(time, conc)
+     show(this_subj);cat("\n")     # show input data    
+     cat("--- initial values for parameters ---\n")
+     show(par.init);cat("\n")    # show initial values here
+     cat("--- weighting scheme: ")
+     switch(pick,                  ## show weighting scheme
+       cat("equal weight"),
+       cat("1/Cp"),
+       cat("1/Cp^2"));cat("\n\n")
+     cat("--- model selection: a three-compartment, iv bolus pk model with\n    1st-ordered elim.\n\n")
+     cat("<< PK parameter obtained from Nelder-Mead Simplex algorithm >>\n\n")
+     print(data.frame(Parameter=nameopt,Value=outopt));cat("\n")                    
      plotting.lin(PKindex, fm, i, pick, coef, xaxis, yaxis)
-###
-### copied from the original plotting.lin()
-###
-     main<-paste(c("Subject# ", i),collapse=" ")
-     j<-1:length(PKindex$time[PKindex$Subject==i])
-     xx<-PKindex$time[PKindex$Subject==i]
-     yy<-PKindex$conc[PKindex$Subject==i]
-     cal<-predict(fm,list(time=xx))
-     wei <- switch(pick,
-               ifelse(yy[j]==0.0, 0, yy[j]-cal[j]),
-               ifelse(yy[j]==0.0, 0, sqrt(1/(yy[j]))*(yy[j]-cal[j])),
-               ifelse(yy[j]==0.0, 0, sqrt(1/((yy[j])^2))*(yy[j]-cal[j])))
-     
-    #Linear plot
-     plot(yy~xx,data=PKindex,type='p',main=main, 
-          xlab=xaxis, ylab=yaxis,pch=15,col="black",bty="l",
-          font.lab=2,cex.lab=1,cex.axis=1,cex.main=1) 
-     lines(xx,predict(fm,list(time=xx)),type="l",lty=1,
-           col="firebrick3",lwd="2")
-     mtext("Linear",side=3,cex=0.88)
-       
-    #Semi-log plot
-     plot(xx,yy,log="y",type='p',main=main,
-          xlab=xaxis, ylab=yaxis,pch=15,col="black",bty="l",
-          font.lab=2,cex.lab=1,cex.axis=1,cex.main=1) 
-     lines(xx,predict(fm,list(time=xx)),type="l",lty=1,
-           col="firebrick3",lwd="2")
-     mtext("Semi-log",side=3,cex=0.88)
-        
-    #Residual plot, time vs weighted residual
-     plot(xx,wei,pch=15,col="blue",bty="l",xlab=xaxis,
-          ylab="Weighted Residual",main="Residual Plots",cex.lab=1,
-          cex.axis=1,cex.main=1,font.lab=2)
-     abline(h=0,lwd=2,col="black",lty=2)
-       
-    #Residual plot, calculated concentration vs weigthed residual
-     plot(cal,wei,pch=15,col="blue",bty="l",xlab="Calc Cp(i)",
-          ylab="Weighted Residual",main="Weighted Residual Plots",cex.lab=1,
-          cex.axis=1,cex.main=1,font.lab=2)
-     abline(h=0,lwd=2,col="black",lty=2) 
+     sink()  ### turn off temporarily to avoid logging too many warnings... -YJ
 ###         
 ### here revert between pdf() and graphic device                          ### added by YJ
 ### 
@@ -170,9 +151,7 @@ cat("--- model selection: a three-compartment, iv bolus pk model with\n    1st-o
                           }
           else{
              x11c<-dev.cur()                 ## the current graphics device
-             pdf(file="pkfit_plots.pdf",     ## activate pdf log file from now on... starting with ref. product
-                  paper="a4")
-###             description_plot()              ## bear output logo
+             pdf(fit.plots_to_pdf,paper="a4")
              pdf_activate=TRUE               ## set pdf_activate=TRUE from now on
              dev.set(which=x11c)             ## go to graphics device...
              dev.copy()                      ## copy the first plot here
@@ -185,12 +164,13 @@ cat("--- model selection: a three-compartment, iv bolus pk model with\n    1st-o
      }
   sink()           # reset sink()
   close(zz)        # close outputs.txt
-  cat(" All outputs (pkfit_fitting_outputs.txt & pkfit_plots.pdf)\n can be found at",getwd(),"\n")
+  cat(paste(" Two outputs,",fit.outputs_to_txt,"&",fit.plots_to_pdf,",\n have been generated at",getwd(),"\n\n"))
   readline(" Press any key to continue...")
   dev.off()        # close pdf()
   graphics.off()   # close plot windows
      
   })
   cat("\n")
-  run()   
+  ### run()   
+  PK.fit(PKindex)
 }

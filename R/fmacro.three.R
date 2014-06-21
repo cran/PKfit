@@ -9,11 +9,18 @@ fmacro.three<- function(PKindex,
 {
    options(warn=-1)
    defun<-NULL    ### only exponential terms use 'defun'
-        
+
+   fit.outputs_to_txt<-fit.outputs_to_txt
+   fit.plots_to_pdf<-fit.plots_to_pdf
+           
    ## Input initial value for A, a, B, b, C and c
    
-   if (is.null(A) || is.null(alpha) || is.null(B) || is.null(beta) || is.null(C) || is.null(gamma) ) {
-       par.init<-data.frame(Parameter=c("A","alpha","B","beta","C","gamma"),Initial=c(10,0.1,20,0.2,30,0.3))
+   if(file.exists("fmacro_three.csv")){
+        par.init<-read.csv(file="fmacro_three.csv",row.names=NULL,header=TRUE)
+        par.init<-edit(par.init)}
+   else{
+       par.init<-data.frame(Parameter=c("A","alpha","B","beta","C","gamma"),Initial=c(0,0,0,0,0,0))
+       ### par.init<-data.frame(Parameter=c("A","alpha","B","beta","C","gamma"),Initial=c(10,0.1,20,0.2,30,0.3))
        par.init<-edit(par.init)
        repeat{
            if (par.init[1,2] <=0||par.init[2,2] <=0||par.init[3,2]<=0||par.init[4,2]<=0||par.init[5,2]<=0||par.init[6,2]<=0){
@@ -29,9 +36,10 @@ fmacro.three<- function(PKindex,
              break
              return(edit(par.init))}
         } 
+      }
+        write.csv(par.init,file="fmacro_three.csv",row.names=FALSE,col.names=TRUE)
         cat("\n")       
         show(par.init)
-      }
       
     cat("\n")
     
@@ -40,58 +48,48 @@ fmacro.three<- function(PKindex,
     }  
     
     ## Select weighting schemes
-    file.menu <-c("equal weight",
+    file.menu <-c("equal weight",  ## may cause error with equal weight; wait to be solved. --YJ
                  "1/Cp",
                  "1/Cp^2")
     pick <- menu(file.menu, title="<< weighting schemes >>")
 
     with(entertitle(),{
-###
-### windows(record=TRUE)
-dev.new()
-par(mfrow=c(2,2),las=1)
-pdf_activate=FALSE  ### set pdf device activate? as FALSE at beginning
-
-###
 ### give warning below
 ###
 cat("\n The following steps may go wrong. If so, please check\n")
-cat("  your data, check your model and check initial values.\n\n")
+cat(" your data, your model, initial values and/or weightings.\n\n")
 readline(" Press Enter to continue...");cat("\n\n")
+cat(" Please wait...\n\n")
+###
+dev.new()
+par(mfrow=c(2,2),las=1)
+pdf_activate=FALSE  ### set pdf device activate? as FALSE at beginning
+###
 ###
 ### log to outputs.txt here
 ###
-zz <- file("pkfit_fitting_outputs.txt", open="wt")
+zz <- file(fit.outputs_to_txt, open="wt")
 sink(zz,split=TRUE)   ### use sink(zz.split=TURE) will output to the txt file, as well as the screen at the same time. YJ
-cat("\n\n");cat("--- input data ---\n")
-show(PKindex);cat("\n\n")     # show input data    
-cat("--- initial values for parameters ---\n")
-show(par.init);cat("\n")    # show initial values here
-cat("--- weighting scheme: ")
-switch(pick,                  ## show weighting scheme
-  cat("equal weight\n"),
-  cat("1/Cp\n"),
-  cat("1/Cp^2\n"));cat("\n")
-cat("--- model selection: a three-exponential macroconstant")
+description_version()
+cat("\n\n")
+sink()  ### turn off temporarily to avoid logging too many warnings... -YJ
     
-    for( i in 1:length(unique(PKindex$Subject)))  {
-      cat("\n\n               << Subject",i,">>\n\n" )  
-      objfun<-function(par) {
+    for(i in 1:length(unique(PKindex$Subject)))  {
+     objfun<-function(par) {
          out<-defun(PKindex$time[PKindex$Subject==i],par[1],par[2],par[3],par[4],par[5],par[6])
          gift<- which( PKindex$conc[PKindex$Subject==i] != 0 )
-         switch(pick,
-                sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2),
-                sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2/PKindex$conc[gift]),
-                sum(((PKindex$conc[PKindex$Subject==i][gift] - out[gift])/PKindex$conc[gift])^2)
-                )
+         sum(((PKindex$conc[PKindex$Subject==i][gift]-out[gift])/PKindex$conc[gift])^2)
+         ### switch(pick,
+         ###        sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2),
+         ###        sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2/PKindex$conc[gift]),
+         ###        sum(((PKindex$conc[PKindex$Subject==i][gift]-out[gift])/PKindex$conc[gift])^2)
+         ###        )
       }
       
-
-      opt<-optim(c(par.init[1,2],par.init[2,2],par.init[3,2],par.init[4,2],par.init[5,2],par.init[6,2]),objfun,method="Nelder-Mead")       
+      opt<-optim(c(par.init[1,2],par.init[2,2],par.init[3,2],par.init[4,2],par.init[5,2],par.init[6,2]),
+                 objfun,method="Nelder-Mead",control=list(maxit=5000))  
       nameopt<-c("A","alpha","B","beta","C","gamma")
       outopt<-c(opt$par[1],opt$par[2],opt$par[3],opt$par[4],opt$par[5],opt$par[6])
-      cat("\n<< PK parameters obtained from Nelder-Mead Simplex algorithm >>\n\n")
-      print(data.frame(Parameter=nameopt,Value=outopt))
       
               if(opt$par[1]<0) {opt$par[1]<-0.01}
               if(opt$par[2]<0) {opt$par[2]<-0.01}
@@ -99,53 +97,38 @@ cat("--- model selection: a three-exponential macroconstant")
               if(opt$par[4]<0) {opt$par[4]<-0.01}
               if(opt$par[5]<0) {opt$par[5]<-0.01}
               if(opt$par[6]<0) {opt$par[6]<-0.01}
-       
-      cat("\n<< Residuals sum-of-squares and final PK parameters with nlsLM >>\n\n")
-      fm<-nlsLM(conc~defun(time,A,alpha,B,beta,C,gamma),data=subset(PKindex,Subject==i),
-          start=list(A=opt$par[1],alpha=opt$par[2],B=opt$par[3],beta=opt$par[4],C=opt$par[5],gamma=opt$par[6]),
-          control=nls.lm.control(maxiter=500),lower=c(0,0,0,0,0,0))
-      coef<-data.frame(coef(fm)["gamma"])     
-      plotting.lin(PKindex, fm, i, pick, coef, xaxis, yaxis)
-###
-### copied from the original plotting.lin()
-###
-     main<-paste(c("Subject# ", i),collapse=" ")
-     j<-1:length(PKindex$time[PKindex$Subject==i])
-     xx<-PKindex$time[PKindex$Subject==i]
-     yy<-PKindex$conc[PKindex$Subject==i]
-     cal<-predict(fm,list(time=xx))
-     wei <- switch(pick,
-               ifelse(yy[j]==0.0, 0, yy[j]-cal[j]),
-               ifelse(yy[j]==0.0, 0, sqrt(1/(yy[j]))*(yy[j]-cal[j])),
-               ifelse(yy[j]==0.0, 0, sqrt(1/((yy[j])^2))*(yy[j]-cal[j])))
+
+     conc<-PKindex$conc[PKindex$Subject==i]
      
-    #Linear plot
-     plot(yy~xx,data=PKindex,type='p',main=main, 
-          xlab=xaxis, ylab=yaxis,pch=15,col="black",bty="l",
-          font.lab=2,cex.lab=1,cex.axis=1,cex.main=1) 
-     lines(xx,predict(fm,list(time=xx)),type="l",lty=1,
-           col="firebrick3",lwd="2")
-     mtext("Linear",side=3,cex=0.88)
+     if(pick==1) weights=(1/conc^0)  ### equal weight
+     if(pick==2) weights=(1/conc^1)  ### 1/Cp
+     if(pick==3) weights=(1/conc^2)  ### 1/Cp^2
        
-    #Semi-log plot
-     plot(xx,yy,log="y",type='p',main=main,
-          xlab=xaxis, ylab=yaxis,pch=15,col="black",bty="l",
-          font.lab=2,cex.lab=1,cex.axis=1,cex.main=1) 
-     lines(xx,predict(fm,list(time=xx)),type="l",lty=1,
-           col="firebrick3",lwd="2")
-     mtext("Semi-log",side=3,cex=0.88)
-        
-    #Residual plot, time vs weighted residual
-     plot(xx,wei,pch=15,col="blue",bty="l",xlab=xaxis,
-          ylab="Weighted Residual",main="Residual Plots",cex.lab=1,
-          cex.axis=1,cex.main=1,font.lab=2)
-     abline(h=0,lwd=2,col="black",lty=2)
-       
-    #Residual plot, calculated concentration vs weigthed residual
-     plot(cal,wei,pch=15,col="blue",bty="l",xlab="Calc Cp(i)",
-          ylab="Weighted Residual",main="Weighted Residual Plots",cex.lab=1,
-          cex.axis=1,cex.main=1,font.lab=2)
-     abline(h=0,lwd=2,col="black",lty=2) 
+     fm<-nlsLM(conc~defun(time,A,alpha,B,beta,C,gamma),data=subset(PKindex,Subject==i),weights=weights,
+         start=list(A=opt$par[1],alpha=opt$par[2],B=opt$par[3],beta=opt$par[4],C=opt$par[5],gamma=opt$par[6]),
+         control=nls.lm.control(maxiter=500),lower=c(1e-06,1e-06,1e-06,1e-06,1e-06,1e-06))
+     coef<-data.frame(coef(fm)["gamma"])
+     sink(zz,split=TRUE)
+     cat(" ********************************\n\n")
+     cat("      --- Subject:- #",i,"---    \n\n")
+     cat(" ********************************\n\n")
+     cat("--- input data ---\n")
+     conc<-PKindex$conc[PKindex$Subject==i]
+     time<-PKindex$time[PKindex$Subject==i]
+     this_subj<-data.frame(time, conc)
+     show(this_subj);cat("\n")     # show input data    
+     cat("--- initial values for parameters ---\n")
+     show(par.init);cat("\n")    # show initial values here
+     cat("--- weighting scheme: ")
+     switch(pick,                  ## show weighting scheme
+       cat("equal weight"),
+       cat("1/Cp"),
+       cat("1/Cp^2"));cat("\n\n")
+     cat("--- model selection: a three-exponential macroconstant\n\n")
+     cat("<< PK parameter obtained from Nelder-Mead Simplex algorithm >>\n\n")
+     print(data.frame(Parameter=nameopt,Value=outopt));cat("\n")     
+     plotting.lin(PKindex, fm, i, pick, coef, xaxis, yaxis)
+     sink()  ### turn off temporarily to avoid logging too many warnings... -YJ     
 ###         
 ### here revert between pdf() and graphic device                          ### added by YJ
 ### 
@@ -155,9 +138,8 @@ cat("--- model selection: a three-exponential macroconstant")
                           }
           else{
              x11c<-dev.cur()                 ## the current graphics device
-             pdf(file="pkfit_plots.pdf",     ## activate pdf log file from now on... starting with ref. product
+             pdf(fit.plots_to_pdf,     ## activate pdf log file from now on... starting with ref. product
                   paper="a4")
-###             description_plot()              ## bear output logo
              pdf_activate=TRUE               ## set pdf_activate=TRUE from now on
              dev.set(which=x11c)             ## go to graphics device...
              dev.copy()                      ## copy the first plot here
@@ -170,11 +152,12 @@ cat("--- model selection: a three-exponential macroconstant")
       }
   sink()           # reset sink()
   close(zz)        # close outputs.txt
-  cat(" All outputs (pkfit_fitting_outputs.txt & pkfit_plots.pdf)\n can be found at",getwd(),"\n")
+  cat(paste(" Two outputs,",fit.outputs_to_txt,"&",fit.plots_to_pdf,",\n have been generated at",getwd(),"\n\n"))
   readline(" Press any key to continue...") 
   dev.off()        # close pdf()
   graphics.off()   # close plot windows
      })
-     cat("\n") 
-     run()
+  cat("\n") 
+  ### run()
+  PK.fit(PKindex)
 }   

@@ -1,11 +1,14 @@
 ### PKindex is the target Dataset.
 ### Normal fitting
-### Two compartment PK model iv bolus single dose
-fbolus2<- function(PKindex,
+### Three compartment PK model iv bolus single dose with Michaelia-Menten elim.
+###
+fbolus3.mm<- function(PKindex,
                    Dose=NULL, 
-                   kel=NULL,
+                   Vm=NULL, Km=NULL,
                    k12=NULL,  
-                   k21=NULL,      
+                   k21=NULL,
+                   k13=NULL,
+                   k31=NULL,      
                    Vd=NULL) 
 {
    options(warn=-1)
@@ -15,15 +18,16 @@ fbolus2<- function(PKindex,
    fit.plots_to_pdf<-fit.plots_to_pdf
    
    ## Input dose and initial value for kel, k12, k21 and Vd
-  
-   if(file.exists("fbolus2.csv")){
-        par.init<-read.csv(file="fbolus2.csv",row.names=NULL,header=TRUE)
+   if(file.exists("fbolus3_mm.csv")){
+        par.init<-read.csv(file="fbolus3_mm.csv",row.names=NULL,header=TRUE)
         par.init<-edit(par.init)}
    else{
-        par.init<-data.frame(Parameter=c("Dose","kel","k12","k21","Vd"),Initial=c(0,0,0,0,0))
+        par.init<-data.frame(Parameter=c("Dose","Vm","Km","k12","k21","k13","k31","Vd"),Initial=c(0,0,0,0,0,0,0,0))
+        ### par.init<-data.frame(Parameter=c("Dose","Vm","Km","k12","k21","k13","k31","Vd"),Initial=c(500,0.1,0.1,0.2,0.2,0.3,0.3,10))
         par.init<-edit(par.init)
         repeat{
-           if (par.init[1,2] ==0 || par.init[2,2] ==0 || par.init[3,2]==0 || par.init[4,2]==0|| par.init[5,2]==0){
+           if (par.init[1,2]<=0||par.init[2,2]<=0||par.init[3,2]<=0||par.init[4,2]<=0||par.init[5,2]<=0||par.init[6,2]<=0||
+               par.init[7,2]<=0||par.init[8,2]<=0){
              cat("\n")
              cat("**********************************\n")
              cat(" Parameter initial value can not be zero. \n")
@@ -36,22 +40,25 @@ fbolus2<- function(PKindex,
              break
              return(edit(par.init))}
         } 
-   }
-   write.csv(par.init,file="fbolus2.csv",row.names=FALSE,col.names=TRUE)
-   cat("\n")
-   Dose<-par.init[1,2]        
-   show(par.init)
+        cat("\n")
+   }        
+        write.csv(par.init,file="fbolus3_mm.csv",row.names=FALSE,col.names=TRUE)
+        Dose<-par.init[1,2]        
+        show(par.init)
+   
    cat("\n")
    
    defun<- function(time, y, parms) { 
-     dCp1dt <- -parms["kel"]*y[1]-parms["k12"]*y[1]+parms["k21"]*y[2] 
+     dCp1dt <- -parms["Vm"]*y[1]/(parms["Km"]+y[1])-parms["k12"]*y[1]+parms["k21"]*y[2]-parms["k13"]*y[1]+parms["k31"]*y[3] 
      dCp2dt <-  parms["k12"]*y[1]-parms["k21"]*y[2]
-     list(c(dCp1dt,dCp2dt)) 
+     dCp3dt <-  parms["k13"]*y[1]-parms["k31"]*y[3]
+     list(c(dCp1dt,dCp2dt,dCp3dt)) 
    } 
 
-   modfun <<- function(time,kel,k12,k21,Vd) { 
-      out <- lsoda(y=c(Dose/Vd,0),c(0,time),func=defun,parms=c(kel=kel,k12=k12,k21=k21,Vd=Vd),
-                  rtol=1e-6,atol=1e-10) 
+   modfun <<- function(time,Vm,Km,k12,k21,k13,k31,Vd) { 
+      out <- lsoda(y=c(Dose/Vd,0,0),c(0,time),defun,parms=c(Vm=Vm,Km=Km,k12=k12,k21=k21,k13=k13,k31=k31,Vd=Vd),
+                  rtol=1e-06,atol=1e-10)
+     #plot(out)
      out[-1,2] 
    }   
    
@@ -78,42 +85,44 @@ pdf_activate=FALSE  ### set pdf device activate? as FALSE at beginning
 ###
 zz <- file(fit.outputs_to_txt, open="wt")
 sink(zz,split=TRUE)   ### use sink(zz.split=TURE) will output to the txt file, as well as the screen at the same time. YJ
-description_version()
-cat("\n\n")
+description_version();cat("\n\n")
 sink()  ### turn off temporarily to avoid logging too many warnings... -YJ
-
-   for( i in 1:length(unique(PKindex$Subject)))  {
-     objfun <- function(par) {
-        out <- modfun(PKindex$time[PKindex$Subject==i], par[1], par[2], par[3], par[4])
+   
+   for(i in 1:length(unique(PKindex$Subject)))  {
+      objfun <- function(par) {     ### just for optim()?  --YJ
+        out <- modfun(PKindex$time[PKindex$Subject==i], par[1], par[2], par[3], par[4], par[5], par[6], par[7])
         gift <- which( PKindex$conc[PKindex$Subject==i] != 0 )
-        sum(((PKindex$conc[PKindex$Subject==i][gift] - out[gift])/PKindex$conc[gift])^2)
+        sum(((PKindex$conc[PKindex$Subject==i][gift]-out[gift])/PKindex$conc[gift])^2)
         ### switch(pick,
         ###        sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2),
         ###        sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2/PKindex$conc[gift]),
-        ###        sum(((PKindex$conc[PKindex$Subject==i][gift] - out[gift])/PKindex$conc[gift])^2))
+        ###        sum(((PKindex$conc[PKindex$Subject==i][gift]-out[gift])/PKindex$conc[gift])^2))
      }
      
 ###      
-     opt <- optim(c(par.init[2,2],par.init[3,2],par.init[4,2],par.init[5,2]),objfun,method="Nelder-Mead",
-                 control=list(maxit=5000))
-     nameopt<-c("kel","k12","k21","Vd")
-     outopt<-c(opt$par[1],opt$par[2],opt$par[3],opt$par[4])
+     opt <- optim(c(par.init[2,2],par.init[3,2],par.init[4,2],par.init[5,2],par.init[6,2],par.init[7,2],par.init[8,2]),
+                 objfun,method="Nelder-Mead",control=list(maxit=5000))
+     nameopt<-c("Vm","Km","k12","k21","k13","k31","Vd")
+     outopt<-c(opt$par[1],opt$par[2],opt$par[3],opt$par[4],opt$par[5],opt$par[6],opt$par[7])
      
-              if(opt$par[1]<0) {opt$par[1]<-0.01}
-              if(opt$par[2]<0) {opt$par[2]<-0.01}
-              if(opt$par[3]<0) {opt$par[3]<-0.01}
-              if(opt$par[4]<0) {opt$par[4]<-0.01}
+              if(opt$par[1]<0) {opt$par[1]<-.01}
+              if(opt$par[2]<0) {opt$par[2]<-.01}
+              if(opt$par[3]<0) {opt$par[3]<-.01}
+              if(opt$par[4]<0) {opt$par[4]<-.01}
+              if(opt$par[5]<0) {opt$par[5]<-.01}
+              if(opt$par[6]<0) {opt$par[6]<-.01}
+              if(opt$par[7]<0) {opt$par[7]<-.01}
      
      conc<-PKindex$conc[PKindex$Subject==i]
      
      if(pick==1) weights=(1/conc^0)  ### equal weight
      if(pick==2) weights=(1/conc^1)  ### 1/Cp
-     if(pick==3) weights=(1/conc^2)  ### 1/Cp^2 
-         
-     fm<-nlsLM(conc ~ modfun(time,kel,k12,k21,Vd),data=subset(PKindex,Subject==i),
-         start=list(kel=opt$par[1],k12=opt$par[2],k21=opt$par[3],Vd=opt$par[4]),weights=weights,
-         control=nls.lm.control(maxiter=500),lower=c(1e-06,1e-06,1e-06,1e-06))   ### set 'lower=c(...)' may cause crashed.  --YJ
-     coef<-data.frame(coef(fm)["kel"])
+     if(pick==3) weights=(1/conc^2)  ### 1/Cp^2
+     
+     fm<-nlsLM(conc ~ modfun(time,Vm,Km,k12,k21,k13,k31,Vd),data=subset(PKindex,Subject==i),weights=weights,
+         start=list(Vm=opt$par[1],Km=opt$par[2],k12=opt$par[3],k21=opt$par[4],k13=opt$par[5],k31=opt$par[6],Vd=opt$par[7]),
+         control=nls.lm.control(maxiter=500),lower=c(1e-06,1e-06,1e-06,1e-06,1e-06,1e-06,1e-06))  ### set 'lower=c(...)' may cause crashed ro get weird results (this model only).  --YJ
+     
      sink(zz,split=TRUE)
      cat(" ********************************\n\n")
      cat("      --- Subject:- #",i,"---    \n\n")
@@ -130,10 +139,10 @@ sink()  ### turn off temporarily to avoid logging too many warnings... -YJ
        cat("equal weight"),
        cat("1/Cp"),
        cat("1/Cp^2"));cat("\n\n")
-     cat("--- model selection: a two-compartment, iv bolus pk model with\n    1st-ordered elim.\n\n")       
+     cat("--- model selection: a three-compartment, iv bolus pk model with\n    Michaelia-Menten elim.\n\n")
      cat("<< PK parameter obtained from Nelder-Mead Simplex algorithm >>\n\n")
-     print(data.frame(Parameter=nameopt,Value=outopt));cat("\n")            
-     plotting.lin(PKindex, fm, i, pick, coef, xaxis, yaxis)
+     print(data.frame(Parameter=nameopt,Value=outopt));cat("\n")
+     plotting.non(PKindex, fm, i, pick, xaxis, yaxis)
      sink()  ### turn off temporarily to avoid logging too many warnings... -YJ
 ###         
 ### here revert between pdf() and graphic device                          ### added by YJ
@@ -144,7 +153,8 @@ sink()  ### turn off temporarily to avoid logging too many warnings... -YJ
                           }
           else{
              x11c<-dev.cur()                 ## the current graphics device
-             pdf(fit.plots_to_pdf,paper="a4")
+             pdf(fit.plots_to_pdf,     ## activate pdf log file from now on... starting with ref. product
+                  paper="a4")
              pdf_activate=TRUE               ## set pdf_activate=TRUE from now on
              dev.set(which=x11c)             ## go to graphics device...
              dev.copy()                      ## copy the first plot here
@@ -164,6 +174,6 @@ sink()  ### turn off temporarily to avoid logging too many warnings... -YJ
      
   })
   cat("\n")
-  ### run()   
+  ### run()
   PK.fit(PKindex)
 }

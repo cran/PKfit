@@ -1,6 +1,58 @@
-PKfit v1.2.1
+PKfit v1.2.2
  A Data Analysis Tool for Pharmacokinetics
- 
+
+Update logs (v1.2.2)
+--------------------
+
+06/24/2014
+---
+ 1. fixed return back to PK.fit() after each fitting job; not the
+    top menu (run()); don't need to load data file again;
+ 2. added "fbolus3.mm()" model;
+ 3. fixed 'Press Enter to continue...' for each model file; this
+    can save mouse click from graphic window back to R console;
+ 4. added optim(...,control=list(maxit=5000)) for each fitting 
+    algorithm;
+ 5. for macroconstant-term model, using equal weighting scheme may
+    casue error with messages something like "... Error in 
+    nlsModel(formula, mf, start, wts) : singular gradient matrix 
+    at initial parameter estimates.."; using '1/Cp' or '1/Cp^2' 
+    is fine; don't know why yet; same as nls();
+ 6. added PK.sim() after each simulation run; no need to go back to
+    the top menu;
+ 7. added logo for normal fitting outputs;
+ 8. fixed the menu flow, i.e., after finishing loading/editing 
+    the data file, then go next to 'model selection' menu;
+ 9. fixed arguments of nlsLM(...);
+10. fixed output formatting;
+11. re-fined plotting curve (calculated conc.);
+12. fixed iv.bolus.demo() & mmpk.demo() with nlsLM();
+13. added output files for simulation runs simultaneously with
+    screen outputs;
+14. fixed plotting.lin() and plotting.non();
+15. added automatic output file names generated to avoid overwriting
+    the existed output files;
+16. added the time points for simulation run can be saved as a .csv 
+    in the wroking path now; this file will be checked automatically,
+    if existed, it will be loaded back to PKfit next time without 
+    entering the time point again;
+17. added autoload of initial values from a previous run saved as *.csv;
+18. added autoload of pk parameters setting from a previous run
+    saved as *.csv;
+19. started to add multiple-dose simulation now; first one is sbolus2_md();
+    seemed looking ok.
+20. fixed ffirst2() again for monte-carlo sim (output problem);
+21. tried to set argument of "lower=c(...)" in nlsLM; with '1e-06' seems ok;
+    but not for fbolus3.mm().
+22. added all multiple-dose simulation except 3-compartment iv bolus;
+23. changed dose input in lsoad(); using dose event to add dose; seems more
+    reasonable with simulated conc..
+24. szero.nolag() still cannot be coded with event() in lsoda()...
+25. fixed output data set for simulation codes with ODEs; 
+    ### dump this subj's data to subj i; all simulations with macroconstants
+    are not changed since they still use *.out() routines.
+
+
 Update logs (v1.2.1)
 --------------------
 
@@ -22,7 +74,7 @@ Update logs (v1.2.1)
  8. added display the output file directory at final step;
  9. added a 3-compartment, iv bolus pk model with 1st-ordered elim.
 10. added "Variance-Covariance Matrix" in the output
-11. decided to switch to nlsLM() from package minpack.lm from this
+11. switched nls() to nlsLM() from package minpack.lm from this
     release; the default method 'LM' (the Levenberg-Marquardt 
     algorithm) is used in PKfit; nlsLM(...,"weight=NULL",...) as 
     default; we used external setup for weighting scheme to make 

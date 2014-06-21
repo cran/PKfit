@@ -5,6 +5,7 @@ run <- function()
   ## Need to clean up the requirements.
   options(warn=-1) 
   graphics.off()
+  
   cat("\n")
   file.menu <- c("Normal Fitting", 
                  "Simulation", 
