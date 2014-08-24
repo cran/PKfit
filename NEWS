@@ -1,10 +1,21 @@
-PKfit v1.2.2
+PKfit v1.2.3
  A Data Analysis Tool for Pharmacokinetics
 
-Update logs (v1.2.2)
+Update logs (v1.2.3)
 --------------------
+08/21/2014
+---
+ 1. fixed DESCRIPTION content;
+ 2. fixed output files of monte-carlo sim for szero.nolag();
+ 3. added err_types() to simplified all simulation codes;
+ 4. added UserDefinedModels directory for users required to define
+    their own models;
+ 5. fixed iv.bolus.demo();
+ 6. added mymodel.R in UserDefinedModels;
+ 7. added simModle.R in UserDefinedModels;
+ 
 
-06/24/2014
+06/24/2014 (v1.2.2)
 ---
  1. fixed return back to PK.fit() after each fitting job; not the
     top menu (run()); don't need to load data file again;
@@ -14,7 +25,7 @@ Update logs (v1.2.2)
  4. added optim(...,control=list(maxit=5000)) for each fitting 
     algorithm;
  5. for macroconstant-term model, using equal weighting scheme may
-    casue error with messages something like "... Error in 
+    cause error with messages something like "... Error in 
     nlsModel(formula, mf, start, wts) : singular gradient matrix 
     at initial parameter estimates.."; using '1/Cp' or '1/Cp^2' 
     is fine; don't know why yet; same as nls();
@@ -33,7 +44,7 @@ Update logs (v1.2.2)
 15. added automatic output file names generated to avoid overwriting
     the existed output files;
 16. added the time points for simulation run can be saved as a .csv 
-    in the wroking path now; this file will be checked automatically,
+    in the working path now; this file will be checked automatically,
     if existed, it will be loaded back to PKfit next time without 
     entering the time point again;
 17. added autoload of initial values from a previous run saved as *.csv;
@@ -45,7 +56,7 @@ Update logs (v1.2.2)
 21. tried to set argument of "lower=c(...)" in nlsLM; with '1e-06' seems ok;
     but not for fbolus3.mm().
 22. added all multiple-dose simulation except 3-compartment iv bolus;
-23. changed dose input in lsoad(); using dose event to add dose; seems more
+23. changed dose input in lsoda(); using dose event to add dose; seems more
     reasonable with simulated conc..
 24. szero.nolag() still cannot be coded with event() in lsoda()...
 25. fixed output data set for simulation codes with ODEs; 

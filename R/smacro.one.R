@@ -143,38 +143,14 @@ sink()
          factor2<-par.err[2,2]
          
          PKindex<-vector(Subject,mode="list");cat("\n")
+         pick<- pick-1  # reset pick = 1, 2, 3 or 4 ('0' is zero error & excluded)
+         
          for(i in 1:Subject)  { 
+
+             A     <- err_types(pick,par1,factor1)
+             alpha <- err_types(pick,par2,factor2)
+             
             cat("\n     << Subject:- #",i,">>\n\n" )
-            
-            switch(pick-1,
-                   {A<-par1+rnorm(1,mean=0,sd=factor1)
-                    while(A<=0){
-                       A<-par1+rnorm(1,mean=0,sd=factor1)}
-                    alpha<-par2+rnorm(1,mean=0,sd=factor2)
-                    while(alpha<=0){
-                       alpha<-par2+rnorm(1,mean=0,sd=factor2)}},
-                       
-                    {A<-par1+runif(1,min=-factor1,max=factor1)
-                     while(A<=0){
-                        A<-par1+runif(1,min=-factor1,max=factor1)}
-                     alpha<-par2+runif(1,min=-factor2,max=factor2)
-                     while(alpha<=0){
-                        alpha<-par2+runif(1,min=-factor2,max=factor2)}},
-                        
-                    {A<-par1*rnorm(1,mean=0,sd=factor1)+par1
-                     while(A<=0){
-                        A<-par1*rnorm(1,mean=0,sd=factor1)+par1}
-                     alpha<-par2*rnorm(1,mean=0,sd=factor2)+par2
-                     while(alpha<=0){
-                        alpha<-par2*rnorm(1,mean=0,sd=factor2)+par2}},
-                        
-                    {A<-par1*runif(1,min=-factor1,max=factor1)+par1
-                     while(A<=0){
-                        A<-par1*runif(1,min=-factor1,max=factor1)+par1}
-                     alpha<-par2*runif(1,min=-factor2,max=factor2)+par2
-                     while(alpha<=0){
-                        alpha<-par2*runif(1,min=-factor2,max=factor2)+par2}}   
-                    )
             PKindex[[i]]<-smacro.one.out(PKtime,A,alpha,defun,par1,par2,i,type,MD)
             ###         
             ### here revert between pdf() and graphic device                          ### added by YJ
@@ -253,35 +229,10 @@ sink()
         cat("\n\n             << Subject",i,">>\n\n" ) 
         C1.lsoda<-list()
            for (j in 1:re){
-              switch(pick, 
-                     {A<-par1+rnorm(1,mean=0,sd=factor1)
-                      while(A<=0){
-                         A<-par1+rnorm(1,mean=0,sd=factor1)}
-                      alpha<-par2+rnorm(1,mean=0,sd=factor2)
-                      while(alpha<=0){
-                         alpha<-par2+rnorm(1,mean=0,sd=factor2)}},
-                         
-                     {A<-par1+runif(1,min=-factor1,max=factor1)
-                      while(A<=0){
-                         A<-par1+runif(1,min=-factor1,max=factor1)} 
-                      alpha<-par2+runif(1,min=-factor2,max=factor2)
-                      while(alpha<=0){
-                      alpha<-par2+runif(1,min=-factor2,max=factor2)}},
-                      
-                      {A<-par1*rnorm(1,mean=0,sd=factor1)+par1
-                       while(A<=0){
-                          a<-par1*rnorm(1,mean=0,sd=factor1)+par1}
-                       alpha<-par2*rnorm(1,mean=0,sd=factor2)+par2
-                       while(alpha<=0){
-                          alpha<-par2*rnorm(1,mean=0,sd=factor2)+par2}},
-                          
-                      {A<-par1*runif(1,min=-factor1,max=factor1)+par1
-                       while(A<=0){
-                          A<-par1*runif(1,min=-factor1,max=factor1)+par1}
-                       alpha<-par2*runif(1,min=-factor2,max=factor2)+par2
-                       while(alpha<=0){
-                          alpha<-par2*runif(1,min=-factor2,max=factor2)+par2}}
-              )
+             
+              A     <- err_types(pick,par1,factor1)
+              alpha <- err_types(pick,par2,factor2)
+                        
               time1<-PKtime$time
               defun<- A*exp(-alpha*time1) 
               XX<-data.frame(time1,defun) 

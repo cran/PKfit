@@ -251,61 +251,15 @@ sink()
          factor4<-par.err[4,2]
          
          PKindex<-vector(Subject,mode="list")
+         pick<- pick-1  # reset pick = 1, 2, 3 or 4 ('0' is zero error & excluded)
+         
          for(i in 1:Subject)  {
 
-             switch(pick-1,
-                    {kel<-par1+rnorm(1,mean=0,sd=factor1)
-                     while(kel<=0){
-                        kel<-par1+rnorm(1,mean=0,sd=factor1)} 
-                     k12<-par2+rnorm(1,mean=0,sd=factor2)
-                     while(k12<=0){
-                        k12<-par2+rnorm(1,mean=0,sd=factor2)}
-                     k21<-par3+rnorm(1,mean=0,sd=factor3)
-                     while(k21<=0){
-                        k21<-par3+rnorm(1,mean=0,sd=factor3)}        
-                     Vd<-par4+rnorm(1,mean=0,sd=factor4)
-                     while(Vd<=0){
-                        Vd<-par4+rnorm(1,mean=0,sd=factor4)}},
-                        
-                    {kel<-par1+runif(1,min=-factor1,max=factor1)
-                     while(kel<=0){
-                        kel<-par1+runif(1,min=-factor1,max=factor1)}
-                     k12<-par2+runif(1,min=-factor2,max=factor2)
-                     while(k12<=0){
-                        k12<-par2+runif(1,min=-factor2,max=factor2)}
-                     k21<-par3+runif(1,min=-factor3,max=factor3)
-                     while(k21<=0){
-                        k21<-par3+runif(1,min=-factor3,max=factor3)}
-                     Vd<-par4+runif(1,min=-factor4,max=factor4)
-                     while(Vd<=0){
-                        Vd<-par4+runif(1,min=-factor4,max=factor4)}},
-                        
-                     {kel<-par1*rnorm(1,mean=0,sd=factor1)+par1
-                      while(kel<=0){
-                         kel<-par1*rnorm(1,mean=0,sd=factor1)+par1}
-                      k12<-par2*rnorm(1,mean=0,sd=factor2)+par2
-                      while(k12<=0){
-                         k12<-par2*rnorm(1,mean=0,sd=factor2)+par2}
-                      k21<-par3*rnorm(1,mean=0,sd=factor3)+par3
-                      while(k21<=0){
-                         k21<-par3*rnorm(1,mean=0,sd=factor3)+par3}
-                      Vd<-par4*rnorm(1,mean=0,sd=factor4)+par4
-                      while(Vd<=0){
-                         Vd<-par4*rnorm(1,mean=0,sd=factor4)+par4}},
-                         
-                      {kel<-par1*runif(1,min=-factor1,max=factor1)+par1
-                       while(kel<=0){
-                          kel<-par1*runif(1,min=-factor1,max=factor1)+par1}
-                       k12<-par2*runif(1,min=-factor2,max=factor2)+par2
-                       while(k12<=0){
-                          k12<-par2*runif(1,min=-factor2,max=factor2)+par2}
-                       k21<-par3*runif(1,min=-factor3,max=factor3)+par3
-                       while(k21<=0){
-                       k21<-par3*runif(1,min=-factor3,max=factor3)+par3}
-                       Vd<-par4*runif(1,min=-factor4,max=factor4)+par4
-                       while(Vd<=0){
-                          Vd<-par4*runif(1,min=-factor4,max=factor4)+par4}}
-                   )
+             kel <- err_types(pick,par1,factor1)
+             k12 <- err_types(pick,par2,factor2)
+             k21 <- err_types(pick,par3,factor3)
+             Vd  <- err_types(pick,par4,factor4)
+
                    cat("\n\n     << Subject:- #",i,">>" )
                    cat("\n\n")
                    cat("****************************************************\n")
@@ -438,60 +392,12 @@ sink()
      cat("\n\n     << Subject:- #",i,">>\n" )
      C1.lsoda<-list()
         for (j in 1:re){
-            switch(pick,
-                   {kel<-par1+rnorm(1,mean=0,sd=factor1)
-                     while(kel<=0){
-                        kel<-par1+rnorm(1,mean=0,sd=factor1)} 
-                     k12<-par2+rnorm(1,mean=0,sd=factor2)
-                     while(k12<=0){
-                        k12<-par2+rnorm(1,mean=0,sd=factor2)}
-                     k21<-par3+rnorm(1,mean=0,sd=factor3)
-                     while(k21<=0){
-                        k21<-par3+rnorm(1,mean=0,sd=factor3)}        
-                     Vd<-par4+rnorm(1,mean=0,sd=factor4)
-                     while(Vd<=0){
-                        Vd<-par4+rnorm(1,mean=0,sd=factor4)}},
-                        
-                    {kel<-par1+runif(1,min=-factor1,max=factor1)
-                     while(kel<=0){
-                        kel<-par1+runif(1,min=-factor1,max=factor1)}
-                     k12<-par2+runif(1,min=-factor2,max=factor2)
-                     while(k12<=0){
-                        k12<-par2+runif(1,min=-factor2,max=factor2)}
-                     k21<-par3+runif(1,min=-factor3,max=factor3)
-                     while(k21<=0){
-                        k21<-par3+runif(1,min=-factor3,max=factor3)}
-                     Vd<-par4+runif(1,min=-factor4,max=factor4)
-                     while(Vd<=0){
-                        Vd<-par4+runif(1,min=-factor4,max=factor4)}},
-                        
-                     {kel<-par1*rnorm(1,mean=0,sd=factor1)+par1
-                      while(kel<=0){
-                         kel<-par1*rnorm(1,mean=0,sd=factor1)+par1}
-                      k12<-par2*rnorm(1,mean=0,sd=factor2)+par2
-                      while(k12<=0){
-                         k12<-par2*rnorm(1,mean=0,sd=factor2)+par2}
-                      k21<-par3*rnorm(1,mean=0,sd=factor3)+par3
-                      while(k21<=0){
-                         k21<-par3*rnorm(1,mean=0,sd=factor3)+par3}
-                      Vd<-par4*rnorm(1,mean=0,sd=factor4)+par4
-                      while(Vd<=0){
-                         Vd<-par4*rnorm(1,mean=0,sd=factor4)+par4}},
-                         
-                      {kel<-par1*runif(1,min=-factor1,max=factor1)+par1
-                       while(kel<=0){
-                          kel<-par1*runif(1,min=-factor1,max=factor1)+par1}
-                       k12<-par2*runif(1,min=-factor2,max=factor2)+par2
-                       while(k12<=0){
-                          k12<-par2*runif(1,min=-factor2,max=factor2)+par2}
-                       k21<-par3*runif(1,min=-factor3,max=factor3)+par3
-                       while(k21<=0){
-                       k21<-par3*runif(1,min=-factor3,max=factor3)+par3}
-                       Vd<-par4*runif(1,min=-factor4,max=factor4)+par4
-                       while(Vd<=0){
-                          Vd<-par4*runif(1,min=-factor4,max=factor4)+par4}}
-               )
-               
+
+             kel <- err_types(pick,par1,factor1)
+             k12 <- err_types(pick,par2,factor2)
+             k21 <- err_types(pick,par3,factor3)
+             Vd  <- err_types(pick,par4,factor4)
+             
                time1<-PKtime$time
                parms<-c(kel=kel,k12=k12,k21=k21,Vd=Vd)  
                if(MD){

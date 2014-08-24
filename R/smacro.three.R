@@ -158,85 +158,18 @@ sink()
          factor6<-par.err[6,2]
          
          PKindex<-vector(Subject,mode="list");cat("\n")
-         for( i in 1:Subject)  { 
+         pick<- pick-1  # reset pick = 1, 2, 3 or 4 ('0' is zero error & excluded)
+         
+         for( i in 1:Subject)  {
+
+             A     <- err_types(pick,par1,factor1)
+             alpha <- err_types(pick,par2,factor2)
+             B     <- err_types(pick,par3,factor3)
+             beta  <- err_types(pick,par4,factor4)
+             C     <- err_types(pick,par5,factor5)
+             gamma <- err_types(pick,par6,factor6)
+                      
             cat("\n     << Subject:- #",i,">>\n\n" )
-            switch(pick-1,
-                   {A<-par1+rnorm(1,mean=0,sd=factor1)
-                    while(A<=0){
-                       A<-par1+rnorm(1,mean=0,sd=factor1)}
-                    alpha<-par2+rnorm(1,mean=0,sd=factor2)
-                    while(alpha<=0){
-                       alpha<-par2+rnorm(1,mean=0,sd=factor2)}
-                    B<-par3+rnorm(1,mean=0,sd=factor3)
-                    while(B<=0){
-                       B<-par3+rnorm(1,mean=0,sd=factor3)}
-                    beta<-par4+rnorm(1,mean=0,sd=factor4)
-                    while(beta<=0){
-                       beta<-par4+rnorm(1,mean=0,sd=factor4)}
-                    C<-par5+rnorm(1,mean=0,sd=factor5)
-                    while(C<=0){
-                       C<-par5+rnorm(1,mean=0,sd=factor5)}
-                    gamma<-par6+rnorm(1,mean=0,sd=factor6)
-                    while(gamma<=0){
-                       gamma<-par6+rnorm(1,mean=0,sd=factor6)}},
-                       
-                    {A<-par1+runif(1,min=-factor1,max=factor1)
-                     while(A<=0){
-                        A<-par1+runif(1,min=-factor1,max=factor1)}
-                     alpha<-par2+runif(1,min=-factor2,max=factor2)
-                     while(alpha<=0){
-                        alpha<-par2+runif(1,min=-factor2,max=factor2)}
-                     B<-par3+runif(1,min=-factor3,max=factor3)
-                     while(B<=0){
-                        B<-par1+runif(1,min=-factor3,max=factor3)}
-                     beta<-par4+runif(1,min=-factor4,max=factor4)
-                     while(beta<=0){
-                        beta<-par4+runif(1,min=-factor4,max=factor4)}
-                     C<-par5+runif(1,min=-factor5,max=factor5)
-                     while(C<=0){
-                        C<-par5+runif(1,min=-factor5,max=factor5)}
-                     gamma<-par6+runif(1,min=-factor6,max=factor6)
-                     while(gamma<=0){
-                        gamma<-par6+runif(1,min=-factor6,max=factor6)}},
-                        
-                    {A<-par1*rnorm(1,mean=0,sd=factor1)+par1
-                     while(A<=0){
-                        A<-par1*rnorm(1,mean=0,sd=factor1)+par1}
-                     alpha<-par2*rnorm(1,mean=0,sd=factor2)+par2
-                     while(alpha<=0){
-                        alpha<-par2*rnorm(1,mean=0,sd=factor2)+par2}
-                     B<-par3*rnorm(1,mean=0,sd=factor3)+par3
-                     while(B<=0){
-                        B<-par3*rnorm(1,mean=0,sd=factor3)+par3}
-                     beta<-par4*rnorm(1,mean=0,sd=factor4)+par4
-                     while(beta<=0){
-                        beta<-par4*rnorm(1,mean=0,sd=factor4)+par4}
-                     C<-par5*rnorm(1,mean=0,sd=factor5)+par5
-                     while(C<=0){
-                        C<-par5*rnorm(1,mean=0,sd=factor5)+par5}
-                     gamma<-par6*rnorm(1,mean=0,sd=factor6)+par6
-                     while(gamma<=0){
-                        gamma<-par6*rnorm(1,mean=0,sd=factor6)+par6}},
-                        
-                    {A<-par1*runif(1,min=-factor1,max=factor1)+par1
-                     while(A<=0){
-                        A<-par1*runif(1,min=-factor1,max=factor1)+par1}
-                     alpha<-par2*runif(1,min=-factor2,max=factor2)+par2
-                     while(alpha<=0){
-                        alpha<-par2*runif(1,min=-factor2,max=factor2)+par2}
-                     B<-par3*runif(1,min=-factor3,max=factor3)+par3
-                     while(B<=0){
-                        B<-par3*runif(1,min=-factor3,max=factor3)+par3}
-                     beta<-par4*runif(1,min=-factor4,max=factor4)+par4
-                     while(beta<=0){
-                        beta<-par4*runif(1,min=-factor4,max=factor4)+par4}
-                     C<-par5*runif(1,min=-factor5,max=factor5)+par5
-                     while(C<=0){
-                        C<-par5*runif(1,min=-factor5,max=factor5)+par5}
-                     gamma<-par6*runif(1,min=-factor6,max=factor6)+par6
-                     while(gamma<=0){
-                        gamma<-par6*runif(1,min=-factor6,max=factor6)+par6}}   
-                    )
             PKindex[[i]]<-smacro.three.out(PKtime,A,alpha,B,beta,C,gamma,defun,par1,par2,par3,par4,par5,par6,i,type,MD)
             ###         
             ### here revert between pdf() and graphic device                          ### added by YJ
@@ -320,83 +253,14 @@ sink()
         cat("\n     << Subject:- #",i,">>\n\n" )
         C1.lsoda<-list()
            for (j in 1:re){
-              switch(pick, 
-                    {A<-par1+rnorm(1,mean=0,sd=factor1)
-                    while(A<=0){
-                       A<-par1+rnorm(1,mean=0,sd=factor1)}
-                    alpha<-par2+rnorm(1,mean=0,sd=factor2)
-                    while(alpha<=0){
-                       alpha<-par2+rnorm(1,mean=0,sd=factor2)}
-                    B<-par3+rnorm(1,mean=0,sd=factor3)
-                    while(B<=0){
-                       B<-par3+rnorm(1,mean=0,sd=factor3)}
-                    beta<-par4+rnorm(1,mean=0,sd=factor4)
-                    while(beta<=0){
-                       beta<-par4+rnorm(1,mean=0,sd=factor4)}
-                    C<-par5+rnorm(1,mean=0,sd=factor5)
-                    while(C<=0){
-                       C<-par5+rnorm(1,mean=0,sd=factor5)}
-                    gamma<-par6+rnorm(1,mean=0,sd=factor6)
-                    while(gamma<=0){
-                       gamma<-par6+rnorm(1,mean=0,sd=factor6)}},
-                       
-                    {A<-par1+runif(1,min=-factor1,max=factor1)
-                     while(A<=0){
-                        A<-par1+runif(1,min=-factor1,max=factor1)}
-                     alpha<-par2+runif(1,min=-factor2,max=factor2)
-                     while(alpha<=0){
-                        alpha<-par2+runif(1,min=-factor2,max=factor2)}
-                     B<-par3+runif(1,min=-factor3,max=factor3)
-                     while(B<=0){
-                        B<-par1+runif(1,min=-factor3,max=factor3)}
-                     beta<-par4+runif(1,min=-factor4,max=factor4)
-                     while(beta<=0){
-                        beta<-par4+runif(1,min=-factor4,max=factor4)}
-                     C<-par5+runif(1,min=-factor5,max=factor5)
-                     while(C<=0){
-                        C<-par5+runif(1,min=-factor5,max=factor5)}
-                     gamma<-par6+runif(1,min=-factor6,max=factor6)
-                     while(gamma<=0){
-                        gamma<-par6+runif(1,min=-factor6,max=factor6)}},
-                        
-                    {A<-par1*rnorm(1,mean=0,sd=factor1)+par1
-                     while(A<=0){
-                        A<-par1*rnorm(1,mean=0,sd=factor1)+par1}
-                     alpha<-par2*rnorm(1,mean=0,sd=factor2)+par2
-                     while(alpha<=0){
-                        alpha<-par2*rnorm(1,mean=0,sd=factor2)+par2}
-                     B<-par3*rnorm(1,mean=0,sd=factor3)+par3
-                     while(B<=0){
-                        B<-par3*rnorm(1,mean=0,sd=factor3)+par3}
-                     beta<-par4*rnorm(1,mean=0,sd=factor4)+par4
-                     while(beta<=0){
-                        beta<-par4*rnorm(1,mean=0,sd=factor4)+par4}
-                     C<-par5*rnorm(1,mean=0,sd=factor5)+par5
-                     while(C<=0){
-                        C<-par5*rnorm(1,mean=0,sd=factor5)+par5}
-                     gamma<-par6*rnorm(1,mean=0,sd=factor6)+par6
-                     while(gamma<=0){
-                        gamma<-par6*rnorm(1,mean=0,sd=factor6)+par6}},
-                        
-                    {A<-par1*runif(1,min=-factor1,max=factor1)+par1
-                     while(A<=0){
-                        A<-par1*runif(1,min=-factor1,max=factor1)+par1}
-                     alpha<-par2*runif(1,min=-factor2,max=factor2)+par2
-                     while(alpha<=0){
-                        alpha<-par2*runif(1,min=-factor2,max=factor2)+par2}
-                     B<-par3*runif(1,min=-factor3,max=factor3)+par3
-                     while(B<=0){
-                        B<-par3*runif(1,min=-factor3,max=factor3)+par3}
-                     beta<-par4*runif(1,min=-factor4,max=factor4)+par4
-                     while(beta<=0){
-                        beta<-par4*runif(1,min=-factor4,max=factor4)+par4}
-                     C<-par5*runif(1,min=-factor5,max=factor5)+par5
-                     while(C<=0){
-                        C<-par5*runif(1,min=-factor5,max=factor5)+par5}
-                     gamma<-par6*runif(1,min=-factor6,max=factor6)+par6
-                     while(gamma<=0){
-                        gamma<-par6*runif(1,min=-factor6,max=factor6)+par6}}   
-              )
+
+             A     <- err_types(pick,par1,factor1)
+             alpha <- err_types(pick,par2,factor2)
+             B     <- err_types(pick,par3,factor3)
+             beta  <- err_types(pick,par4,factor4)
+             C     <- err_types(pick,par5,factor5)
+             gamma <- err_types(pick,par6,factor6)
+             
               time1<-PKtime$time
               defun<- A*exp(-alpha*time1)+B*exp(-beta*time1)+C*exp(-gamma*time1)
               XX<-data.frame(time1,defun) 

@@ -1,6 +1,6 @@
-###Simulation
-###One compartment PK model zero-ordered abs., single dose
-###optional Michaelis-Menten Elimination
+### Simulation
+### One compartment PK model zero-ordered abs., single dose
+### optional Michaelis-Menten Elimination
 ### 
 szero.nolag<- function(Subject=NULL,  ## N Subj's 
                        PKtime=NULL,   ## times for sampling
@@ -393,49 +393,14 @@ sink()
            factor3<-par.err[3,2]
            
            PKindex<-vector(Subject,mode="list");cat("\n")
+           pick<- pick-1  # reset pick = 1, 2, 3 or 4 ('0' is zero error & excluded)
+           
            for( i in 1:Subject)  {
-             switch(pick-1,
-                   {Tabs<-par1+rnorm(1,mean=0,sd=factor1)
-                    while(Tabs<=0){
-                       Tabs<-par1+rnorm(1,mean=0,sd=factor1)}
-                    kel<-par2+rnorm(1,mean=0,sd=factor2)
-                    while(kel<=0){
-                       kel<-par2+rnorm(1,mean=0,sd=factor2)}
-                    Vd<-par3+rnorm(1,mean=0,sd=factor3)
-                    while(Vd<=0){
-                       Vd<-par3+rnorm(1,mean=0,sd=factor3)}},
-                  
-                   {Tabs<-par1+runif(1,min=-factor1,max=factor1)
-                    while(Tabs<=0){
-                       Tabs<-par1+runif(1,min=-factor1,max=factor1)}
-                    kel<-par2+runif(1,min=-factor2,max=factor2)
-                    while(kel<=0){
-                       kel<-par2+runif(1,min=-factor2,max=factor2)}
-                    Vd<-par3+runif(1,min=-factor3,max=factor3)
-                    while(Vd<=0){
-                       Vd<-par3+runif(1,min=-factor3,max=factor3)}}, 
-                    
-                   {Tabs<-par1*rnorm(1,mean=0,sd=factor1)+par1
-                    while(Tabs<=0){
-                       Tabs<-par1*rnorm(1,mean=0,sd=factor1)+par1}
-                    kel<-par2*rnorm(1,mean=0,sd=factor2)+par2
-                    while(kel<=0){
-                       kel<-par2*rnorm(1,mean=0,sd=factor2)+par2}
-                    Vd<-par3*rnorm(1,mean=0,sd=factor3)+par3
-                    while(Vd<=0){
-                       Vd<-par3*rnorm(1,mean=0,sd=factor3)+par3}},
-                  
-                   {Tabs<-par1*runif(1,min=-factor1,max=factor1)+par1
-                    while(Tabs<=0){
-                       Tabs<-par1*runif(1,min=-factor1,max=factor1)+par1}
-                    kel<-par2*runif(1,min=-factor2,max=factor2)+par2
-                    while(kel<=0){
-                       kel<-par2*runif(1,min=-factor2,max=factor2)+par2}
-                    Vd<-par3*runif(1,min=-factor3,max=factor3)+par3
-                    while(Vd<=0){
-                      Vd<-par3*runif(1,min=-factor3,max=factor3)+par3}}   
-             )     
-
+           
+              Tabs<- err_types(pick,par1,factor1)
+              kel <- err_types(pick,par2,factor2)
+              Vd  <- err_types(pick,par3,factor3)
+              
              cat("\n\n     << Subject:- #",i,">>" )
              cat("\n\n")
              cat("****************************************************\n")
@@ -466,6 +431,7 @@ sink()
              cat("****************************************************\n\n")
                            
              ### PKindex[[i]]<-szero.out(PKtime,Tabs,kel,Vd,defun,par1,par2,par3,Dose,i,type,MD)
+             
              time<-PKtime$time
              parms<-c(Tabs=Tabs,kel=kel,Vd=Vd)  
              C1.lsoda<-data.frame(lsoda(0, c(0,time), defun, parms,atol=1e-08,rtol=1e-08))
@@ -523,62 +489,14 @@ sink()
            factor4<-par.err[4,2]
            
            PKindex<-vector(Subject,mode="list");cat("\n")
+           pick<- pick-1  # reset pick = 1, 2, 3 or 4 ('0' is zero error & excluded)
+           
            for( i in 1:Subject)  {
-             cat("\n     << Subject:- #",i,">>\n\n" )
-             
-             switch(pick-1,
-                   {Tabs<-par1+rnorm(1,mean=0,sd=factor1)
-                    while(Tabs<=0){
-                       Tabs<-par1+rnorm(1,mean=0,sd=factor1)}
-                    Vm<-par2+rnorm(1,mean=0,sd=factor2)
-                    while(Vm<=0){
-                       Vm<-par2+rnorm(1,mean=0,sd=factor2)}
-                    Km<-par3+rnorm(1,mean=0,sd=factor3)
-                    while(Km<=0){
-                       Km<-par3+rnorm(1,mean=0,sd=factor3)}
-                    Vd<-par4+rnorm(1,mean=0,sd=factor4)
-                    while(Vd<=0){
-                       Vd<-par4+rnorm(1,mean=0,sd=factor4)}},
-                  
-                   {Tabs<-par1+runif(1,min=-factor1,max=factor1)
-                    while(Tabs<=0){
-                       Tabs<-par1+runif(1,min=-factor1,max=factor1)}
-                    Vm<-par2+runif(1,min=-factor2,max=factor2)
-                    while(Vm<=0){
-                       Vm<-par2+runif(1,min=-factor2,max=factor2)}
-                    Km<-par3+runif(1,min=-factor3,max=factor3)
-                    while(Km<=0){
-                       Km<-par3+runif(1,min=-factor3,max=factor3)}
-                    Vd<-par4+runif(1,min=-factor4,max=factor4)
-                    while(Vd<=0){
-                       Vd<-par4+runif(1,min=-factor4,max=factor4)}}, 
-                    
-                   {Tabs<-par1*rnorm(1,mean=0,sd=factor1)+par1
-                    while(Tabs<=0){
-                       Tabs<-par1*rnorm(1,mean=0,sd=factor1)+par1}
-                    Vm<-par2*rnorm(1,mean=0,sd=factor2)+par2
-                    while(Vm<=0){
-                       Vm<-par2*rnorm(1,mean=0,sd=factor2)+par2}
-                    Km<-par3*rnorm(1,mean=0,sd=factor3)+par3
-                    while(Km<=0){
-                       Km<-par3*rnorm(1,mean=0,sd=factor3)+par3}
-                    Vd<-par4*rnorm(1,mean=0,sd=factor4)+par4
-                    while(Vd<=0){
-                       Vd<-par4*rnorm(1,mean=0,sd=factor4)+par4}},
-                  
-                   {Tabs<-par1*runif(1,min=-factor1,max=factor1)+par1
-                    while(Tabs<=0){
-                       Tabs<-par1*runif(1,min=-factor1,max=factor1)+par1}
-                    Vm<-par2*runif(1,min=-factor2,max=factor2)+par2
-                    while(Vm<=0){
-                       Vm<-par2*runif(1,min=-factor2,max=factor2)+par2}
-                    Km<-par3*runif(1,min=-factor3,max=factor3)+par3
-                    while(Km<=0){
-                       Km<-par3*runif(1,min=-factor3,max=factor3)+par3}
-                    Vd<-par4*runif(1,min=-factor4,max=factor4)+par4
-                    while(Vd<=0){
-                       Vd<-par4*runif(1,min=-factor4,max=factor4)+par4}}   
-             )
+
+              Tabs<- err_types(pick,par1,factor1)
+              Vm  <- err_types(pick,par2,factor2)
+              Km  <- err_types(pick,par3,factor3)
+              Vd  <- err_types(pick,par4,factor4)
 
              cat("\n\n     << Subject:- #",i,">>" )
              cat("\n\n")
@@ -625,7 +543,7 @@ sink()
              y<-good
              plotting.sim(i,x,y,MD);PKindex[[i]]<-PKindex.this.subj
              ###         
-             ### here revert between pdf() and graphic device                          ### added by YJ
+             ### here revert between pdf() and graphic device     ### added by YJ
              ### 
                        if(pdf_activate){
                           dev.copy()                          ## copy to pdf file 2nd plots to end
@@ -710,7 +628,7 @@ sink()
          factor2<-par.err[2,2]
          factor3<-par.err[3,2]
          factor4<-par.err[4,2]
-         
+       }
          sink(zz,split=TRUE)
          
          cat("\n")
@@ -739,7 +657,6 @@ sink()
          dimnames(sim)<-list(c("Tabs","kel","Vd"),c("Input Values","Error factor"))}
          show(sim)   
          cat("********************************************************")
-       }
        
        PKindex<-vector(Subject,mode="list")
        for( i in 1:Subject)  {
@@ -749,47 +666,11 @@ sink()
          for (j in 1:re){
      
            if (!MMe){
-              switch(pick, 
-                    {Tabs<-par1+rnorm(1,mean=0,sd=factor1)
-                    while(Tabs<=0){
-                       Tabs<-par1+rnorm(1,mean=0,sd=factor1)}
-                    kel<-par2+rnorm(1,mean=0,sd=factor2)
-                    while(kel<=0){
-                       kel<-par2+rnorm(1,mean=0,sd=factor2)}
-                    Vd<-par3+rnorm(1,mean=0,sd=factor3)
-                    while(Vd<=0){
-                       Vd<-par3+rnorm(1,mean=0,sd=factor3)}},
-                  
-                   {Tabs<-par1+runif(1,min=-factor1,max=factor1)
-                    while(Tabs<=0){
-                       Tabs<-par1+runif(1,min=-factor1,max=factor1)}
-                    kel<-par2+runif(1,min=-factor2,max=factor2)
-                    while(kel<=0){
-                       kel<-par2+runif(1,min=-factor2,max=factor2)}
-                    Vd<-par3+runif(1,min=-factor3,max=factor3)
-                    while(Vd<=0){
-                       Vd<-par3+runif(1,min=-factor3,max=factor3)}}, 
-                    
-                   {Tabs<-par1*rnorm(1,mean=0,sd=factor1)+par1
-                    while(Tabs<=0){
-                       Tabs<-par1*rnorm(1,mean=0,sd=factor1)+par1}
-                    kel<-par2*rnorm(1,mean=0,sd=factor2)+par2
-                    while(kel<=0){
-                       kel<-par2*rnorm(1,mean=0,sd=factor2)+par2}
-                    Vd<-par3*rnorm(1,mean=0,sd=factor3)+par3
-                    while(Vd<=0){
-                       Vd<-par3*rnorm(1,mean=0,sd=factor3)+par3}},
-                  
-                   {Tabs<-par1*runif(1,min=-factor1,max=factor1)+par1
-                    while(Tabs<=0){
-                       Tabs<-par1*runif(1,min=-factor1,max=factor1)+par1}
-                    kel<-par2*runif(1,min=-factor2,max=factor2)+par2
-                    while(kel<=0){
-                       kel<-par2*runif(1,min=-factor2,max=factor2)+par2}
-                    Vd<-par3*runif(1,min=-factor3,max=factor3)+par3
-                    while(Vd<=0){
-                      Vd<-par3*runif(1,min=-factor3,max=factor3)+par3}}     
-              )    
+
+              Tabs<- err_types(pick,par1,factor1) # pick = 1,2,3 or 4
+              kel <- err_types(pick,par2,factor2)
+              Vd  <- err_types(pick,par3,factor3)
+                         
               time1<-PKtime$time
               parms<-c(Tabs=Tabs,kel=kel,Vd=Vd) 
               XX<-data.frame(lsoda(0, c(0,time1), defun, parms))   
@@ -797,59 +678,12 @@ sink()
               colnames(C1.lsoda[[j]])<-list("time","concentration")
            }
            else{
-              switch(pick, 
-                    {Tabs<-par1+rnorm(1,mean=0,sd=factor1)
-                    while(Tabs<=0){
-                       Tabs<-par1+rnorm(1,mean=0,sd=factor1)}
-                    Vm<-par2+rnorm(1,mean=0,sd=factor2)
-                    while(Vm<=0){
-                       Vm<-par2+rnorm(1,mean=0,sd=factor2)}
-                    Km<-par3+rnorm(1,mean=0,sd=factor3)
-                    while(Km<=0){
-                       Km<-par3+rnorm(1,mean=0,sd=factor3)}
-                    Vd<-par4+rnorm(1,mean=0,sd=factor4)
-                    while(Vd<=0){
-                       Vd<-par4+rnorm(1,mean=0,sd=factor4)}},
-                  
-                   {Tabs<-par1+runif(1,min=-factor1,max=factor1)
-                    while(Tabs<=0){
-                       Tabs<-par1+runif(1,min=-factor1,max=factor1)}
-                    Vm<-par2+runif(1,min=-factor2,max=factor2)
-                    while(Vm<=0){
-                       Vm<-par2+runif(1,min=-factor2,max=factor2)}
-                    Km<-par3+runif(1,min=-factor3,max=factor3)
-                    while(Km<=0){
-                       Km<-par3+runif(1,min=-factor3,max=factor3)}
-                    Vd<-par4+runif(1,min=-factor4,max=factor4)
-                    while(Vd<=0){
-                       Vd<-par4+runif(1,min=-factor4,max=factor4)}}, 
-                    
-                   {Tabs<-par1*rnorm(1,mean=0,sd=factor1)+par1
-                    while(Tabs<=0){
-                       Tabs<-par1*rnorm(1,mean=0,sd=factor1)+par1}
-                    Vm<-par2*rnorm(1,mean=0,sd=factor2)+par2
-                    while(Vm<=0){
-                       Vm<-par2*rnorm(1,mean=0,sd=factor2)+par2}
-                    Km<-par3*rnorm(1,mean=0,sd=factor3)+par3
-                    while(Km<=0){
-                       Km<-par3*rnorm(1,mean=0,sd=factor3)+par3}
-                    Vd<-par4*rnorm(1,mean=0,sd=factor4)+par4
-                    while(Vd<=0){
-                       Vd<-par4*rnorm(1,mean=0,sd=factor4)+par4}},
-                  
-                   {Tabs<-par1*runif(1,min=-factor1,max=factor1)+par1
-                    while(Tabs<=0){
-                       Tabs<-par1*runif(1,min=-factor1,max=factor1)+par1}
-                    Vm<-par2*runif(1,min=-factor2,max=factor2)+par2
-                    while(Vm<=0){
-                       Vm<-par2*runif(1,min=-factor2,max=factor2)+par2}
-                    Km<-par3*runif(1,min=-factor3,max=factor3)+par3
-                    while(Km<=0){
-                       Km<-par3*runif(1,min=-factor3,max=factor3)+par3}
-                    Vd<-par4*runif(1,min=-factor4,max=factor4)+par4
-                    while(Vd<=0){
-                       Vd<-par4*runif(1,min=-factor4,max=factor4)+par4}}         
-              )
+           
+              Tabs<- err_types(pick,par1,factor1)
+              Vm  <- err_types(pick,par2,factor2)
+              Km  <- err_types(pick,par3,factor3)
+              Vd  <- err_types(pick,par4,factor4)
+
               time1<-PKtime$time
               parms<-c(Tabs=Tabs,Vm=Vm,Km=Km,Vd=Vd) 
               XX<-data.frame(lsoda(0,c(0,time1), defun, parms)) 

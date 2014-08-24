@@ -10,7 +10,7 @@ cat("   888        888  Y88b   888    888 888     \n")
 cat("   888        888   Y88b  888    888 Y88b.   \n")
 cat("   888        888    Y88b 888    888   Y888  \n\n")
 cat("-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-o-\n\n")
-cat(" This report was generated using PKfit v1.2.2\n")
+cat(" This report was generated using PKfit v1.2.3\n")
 cat(" on:-",date(),"\n")
 username<-Sys.info()[['user']]
 osname_version<-c(paste(Sys.info()[['sysname']],"-",Sys.info()[['version']],"\n",

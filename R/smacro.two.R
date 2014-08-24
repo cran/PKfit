@@ -151,62 +151,16 @@ sink()
          factor4<-par.err[4,2]
          
          PKindex<-vector(Subject,mode="list")
+         pick<- pick-1  # reset pick = 1, 2, 3 or 4 ('0' is zero error & excluded)
+         
          for( i in 1:Subject)  { 
-            cat("\n\n       << Subject:- #",i,">>" )    ### used to implement. -YJ
 
-            switch(pick-1,
-                   {A<-par1+rnorm(1,mean=0,sd=factor1)
-                    while(A<=0){
-                       A<-par1+rnorm(1,mean=0,sd=factor1)}
-                    alpha<-par2+rnorm(1,mean=0,sd=factor2)
-                    while(alpha<=0){
-                       alpha<-par2+rnorm(1,mean=0,sd=factor2)}
-                    B<-par3+rnorm(1,mean=0,sd=factor3)
-                    while(B<=0){                        ### here 'B' can be a negative value! -YJ
-                       B<-par3+rnorm(1,mean=0,sd=factor3)}
-                    beta<-par4+rnorm(1,mean=0,sd=factor4)
-                    while(beta<=0){
-                       beta<-par4+rnorm(1,mean=0,sd=factor4)}},
-                       
-                    {A<-par1+runif(1,min=-factor1,max=factor1)
-                     while(A<=0){
-                        A<-par1+runif(1,min=-factor1,max=factor1)}
-                     alpha<-par2+runif(1,min=-factor2,max=factor2)
-                     while(alpha<=0){
-                        alpha<-par2+runif(1,min=-factor2,max=factor2)}
-                     B<-par3+runif(1,min=-factor3,max=factor3)
-                     while(B<=0){
-                        B<-par1+runif(1,min=-factor3,max=factor3)}
-                     beta<-par4+runif(1,min=-factor4,max=factor4)
-                     while(beta<=0){
-                        beta<-par4+runif(1,min=-factor4,max=factor4)}},
-                        
-                    {A<-par1*rnorm(1,mean=0,sd=factor1)+par1
-                     while(A<=0){
-                        A<-par1*rnorm(1,mean=0,sd=factor1)+par1}
-                     alpha<-par2*rnorm(1,mean=0,sd=factor2)+par2
-                     while(alpha<=0){
-                        alpha<-par2*rnorm(1,mean=0,sd=factor2)+par2}
-                     B<-par3*rnorm(1,mean=0,sd=factor3)+par3
-                     while(B<=0){
-                        B<-par3*rnorm(1,mean=0,sd=factor3)+par3}
-                     beta<-par4*rnorm(1,mean=0,sd=factor4)+par4
-                     while(beta<=0){
-                        beta<-par4*rnorm(1,mean=0,sd=factor4)+par4}},
-                        
-                    {A<-par1*runif(1,min=-factor1,max=factor1)+par1
-                     while(A<=0){
-                        A<-par1*runif(1,min=-factor1,max=factor1)+par1}
-                     alpha<-par2*runif(1,min=-factor2,max=factor2)+par2
-                     while(alpha<=0){
-                        alpha<-par2*runif(1,min=-factor2,max=factor2)+par2}
-                     B<-par3*runif(1,min=-factor3,max=factor3)+par3
-                     while(B<=0){
-                        B<-par3*runif(1,min=-factor3,max=factor3)+par3}
-                     beta<-par4*runif(1,min=-factor4,max=factor4)+par4
-                     while(beta<=0){
-                        beta<-par4*runif(1,min=-factor4,max=factor4)+par4}}   
-                    )
+             A     <- err_types(pick,par1,factor1)
+             alpha <- err_types(pick,par2,factor2)
+             B     <- err_types(pick,par3,factor3)
+             beta  <- err_types(pick,par4,factor4)
+                      
+            cat("\n\n       << Subject:- #",i,">>" )    ### used to implement. -YJ
             PKindex[[i]]<-smacro.two.out(PKtime,A,alpha,B,beta,defun,par1,par2,par3,par4,i,type,MD)
             ###         
             ### here revert between pdf() and graphic device                          ### added by YJ
@@ -287,59 +241,12 @@ sink()
         cat("\n\n   << Subject:- #",i," >>\n\n" )    ### used to implement. -YJ
         C1.lsoda<-list()
            for (j in 1:re){
-              switch(pick, 
-                     {A<-par1+rnorm(1,mean=0,sd=factor1)
-                    while(A<=0){
-                       A<-par1+rnorm(1,mean=0,sd=factor1)}
-                    alpha<-par2+rnorm(1,mean=0,sd=factor2)
-                    while(alpha<=0){
-                       alpha<-par2+rnorm(1,mean=0,sd=factor2)}
-                    B<-par3+rnorm(1,mean=0,sd=factor3)
-                    while(B<=0){
-                       B<-par3+rnorm(1,mean=0,sd=factor3)}
-                    beta<-par4+rnorm(1,mean=0,sd=factor4)
-                    while(beta<=0){
-                       beta<-par4+rnorm(1,mean=0,sd=factor4)}},
-                       
-                    {A<-par1+runif(1,min=-factor1,max=factor1)
-                     while(A<=0){
-                        A<-par1+runif(1,min=-factor1,max=factor1)}
-                     alpha<-par2+runif(1,min=-factor2,max=factor2)
-                     while(alpha<=0){
-                        alpha<-par2+runif(1,min=-factor2,max=factor2)}
-                     B<-par3+runif(1,min=-factor3,max=factor3)
-                     while(B<=0){
-                        B<-par1+runif(1,min=-factor3,max=factor3)}
-                     beta<-par4+runif(1,min=-factor4,max=factor4)
-                     while(beta<=0){
-                        beta<-par4+runif(1,min=-factor4,max=factor4)}},
+           
+             A     <- err_types(pick,par1,factor1)
+             alpha <- err_types(pick,par2,factor2)
+             B     <- err_types(pick,par3,factor3)
+             beta  <- err_types(pick,par4,factor4)
                         
-                    {A<-par1*rnorm(1,mean=0,sd=factor1)+par1
-                     while(A<=0){
-                        A<-par1*rnorm(1,mean=0,sd=factor1)+par1}
-                     alpha<-par2*rnorm(1,mean=0,sd=factor2)+par2
-                     while(alpha<=0){
-                        alpha<-par2*rnorm(1,mean=0,sd=factor2)+par2}
-                     B<-par3*rnorm(1,mean=0,sd=factor3)+par3
-                     while(B<=0){
-                        B<-par3*rnorm(1,mean=0,sd=factor3)+par3}
-                     beta<-par4*rnorm(1,mean=0,sd=factor4)+par4
-                     while(beta<=0){
-                        beta<-par4*rnorm(1,mean=0,sd=factor4)+par4}},
-                        
-                    {A<-par1*runif(1,min=-factor1,max=factor1)+par1
-                     while(A<=0){
-                        A<-par1*runif(1,min=-factor1,max=factor1)+par1}
-                     alpha<-par2*runif(1,min=-factor2,max=factor2)+par2
-                     while(alpha<=0){
-                        alpha<-par2*runif(1,min=-factor2,max=factor2)+par2}
-                     B<-par3*runif(1,min=-factor3,max=factor3)+par3
-                     while(B<=0){
-                        B<-par3*runif(1,min=-factor3,max=factor3)+par3}
-                     beta<-par4*runif(1,min=-factor4,max=factor4)+par4
-                     while(beta<=0){
-                        beta<-par4*runif(1,min=-factor4,max=factor4)+par4}}   
-              )
               time1<-PKtime$time
               defun<- A*exp(-alpha*time1)+B*exp(-beta*time1) 
               XX<-data.frame(time1,defun) 
