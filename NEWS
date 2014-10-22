@@ -1,6 +1,17 @@
-PKfit v1.2.3
+PKfit v1.2.4
  A Data Analysis Tool for Pharmacokinetics
 
+Update logs (v1.2.4)
+--------------------
+10/22/2014
+---
+ 1. starting to switch to optimx() since this release; seemed
+    more stable than optim() with different weighting schemes;
+ 2. fixed iv.bolus.demo() for no-stopping plotting;
+ 3. fixed plotting.xxx() by adding par(ask = FALSE);
+ 4. fixed weighting schemes for nlsLM() with Cp = 0.;
+ 5. added CITATION file in the folder of inst;
+  
 Update logs (v1.2.3)
 --------------------
 08/21/2014

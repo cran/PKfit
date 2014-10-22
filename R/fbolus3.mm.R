@@ -92,36 +92,36 @@ sink()  ### turn off temporarily to avoid logging too many warnings... -YJ
       objfun <- function(par) {     ### just for optim()?  --YJ
         out <- modfun(PKindex$time[PKindex$Subject==i], par[1], par[2], par[3], par[4], par[5], par[6], par[7])
         gift <- which( PKindex$conc[PKindex$Subject==i] != 0 )
-        sum(((PKindex$conc[PKindex$Subject==i][gift]-out[gift])/PKindex$conc[gift])^2)
-        ### switch(pick,
-        ###        sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2),
-        ###        sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2/PKindex$conc[gift]),
-        ###        sum(((PKindex$conc[PKindex$Subject==i][gift]-out[gift])/PKindex$conc[gift])^2))
+        ### sum(((PKindex$conc[PKindex$Subject==i][gift]-out[gift])/PKindex$conc[gift])^2)
+        switch(pick,
+               sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2),
+               sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2/PKindex$conc[gift]),
+               sum(((PKindex$conc[PKindex$Subject==i][gift]-out[gift])/PKindex$conc[gift])^2))
      }
      
 ###      
-     opt <- optim(c(par.init[2,2],par.init[3,2],par.init[4,2],par.init[5,2],par.init[6,2],par.init[7,2],par.init[8,2]),
+     opt <- optimx(c(par.init[2,2],par.init[3,2],par.init[4,2],par.init[5,2],par.init[6,2],par.init[7,2],par.init[8,2]),
                  objfun,method="Nelder-Mead",control=list(maxit=5000))
      nameopt<-c("Vm","Km","k12","k21","k13","k31","Vd")
-     outopt<-c(opt$par[1],opt$par[2],opt$par[3],opt$par[4],opt$par[5],opt$par[6],opt$par[7])
+     outopt<-c(opt$p1,opt$p2,opt$p3,opt$p4,opt$p5,opt$p6,opt$p7)
      
-              if(opt$par[1]<0) {opt$par[1]<-.01}
-              if(opt$par[2]<0) {opt$par[2]<-.01}
-              if(opt$par[3]<0) {opt$par[3]<-.01}
-              if(opt$par[4]<0) {opt$par[4]<-.01}
-              if(opt$par[5]<0) {opt$par[5]<-.01}
-              if(opt$par[6]<0) {opt$par[6]<-.01}
-              if(opt$par[7]<0) {opt$par[7]<-.01}
+              if(opt$p1<0) {opt$p1<-.0001}
+              if(opt$p2<0) {opt$p2<-.0001}
+              if(opt$p3<0) {opt$p3<-.0001}
+              if(opt$p4<0) {opt$p4<-.0001}
+              if(opt$p5<0) {opt$p5<-.0001}
+              if(opt$p6<0) {opt$p6<-.0001}
+              if(opt$p7<0) {opt$p7<-.0001}
      
      conc<-PKindex$conc[PKindex$Subject==i]
      
-     if(pick==1) weights=(1/conc^0)  ### equal weight
-     if(pick==2) weights=(1/conc^1)  ### 1/Cp
-     if(pick==3) weights=(1/conc^2)  ### 1/Cp^2
+     if(pick==1) weights<- ifelse(conc==0.,1,1/conc^0)  ### equal weight
+     if(pick==2) weights<- ifelse(conc==0.,1,1/conc^1)  ### 1/Cp
+     if(pick==3) weights<- ifelse(conc==0.,1,1/conc^2)  ### 1/Cp^2
      
      fm<-nlsLM(conc ~ modfun(time,Vm,Km,k12,k21,k13,k31,Vd),data=subset(PKindex,Subject==i),weights=weights,
-         start=list(Vm=opt$par[1],Km=opt$par[2],k12=opt$par[3],k21=opt$par[4],k13=opt$par[5],k31=opt$par[6],Vd=opt$par[7]),
-         control=nls.lm.control(maxiter=500),lower=c(1e-06,1e-06,1e-06,1e-06,1e-06,1e-06,1e-06))  ### set 'lower=c(...)' may cause crashed ro get weird results (this model only).  --YJ
+         start=list(Vm=opt$p1,Km=opt$p2,k12=opt$p3,k21=opt$p4,k13=opt$p5,k31=opt$p6,Vd=opt$p7),
+         control=nls.lm.control(maxiter=500,maxfev=5000,factor=100),lower=c(1e-06,1e-06,1e-06,1e-06,1e-06,1e-06,1e-06))  ### set 'lower=c(...)' may cause crashed ro get weird results (this model only).  --YJ
      
      sink(zz,split=TRUE)
      cat(" ********************************\n\n")

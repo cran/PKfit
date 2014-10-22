@@ -8,7 +8,7 @@ PKindex<-data.frame(Subject=c(1),time=c(0,6,12,24,36,48,72,96,144),
 conc=c(7.88,7.10,6.79,5.27,4.52,3.43,1.97,1.01,0.23))
 Dose<-300
 par<-data.frame(Parameter=c("Vm","Km","Vd"),Initial=c(17,5,10))
-
+description_version()
 cat("- This is an iv-bolus drug exhibiting with Mechaelis-Menten elimination -\n")
 cat(" PK and drug plasma samples were collected and assayed after dosing.\n")
 cat(" Data was from: Fitting Models to Biological Data using Linear and \n")
@@ -49,19 +49,20 @@ cat("- model selection: a one-compartment, iv bolus pk model with\n  M-M elim.\n
 ### cat("<< PK parameters obtained from genetic algorithm >>\n\n")
 ### print(data.frame(Parameter=namegen,Value=outgen))  
 ### F<-objfun(gen$par)
-      
-opt<-optim(c(par[1,2],par[2,2],par[3,2]),objfun,method="Nelder-Mead",control=list(maxit=5000))  
+
+cat(" running optimx() right now...\n\n")
+opt<-optimx(c(par[1,2],par[2,2],par[3,2]),objfun,method="Nelder-Mead",control=list(maxit=5000))  
 nameopt<-c("Vm","Km","Vd")
-outopt<-c(opt$par[1],opt$par[2],opt$par[3]) 
+outopt<-c(opt$p1,opt$p2,opt$p3) 
 cat("<< PK parameters obtained from Nelder-Mead Simplex algorithm >>\n\n")
 print(data.frame(Parameter=nameopt,Value=outopt))
 cat("\n\n")
-if(opt$par[1]<0) {opt$par[1]<-0.01}
-if(opt$par[2]<0) {opt$par[2]<-0.01}
-if(opt$par[3]<0) {opt$par[3]<-0.01}
+if(opt$p1<0) {opt$p1<-0.001}
+if(opt$p2<0) {opt$p2<-0.001}
+if(opt$p3<0) {opt$p3<-0.001}
 
-fm<-nlsLM(conc ~ modfun(time,Vm,Km,Vd), data=PKindex,start=list(Vm=opt$par[1],Km=opt$par[2],Vd=opt$par[3]),
-         control=nls.lm.control(maxiter=500),weights=(1/conc^0))  ### set 'lower=c(...)' may cause crashed.  --YJ
+fm<-nlsLM(conc ~ modfun(time,Vm,Km,Vd), data=PKindex,start=list(Vm=opt$p1,Km=opt$p2,Vd=opt$p3),
+         control=nls.lm.control(maxiter=500,maxfev=5000,factor=100),weights=(1/conc^0))  ### set 'lower=c(...)' may cause crashed.  --YJ
 
 ### tried to use self-starter function for nls()
 ### fm<-nls(conc~SSmicmen(time,Vm,Km),data=PKindex)  ### no Vd?  so SSmicmen() is not useful for this.

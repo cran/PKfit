@@ -5,6 +5,7 @@
 require(PKfit)
 require(minpack.lm)
 require(deSolve)
+require(optimx)
 graphics.off()
 cat("\n\n")
 options(warn=-1)
@@ -52,30 +53,37 @@ modfun <<- function(time,kel, Vd) {
 objfun <- function(par) {
         out <- modfun(PKindex$time, par[1], par[2])
         gift <- which( PKindex$conc != 0)
-        ### sum((PKindex$conc[gift]-out[gift])^2),                     ### equal weight
+        sum((PKindex$conc[gift]-out[gift])^2)                       ### equal weight
         ### sum((PKindex$conc[gift]-out[gift])^2/PKindex$conc[gift])   ### 1/conc weight
-        ### sum((PKindex$conc[gift]-out[gift])/PKindex$conc[gift])^2)  ### 1/conc^2 weight
-        sum(((PKindex$conc[gift]-out[gift])/PKindex$conc[gift])^2)     ### 1/conc^2 weight
+        ### sum(((PKindex$conc[gift]-out[gift])/PKindex$conc[gift])^2) ### 1/conc^2 weight
 }        
 
 ###
 ### applying a general-purposed optimization first;
 ### where c(0.2,10) contains the initial values for kel, Vd, respectively;
 ###     
-opt<-optim(c(0.2,10),objfun,method="Nelder-Mead",control=list(maxit=5000))  
+opt<-optimx(c(2,20),objfun,method="Nelder-Mead",control=list(maxit=5000))
+print(opt)
 nameopt<-c("kel","Vd")
-outopt<-c(opt$par[1],opt$par[2])
+### outopt<-c(opt$par[1],opt$par[2])
+outopt<-c(opt$p1,opt$p2)
 
 ###
 ### reset parameter values here if less than zero obtained from optim()...
 ###
-  if(opt$par[1]<0) {opt$par[1]<-0.001}
-  if(opt$par[2]<0) {opt$par[2]<-0.001}
+###  if(opt$par[1]<0) {opt$par[1]<-0.001}
+###  if(opt$par[2]<0) {opt$par[2]<-0.001}
+ 
+  if(opt$p1<0) {opt$p1<-0.001}
+  if(opt$p2<0) {opt$p2<-0.001}
 
 ###
 ### pass initial estimate obtained from optim() to final nonlinear regression algorithm, nlsLM()
 ###
-fm<-nlsLM(conc ~ modfun(time, kel, Vd),data=PKindex,start=list(kel=opt$par[1],Vd=opt$par[2]),
+### fm<-nlsLM(conc ~ modfun(time, kel, Vd),data=PKindex,start=list(kel=opt$par[1],Vd=opt$par[2]),
+###         control=nls.lm.control(maxiter=500),weights=(1/conc^2))
+
+fm<-nlsLM(conc ~ modfun(time, kel, Vd),data=PKindex,start=list(kel=opt$p1,Vd=opt$p2),
          control=nls.lm.control(maxiter=500),weights=(1/conc^2))
 
 ### obtain coefficient for nlsLM()

@@ -15,10 +15,11 @@ cat(" on:-",date(),"\n")
 username<-Sys.info()[['user']]
 osname_version<-c(paste(Sys.info()[['sysname']],"-",Sys.info()[['version']],"\n",
                   Sys.info()[['release']],",",Sys.info()[['machine']]))
+cat(" R version:",gsub("R version ","",R.Version()[['version.string']],fixed=TRUE),"\n")
 cat(" running on:",osname_version,"\n")
 cat(" user id:",username,"\n\n")
 cat(" PKfit is developed by Chun-ying Lee & Yung-jin Lee.\n")
 cat(" contact: Yung-jin Lee <mobilepk at gmail.com> \n\n")
 cat(" PKfit is under license of GPL-2|GPL-3.\n\n")
-cat("..................................................")
+cat("..................................................\n\n")
 }

@@ -4,7 +4,7 @@ plotting.sim <- function(i,x,y,MD=FALSE)
 {
 
 ### dev.new()
-par(mfrow=c(2,1))
+par(mfrow=c(2,1), ask = FALSE)
 
 main<-paste(c("Subject:-", i),collapse="")
    

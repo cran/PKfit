@@ -139,45 +139,45 @@ sink()  ### turn off temporarily to avoid logging too many warnings... -YJ
            ## No MM elimination
            out <- modfun1(PKindex$time[PKindex$Subject==i], par[1], par[2])
         }
-           gift <- which( PKindex$conc[PKindex$Subject==i] != 0 )
-           sum(((PKindex$conc[PKindex$Subject==i][gift] - out[gift])/PKindex$conc[gift])^2)
-           ### switch(pick,
-           ###        sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2),
-           ###        sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2/PKindex$conc[gift]),
-           ###        sum(((PKindex$conc[PKindex$Subject==i][gift] - out[gift])/PKindex$conc[gift])^2))
+           gift <- which(PKindex$conc[PKindex$Subject==i] != 0)
+           ### sum(((PKindex$conc[PKindex$Subject==i][gift]-out[gift])/PKindex$conc[gift])^2)
+           switch(pick,
+               sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2),
+               sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2/PKindex$conc[gift]),
+               sum(((PKindex$conc[PKindex$Subject==i][gift]-out[gift])/PKindex$conc[gift])^2))
       }
 ###      
      if (MMe) {
-        opt<-optim(c(par.init[3,2],par.init[4,2],par.init[5,2]),objfun,method="Nelder-Mead",control=list(maxit=5000))
+        opt<-optimx(c(par.init[3,2],par.init[4,2],par.init[5,2]),objfun,method="Nelder-Mead",control=list(maxit=5000))
         nameopt<-c("Vm","Km","Vd")
-        outopt<-c(opt$par[1],opt$par[2],opt$par[3])
+        outopt<-c(opt$p1,opt$p2,opt$p3)
      }
      else {
-        opt<-optim(c(par.init[3,2],par.init[4,2]),objfun,method="Nelder-Mead",control=list(maxit=5000))  
+        opt<-optimx(c(par.init[3,2],par.init[4,2]),objfun,method="Nelder-Mead",control=list(maxit=5000))  
         nameopt<-c("kel","Vd")
-        outopt<-c(opt$par[1],opt$par[2])
+        outopt<-c(opt$p1,opt$p2)
      }
 
      if (MMe){
-              if(opt$par[1]<0) {opt$par[1]<-0.01}
-              if(opt$par[2]<0) {opt$par[2]<-0.01}
-              if(opt$par[3]<0) {opt$par[3]<-0.01}
+              if(opt$p1<0) {opt$p1<-0.0001}
+              if(opt$p2<0) {opt$p2<-0.0001}
+              if(opt$p3<0) {opt$p3<-0.0001}
        }
        else {
-              if(opt$par[1]<0) {opt$par[1]<-0.01}
-              if(opt$par[2]<0) {opt$par[2]<-0.01}
+              if(opt$p1<0) {opt$p1<-0.0001}
+              if(opt$p2<0) {opt$p2<-0.0001}
        }           
      
      conc<-PKindex$conc[PKindex$Subject==i]
      
-     if(pick==1) weights=(1/conc^0)  ### equal weight
-     if(pick==2) weights=(1/conc^1)  ### 1/Cp
-     if(pick==3) weights=(1/conc^2)  ### 1/Cp^2
+     if(pick==1) weights<- ifelse(conc==0.,1,1/conc^0)  ### equal weight
+     if(pick==2) weights<- ifelse(conc==0.,1,1/conc^1)  ### 1/Cp
+     if(pick==3) weights<- ifelse(conc==0.,1,1/conc^2)  ### 1/Cp^2
      
      if (MMe) {
         fm<-nlsLM(conc~modfun2(time,Vm,Km,Vd),data=subset(PKindex,Subject==i),
-            start=list(Vm=opt$par[1],Km=opt$par[2],Vd=opt$par[3]),
-            control=nls.lm.control(maxiter=500),weights=weights,lower=c(1e-06,1e-06,1e-06))   ### set 'lower=c(...)' may cause crashed.  --YJ
+            start=list(Vm=opt$p1,Km=opt$p2,Vd=opt$p3),
+            control=nls.lm.control(maxiter=500,maxfev=5000,factor=100),weights=weights,lower=c(1e-06,1e-06,1e-06))   ### set 'lower=c(...)' may cause crashed.  --YJ
      sink(zz,split=TRUE)
      cat(" ********************************\n\n")
      cat("      --- Subject:- #",i,"---    \n\n")
@@ -222,8 +222,8 @@ sink()  ### turn off temporarily to avoid logging too many warnings... -YJ
      else {
         ## No MM elimination
         fm<-nlsLM(conc ~ modfun1(time, kel, Vd), data=subset(PKindex,Subject==i),
-                start=list(kel=opt$par[1],Vd=opt$par[2]),
-                control=nls.lm.control(maxiter=500),weights=weights,lower=c(1e-06,1e-06))   ### set 'lower=c(...)' may cause crashed.  --YJ
+                start=list(kel=opt$p1,Vd=opt$p2),
+                control=nls.lm.control(maxiter=500,maxfev=5000,factor=100),weights=weights,lower=c(1e-06,1e-06))   ### set 'lower=c(...)' may cause crashed.  --YJ
         coef<-data.frame(coef(fm)["kel"])
      sink(zz,split=TRUE)
      cat(" ********************************\n\n")

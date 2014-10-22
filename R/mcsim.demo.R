@@ -40,7 +40,7 @@ for (j in 1:re){
   C1.lsoda[[j]]<-data.frame(XX[2:(length(time)+1),1],XX[2:(length(time)+1),3])
   colnames(C1.lsoda[[j]])<-list("time","concentration") 
 } 
-     
+description_version()     
 for( i in 1:Subject) 
 conc<-rowMeans(as.data.frame(lapply(C1.lsoda,"[","concentration")))
 C1.lsoda<-do.call("rbind",C1.lsoda)

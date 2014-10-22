@@ -3,6 +3,7 @@ plotting.lin <- function (PKindex, fm, i, pick, coef, xaxis, yaxis,
                           separateWindows=TRUE)
 {               
   #options(warn=-1)
+  par(ask = FALSE)
   j<-1:length(PKindex$time[PKindex$Subject==i])
   x<-PKindex$time[PKindex$Subject==i]
   y<-PKindex$conc[PKindex$Subject==i]
@@ -74,7 +75,7 @@ plotting.lin <- function (PKindex, fm, i, pick, coef, xaxis, yaxis,
   aicllsbc(fm)
   cat("\n")
 
-par(mfrow=c(2,2))
+par(mfrow=c(2,2), ask = FALSE)
 main<-paste(c("Subject# ", i),collapse=" ")
 j<-1:length(PKindex$time[PKindex$Subject==i])
 xxstep<-seq(from=min(PKindex$time[PKindex$Subject==i]),to=max(PKindex$time[PKindex$Subject==i]),by=0.01)

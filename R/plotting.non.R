@@ -56,7 +56,7 @@ plotting.non <- function (PKindex, fm, i, pick, xaxis, yaxis,
   aicllsbc(fm)
   cat("\n")
 
-par(mfrow=c(2,2))
+par(mfrow=c(2,2), ask = FALSE)
 main<-paste(c("Subject# ", i),collapse=" ")
 j<-1:length(PKindex$time[PKindex$Subject==i])
 xxstep<-seq(from=min(PKindex$time[PKindex$Subject==i]),to=max(PKindex$time[PKindex$Subject==i]),by=0.01)

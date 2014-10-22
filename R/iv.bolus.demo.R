@@ -29,23 +29,25 @@ objfun <- function(par) {
         ### sum((PKindex$conc[gift]-out[gift])^2)
         sum(((PKindex$conc[gift]-out[gift])/PKindex$conc[gift])^2)
 }        
-     
-opt<-optim(c(0.21,10),objfun,method="Nelder-Mead",control=list(maxit=5000))  
+
+cat(" running optimx() right now...\n\n")
+opt<-optimx(c(0.21,10),objfun,method="Nelder-Mead",control=list(maxit=5000))  
 nameopt<-c("kel","Vd")
-outopt<-c(opt$par[1],opt$par[2])
+outopt<-c(opt$p1,opt$p2)
 
 
-  if(opt$par[1]<0) {opt$par[1]<-0.01}
-  if(opt$par[2]<0) {opt$par[2]<-0.01}
+  if(opt$p1<0) {opt$p1<-0.01}
+  if(opt$p2<0) {opt$p2<-0.01}
 
-fm<-nlsLM(conc ~ modfun(time, kel, Vd),data=PKindex,start=list(kel=opt$par[1],Vd=opt$par[2]),
-         control=nls.lm.control(maxiter=500),weights=(1/conc^2)) ### lower of Vd should not be zero due to Dose/Vd. --YJ
+fm<-nlsLM(conc ~ modfun(time, kel, Vd),data=PKindex,start=list(kel=opt$p1,Vd=opt$p2),
+         control=nls.lm.control(maxiter=500,maxfev=5000,factor=100),weights=(1/conc^2)) ### lower of Vd should not be zero due to Dose/Vd. --YJ
         
 coef<-data.frame(coef(fm)["kel"])
 
 ### i = # of subj;
 ### pick = 1, 2, 3 --> equal, 1/conc, and 1/conc^2 weighting, respectively;
 ### change it if necessary.
+description_version()
 i<-1; pick<- 3
 cat(" ********************************\n\n")
 cat("      --- Subject:- #",i,"---    \n\n")

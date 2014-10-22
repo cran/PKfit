@@ -143,50 +143,50 @@ sink()  ### turn off temporarily to avoid logging too many warnings... -YJ
            ## No MM elimination
            out<-modfun1(PKindex$time[PKindex$Subject==i],par[1],par[2],par[3])
         }
-           gift <- which( PKindex$conc[PKindex$Subject==i] != 0 )
-           sum(((PKindex$conc[PKindex$Subject==i][gift]-out[gift])/PKindex$conc[gift])^2)
-           ### switch(pick,
-           ###        sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2),
-           ###        sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2/PKindex$conc[gift]),
-           ###        sum(((PKindex$conc[PKindex$Subject==i][gift]-out[gift])/PKindex$conc[gift])^2))
+           gift <- which(PKindex$conc[PKindex$Subject==i] != 0)
+           ### sum(((PKindex$conc[PKindex$Subject==i][gift]-out[gift])/PKindex$conc[gift])^2)
+           switch(pick,
+               sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2),
+               sum((PKindex$conc[PKindex$Subject==i][gift]-out[gift])^2/PKindex$conc[gift]),
+               sum(((PKindex$conc[PKindex$Subject==i][gift]-out[gift])/PKindex$conc[gift])^2))
       }
       
 ###      
      if (MMe) {
-        opt<-optim(c(par.init[2,2],par.init[3,2],par.init[4,2],par.init[5,2]),objfun,
+        opt<-optimx(c(par.init[2,2],par.init[3,2],par.init[4,2],par.init[5,2]),objfun,
                    method="Nelder-Mead",control=list(maxit=5000))  
         nameopt<-c("Tabs","Vm","Km","Vd")
-        outopt<-c(opt$par[1],opt$par[2],opt$par[3],opt$par[4])
+        outopt<-c(opt$p1,opt$p2,opt$p3,opt$p4)
      }
      else {
-        opt<-optim(c(par.init[2,2],par.init[3,2],par.init[4,2]),objfun,method="Nelder-Mead",
+        opt<-optimx(c(par.init[2,2],par.init[3,2],par.init[4,2]),objfun,method="Nelder-Mead",
                    control=list(maxit=5000))  
         nameopt<-c("Tabs","kel","Vd")
-        outopt<-c(opt$par[1],opt$par[2],opt$par[3])
+        outopt<-c(opt$p1,opt$p2,opt$p3)
      }
      
       if (MMe){
-              if(opt$par[1]<0) {opt$par[1]<-0.01}
-              if(opt$par[2]<0) {opt$par[2]<-0.01}
-              if(opt$par[3]<0) {opt$par[3]<-0.01}
-              if(opt$par[4]<0) {opt$par[4]<-0.01}
+              if(opt$p1<0) {opt$p1<-0.0001}
+              if(opt$p2<0) {opt$p2<-0.0001}
+              if(opt$p3<0) {opt$p3<-0.0001}
+              if(opt$p4<0) {opt$p4<-0.0001}
        }
        else {
-              if(opt$par[1]<0) {opt$par[1]<-0.01}
-              if(opt$par[2]<0) {opt$par[2]<-0.01}
-              if(opt$par[3]<0) {opt$par[3]<-0.01}
+              if(opt$p1<0) {opt$p1<-0.0001}
+              if(opt$p2<0) {opt$p2<-0.0001}
+              if(opt$p3<0) {opt$p3<-0.0001}
        }      
      
      conc<-PKindex$conc[PKindex$Subject==i]
      
-     if(pick==1) weights=(1/conc^0)  ### equal weight
-     if(pick==2) weights=(1/conc^1)  ### 1/Cp
-     if(pick==3) weights=(1/conc^2)  ### 1/Cp^2
+     if(pick==1) weights<- ifelse(conc==0.,1,1/conc^0)  ### equal weight
+     if(pick==2) weights<- ifelse(conc==0.,1,1/conc^1)  ### 1/Cp
+     if(pick==3) weights<- ifelse(conc==0.,1,1/conc^2)  ### 1/Cp^2
      
      if (MMe) {
         fm<-nlsLM(conc~modfun2(time,Tabs,Vm,Km,Vd),data=subset(PKindex,Subject==i),
-            start=list(Tabs=opt$par[1],Vm=opt$par[2],Km=opt$par[3],Vd=opt$par[4]),
-            control=nls.lm.control(maxiter=500),weights=weights,lower=c(1e-06,1e-06,1e-06,1e-06))   ### set 'lower=c(...)' may cause crashed.  --YJ
+            start=list(Tabs=opt$p1,Vm=opt$p2,Km=opt$p3,Vd=opt$p4),
+            control=nls.lm.control(maxiter=500,maxfev=5000,factor=100),weights=weights,lower=c(1e-06,1e-06,1e-06,1e-06))   ### set 'lower=c(...)' may cause crashed.  --YJ
      sink(zz,split=TRUE)
      cat(" ********************************\n\n")
      cat("      --- Subject:- #",i,"---    \n\n")
@@ -230,8 +230,8 @@ sink()  ### turn off temporarily to avoid logging too many warnings... -YJ
      else {
         ## No MM elimination
      fm<-nlsLM(conc~modfun1(time,Tabs,kel,Vd),data=subset(PKindex,Subject==i),
-               start=list(Tabs=opt$par[1],kel=opt$par[2],Vd=opt$par[3]),
-               control=nls.lm.control(maxiter=500),weights=weights,lower=c(1e-06,1e-06,1e-06))   ### set 'lower=c(...)' may cause crashed.  --YJ
+               start=list(Tabs=opt$p1,kel=opt$p2,Vd=opt$p3),
+               control=nls.lm.control(maxiter=500,maxfev=5000,factor=100),weights=weights,lower=c(1e-06,1e-06,1e-06))   ### set 'lower=c(...)' may cause crashed.  --YJ
      coef<-data.frame(coef(fm)["kel"])
      sink(zz,split=TRUE)
      cat(" ********************************\n\n")
