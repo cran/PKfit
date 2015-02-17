@@ -126,7 +126,7 @@ else{
            dCp2dt <- parms["k12"]*y[1]-parms["k21"]*y[2]
          }
        list(c(dCp1dt,dCp2dt)) 
-   }  
+   }
 }
      
     file.menu <- c("Simulation with Error",
@@ -200,9 +200,7 @@ sink()
            if(MD){
              dosing.time<-seq(0,Tau*nDose,Tau)
              yini<-c(dCp1dt=0,dCp2dt=0)
-             events <- data.frame(var="dCp1dt",time=dosing.time,value=Dose/Tinf/Vd,method="add")
-             C1.lsoda<-data.frame(lsode(yini,c(0,time),defun,parms,rtol=1e-08,atol=1e-08,
-                                  events=list(data=events)))
+             C1.lsoda<-data.frame(lsode(yini,c(0,time),defun,parms,rtol=1e-08,atol=1e-08))
            }
            else{
              C1.lsoda<-data.frame(lsoda(c(0,0),c(0,time),defun,parms,rtol=1e-08,atol=1e-08))}
@@ -299,9 +297,7 @@ sink()
                if(MD){
                  dosing.time<-seq(0,Tau*nDose,Tau)
                  yini<-c(dCp1dt=0,dCp2dt=0)
-                 events <- data.frame(var="dCp1dt",time=dosing.time,value=Dose/Tinf/Vd,method="add")
-                 C1.lsoda<-data.frame(lsode(yini,c(0,time),defun,parms,rtol=1e-08,atol=1e-08,
-                                      events=list(data=events)))
+                 C1.lsoda<-data.frame(lsode(yini,c(0,time),defun,parms,rtol=1e-08,atol=1e-08))
                }
                else{
                  C1.lsoda<-data.frame(lsoda(c(0,0),c(0,time),defun,parms,rtol=1e-08,atol=1e-08))}
@@ -416,9 +412,7 @@ sink()
                if(MD){
                  dosing.time<-seq(0,Tau*nDose,Tau)
                  yini<-c(dCp1dt=0,dCp2dt=0)
-                 events <- data.frame(var="dCp1dt",time=dosing.time,value=Dose/Tinf/Vd,method="add")
-                 XX<-data.frame(lsode(yini,c(0,time1),defun,parms,rtol=1e-08,atol=1e-08,
-                                      events=list(data=events)))
+                 XX<-data.frame(lsode(yini,c(0,time1),defun,parms,rtol=1e-08,atol=1e-08))
                }
                else{
                XX<-data.frame(lsoda(c(0,0),c(0,time1),defun,parms,rtol=1e-08,atol=1e-08))}

@@ -101,7 +101,8 @@ sink()  ### turn off temporarily to avoid logging too many warnings... -YJ
      }
      
      
-     opt <- optimx(c(par[3,2],par[4,2],par[5,2],par[6,2]),objfun,method="Nelder-Mead",control=list(maxit=5000))   
+     opt <- optimx(c(par.init[3,2],par.init[4,2],par.init[5,2],par.init[6,2]),objfun,method="Nelder-Mead",
+            control=list(maxit=5000))   
      nameopt<-c("kel","k12","k21","Vd")
      outopt<-c(opt$p1,opt$p2,opt$p3,opt$p4)
      

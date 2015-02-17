@@ -5,7 +5,7 @@
 # echo output to screen
 packageStartupMessage("
 
-.............. PKfit v1.2.4 ............
+.............. PKfit v1.2.5 ............
 
    Please type 'run()' to get started.                
                                                          

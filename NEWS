@@ -1,6 +1,20 @@
-PKfit v1.2.4
+PKfit v1.2.6
  A Data Analysis Tool for Pharmacokinetics
 
+Update logs (v1.2.5)
+--------------------
+02/17/2014
+---
+ 1. added citation into output files;
+ 2. removed CITATION file;
+ 3. fixed finfu2() and thanks llan for reporting this error;
+ 4. changed the name of 'mymodel.R' to 'fitmodel.R';
+ 5. fixed sinfu2() and sinfu(); removed events from both to avoid
+    double doses; one from defun() and the other from events().
+ 6. fixed output info;
+ 7. fixed 'Description' content in DESCRIPTION.
+ 
+ 
 Update logs (v1.2.4)
 --------------------
 10/22/2014

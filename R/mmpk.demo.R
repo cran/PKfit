@@ -51,7 +51,7 @@ cat("- model selection: a one-compartment, iv bolus pk model with\n  M-M elim.\n
 ### F<-objfun(gen$par)
 
 cat(" running optimx() right now...\n\n")
-opt<-optimx(c(par[1,2],par[2,2],par[3,2]),objfun,method="Nelder-Mead",control=list(maxit=5000))  
+opt<-optimx(c(par[1,2],par[2,2],par[3,2]),objfun,method="Nelder-Mead",control=list(maxit=5000))
 nameopt<-c("Vm","Km","Vd")
 outopt<-c(opt$p1,opt$p2,opt$p3) 
 cat("<< PK parameters obtained from Nelder-Mead Simplex algorithm >>\n\n")

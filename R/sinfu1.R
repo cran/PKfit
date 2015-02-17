@@ -292,9 +292,7 @@ sink()
              if(MD){
                 dosing.time<-seq(0,Tau*nDose,Tau)
                 yini<-c(dCpdt=0)
-                events <- data.frame(var="dCpdt",time=dosing.time,value=Dose/Tinf/Vd,method="add")
-                C1.lsoda<-data.frame(lsode(yini,c(0,time),defun,parms,rtol=1e-08,atol=1e-08,
-                                  events=list(data=events)))
+                C1.lsoda<-data.frame(lsode(yini,c(0,time),defun,parms,rtol=1e-08,atol=1e-08))
              }
              else{
                C1.lsoda<-data.frame(lsoda(0,c(0,time),defun,parms,rtol=1e-08,atol=1e-08))}
@@ -321,9 +319,7 @@ sink()
              if(MD){
                 dosing.time<-seq(0,Tau*nDose,Tau)
                 yini<-c(dCpdt=0)
-                events <- data.frame(var="dCpdt",time=dosing.time,value=Dose/Tinf/Vd,method="add")
-                C1.lsoda<-data.frame(lsode(yini,c(0,time),defun,parms,rtol=1e-08,atol=1e-08,
-                                  events=list(data=events)))
+                C1.lsoda<-data.frame(lsode(yini,c(0,time),defun,parms,rtol=1e-08,atol=1e-08))
              }
              else{
              C1.lsoda<-data.frame(lsoda(0,c(0,time),defun,parms,atol=1e-10))}
@@ -424,9 +420,7 @@ sink()
              if(MD){
                 dosing.time<-seq(0,Tau*nDose,Tau)
                 yini<-c(dCpdt=0)
-                events <- data.frame(var="dCpdt",time=dosing.time,value=Dose/Tinf/Vd,method="add")
-                C1.lsoda<-data.frame(lsode(yini,c(0,time),defun,parms,rtol=1e-08,atol=1e-08,
-                                  events=list(data=events)))
+                C1.lsoda<-data.frame(lsode(yini,c(0,time),defun,parms,rtol=1e-08,atol=1e-08))
              }
              else{
                C1.lsoda<-data.frame(lsoda(0,c(0,time),defun,parms,rtol=1e-08,atol=1e-08))}
@@ -522,9 +516,7 @@ sink()
              if(MD){
                 dosing.time<-seq(0,Tau*nDose,Tau)
                 yini<-c(dCpdt=0)
-                events <- data.frame(var="dCpdt",time=dosing.time,value=Dose/Tinf/Vd,method="add")
-                C1.lsoda<-data.frame(lsode(yini,c(0,time),defun,parms,rtol=1e-08,atol=1e-08,
-                                  events=list(data=events)))
+                C1.lsoda<-data.frame(lsode(yini,c(0,time),defun,parms,rtol=1e-08,atol=1e-08))
              }
              else{
              C1.lsoda<-data.frame(lsoda(0,c(0,time),defun,parms,atol=1e-10))}
@@ -682,9 +674,7 @@ sink()
               if(MD){
                  dosing.time<-seq(0,Tau*nDose,Tau)
                  yini<-c(dCpdt=0)
-                 events <- data.frame(var="dCpdt",time=dosing.time,value=Dose/Tinf/Vd,method="add")
-                 XX<-data.frame(lsode(yini,c(0,time1),defun,parms,rtol=1e-08,atol=1e-08,
-                                      events=list(data=events)))
+                 XX<-data.frame(lsode(yini,c(0,time1),defun,parms,rtol=1e-08,atol=1e-08))
               }
               else{ 
               XX<-data.frame(lsoda(0,c(0,time1),defun,parms,rtol=1e-08,atol=1e-08))}

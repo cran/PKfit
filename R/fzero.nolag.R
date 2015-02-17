@@ -86,7 +86,7 @@ fzero.nolag <- function(PKindex,
    
       modfun1 <<- function(time,Tabs,kel,Vd) { 
          out <- lsoda(0,c(0,time),defun,parms=c(Tabs=Tabs,kel=kel,Vd=Vd),
-                      rtol=1e-6,atol=1e-10) 
+                      rtol=1e-08,atol=1e-08) 
          out[-1,2]
       } 
    } 

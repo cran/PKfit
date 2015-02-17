@@ -1,6 +1,6 @@
 ###
 ### please copy this file to your working path; use getwd() to find out where it is.
-### v0.2
+### v0.2.1
 ###
 require(PKfit)
 require(minpack.lm)
